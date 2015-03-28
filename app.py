@@ -1,27 +1,29 @@
-from flask import Flask, render_template, request, url_for, flash
+from flask import Flask, render_template, request, url_for, flash, redirect, session
 from wtforms import Form, TextField, PasswordField, validators
 import ipdb
 
 app = Flask(__name__)
+app.secret_key = "bacon"
 
-users = 'one'
+user = ('one','pass')
 name = None
 passwd = None
 
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/')
 def main():
     return render_template('index.html')
-
-@app.route('/login/', methods=['GET', 'POST'])
+    
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    name = request.form['name']
-    passwd = request.form['pass']
-    print(name, passwd)
-    # if name == users:
-    #     return render_template('login.html')
-    # else:
-    #     flash("Введите правильный логин и пароль")
-    # return render_template('login.html')
+    if request.method == 'POST':
+        if (request.form['name'], request.form['passwd']) == user:
+            session['name'] = name
+            print(session['name'])
+            return render_template('login.html')
+
+        else:
+            flash("Введите правильный логин и пароль")
+            return render_template('index.html')
 
 
 @app.route('/documents/')
