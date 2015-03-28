@@ -1,13 +1,10 @@
-from flask import Flask, render_template, request, url_for, flash, redirect, session
+from flask import Flask, render_template, request, flash, session
 from wtforms import Form, TextField, PasswordField, validators
 import ipdb
 
 app = Flask(__name__)
-app.secret_key = "bacon"
 
 user = ('one','pass')
-name = None
-passwd = None
 
 @app.route('/')
 def main():
@@ -16,25 +13,35 @@ def main():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if (request.form['name'], request.form['passwd']) == user:
-            session['name'] = name
-            print(session['name'])
-            return render_template('login.html')
-
+        name = request.form['name']
+        passwd = request.form['passwd']
+        if (name, passwd) == user:
+            session['username'] = name
+            return render_template('login.html', name=name)
         else:
             flash("Введите правильный логин и пароль")
             return render_template('index.html')
 
-
 @app.route('/documents/')
 def documents():
-    return render_template('documents.html')
+    if 'username' in session:
+        return render_template('documents.html')
+    else:
+        flash("Введите правильный логин и пароль")
+        return render_template('index.html')
+
 
 @app.route('/objects/')
-def objs():
+def _objs():
     return render_template('objects.html')
 
+@app.route('/logout')
+def clear():
+    session.clear()
+    return render_template('index.html')
+
 if __name__ == '__main__':
+    app.secret_key = "bacon"
     app.debug = True
     app.config['TRAP_BAD_REQUEST_ERRORS'] = True
     app.run(debug=True)
