@@ -1,6 +1,9 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Login</h2>
-<p>Name:<input type=text name=log></p>
-<p>Password:<input type=password name=passwd></p>
+<form action="/login/" method="POST">
+<p>Name: <input type='text' name='name'></p>
+<p>Password: <input type='password' name='passwd'></p>
+<input type="submit" name="Войти" value="Войти">
+</form>
 {% endblock %}

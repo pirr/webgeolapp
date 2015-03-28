@@ -1,11 +1,28 @@
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, flash
+from wtforms import Form, TextField, PasswordField, validators
 import ipdb
 
 app = Flask(__name__)
 
-@app.route('/')
+users = 'one'
+name = None
+passwd = None
+
+@app.route('/', methods=['GET', 'POST'])
 def main():
     return render_template('index.html')
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    name = request.form['name']
+    passwd = request.form['pass']
+    print(name, passwd)
+    # if name == users:
+    #     return render_template('login.html')
+    # else:
+    #     flash("Введите правильный логин и пароль")
+    # return render_template('login.html')
+
 
 @app.route('/documents/')
 def documents():
