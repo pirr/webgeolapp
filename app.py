@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, flash, session
-# from wtforms import Form, TextField, PasswordField, validators
 import ipdb
 
 app = Flask(__name__)
@@ -10,13 +9,6 @@ users = [('one','pass1'),('two','pass2')]
 def main():
     return render_template('index.html')
 
-# def not_user():
-#     if 'username' in session:
-#         continue
-#     else:
-#         flash("Введите логин и пароль")
-#         return render_template('index.html')
-    
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
