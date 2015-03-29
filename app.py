@@ -21,21 +21,29 @@ def login():
             flash("Введите верный логин и пароль")
             return render_template('index.html')
 
-@app.route('/documents/')
-def documents():
-    if 'username' in session:
-        return render_template('documents.html')
-    else:
-        flash("Введите логин и пароль")
-        return render_template('index.html')
+def check_login(method):
+    def wrapper():
+        if 'username' in session:
+            return method()
+        else:
+            flash("Введите логин и пароль")
+            return render_template('index.html')
+    return wrapper
 
-@app.route('/objects/')
+
+@app.route('/documents')
+def documents():
+    return render_template('documents.html')
+
+@app.route('/objects')
+@check_login
 def objs():
-    if 'username' in session:
-        return render_template('objects.html')
-    else:
-        flash("Введите логин и пароль")
-        return render_template('index.html')
+    return render_template('objects.html')
+
+@app.route('/test')
+# @check_login
+def test():
+    return render_template('test.html')
 
 @app.route('/logout')
 def clear():
