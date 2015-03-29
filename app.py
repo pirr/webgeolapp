@@ -1,25 +1,32 @@
 from flask import Flask, render_template, request, flash, session
-from wtforms import Form, TextField, PasswordField, validators
+# from wtforms import Form, TextField, PasswordField, validators
 import ipdb
 
 app = Flask(__name__)
 
-user = ('one','pass')
+users = [('one','pass1'),('two','pass2')]
 
 @app.route('/')
 def main():
     return render_template('index.html')
+
+# def not_user():
+#     if 'username' in session:
+#         continue
+#     else:
+#         flash("Введите логин и пароль")
+#         return render_template('index.html')
     
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         name = request.form['name']
         passwd = request.form['passwd']
-        if (name, passwd) == user:
+        if (name, passwd) in users:
             session['username'] = name
             return render_template('login.html', name=name)
         else:
-            flash("Введите правильный логин и пароль")
+            flash("Введите верный логин и пароль")
             return render_template('index.html')
 
 @app.route('/documents/')
@@ -27,13 +34,16 @@ def documents():
     if 'username' in session:
         return render_template('documents.html')
     else:
-        flash("Введите правильный логин и пароль")
+        flash("Введите логин и пароль")
         return render_template('index.html')
 
-
 @app.route('/objects/')
-def _objs():
-    return render_template('objects.html')
+def objs():
+    if 'username' in session:
+        return render_template('objects.html')
+    else:
+        flash("Введите логин и пароль")
+        return render_template('index.html')
 
 @app.route('/logout')
 def clear():
