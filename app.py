@@ -5,6 +5,9 @@ app = Flask(__name__)
 
 users = [('one','pass1'),('two','pass2')]
 
+if abs:
+    pass
+
 @app.route('/')
 def main():
     return render_template('index.html')
