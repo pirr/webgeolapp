@@ -3,13 +3,8 @@
 <h2>Main</h2>
 <form class="navbar-form navbar-left">
     <div class="form-group">
-        <input class="form-control" type="text" placeholder="Name"><br>
-        <input class="form-control" type="text" placeholder="Pass"></div>
+        <input class="form-control" type="name" placeholder="Name" style="margin-bottom: 10px" required autofocus><br>
+        <input class="form-control" type="password" placeholder="Pass"><br>
     </div>
 </form>
-<!-- {% with messages = get_flashed_messages() %}
-        {% for message in messages %}
-            {{message}}
-        {% endfor %}
-    {% endwith %} -->
 {% endblock %}
