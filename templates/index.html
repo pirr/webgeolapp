@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 {% block body %}
-<h2>Login</h2>
-    <form action="/login" method="POST">
-        <p><b>Имя: </b>
-        <input type='text' name='name'>
-        <p><b>Пароль: </b>
-        <input type='password' name='passwd'>
-        <p><input type="submit" name="enter" value="Войти">
-    </form>
-{% with messages = get_flashed_messages() %}
+<h2>Main</h2>
+<form class="navbar-form navbar-left">
+    <div class="form-group">
+        <input class="form-control" type="text" placeholder="Name"><br>
+        <input class="form-control" type="text" placeholder="Pass"></div>
+    </div>
+</form>
+<!-- {% with messages = get_flashed_messages() %}
         {% for message in messages %}
             {{message}}
         {% endfor %}
-    {% endwith %}
+    {% endwith %} -->
 {% endblock %}
