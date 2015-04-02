@@ -1,10 +1,16 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Main</h2>
-<form class="navbar-form navbar-left">
-    <div class="form-group">
-        <input class="form-control" type="name" placeholder="Name" style="margin-bottom: 10px" required autofocus><br>
-        <input class="form-control" type="password" placeholder="Pass"><br>
-    </div>
-</form>
+    {% if user %}
+        Здравствуйте, {{user}} <br>
+        <button onclick="logout()">Выйти</button>
+    {% else %}
+        <form class="navbar-form navbar-left">
+            <div class="form-group">
+                <input id="user" class="form-control" type="text" placeholder="Name" style="margin-bottom: 10px" required autofocus oninvalid="this.setCustomValidity('Введите верное имя пользователя')"><br>
+                <input id="password" class="form-control" type="password" placeholder="Password" style="margin-bottom: 10px" required oninvalid="this.setCustomValidity('Введите верный пароль')"><br>
+                <button onclick="login()">Войти</button>
+            </div>
+        </form>
+    {% endif %}
 {% endblock %}

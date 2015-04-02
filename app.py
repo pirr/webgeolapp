@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, session
+from flask import Flask, render_template, request, session
 import ipdb
 
 app = Flask(__name__)
@@ -7,19 +7,16 @@ users = [('one','pass1'),('two','pass2')]
 
 @app.route('/')
 def main():
-    return render_template('index.html')
+    return render_template('index.html', user=session.get('user'))
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        name = request.form['name']
-        passwd = request.form['passwd']
-        if (name, passwd) in users:
-            session['username'] = name
-            return render_template('login.html', name=name)
-        else:
-            flash("Введите верный логин и пароль")
-            return render_template('index.html')
+    data = request.get_json()
+    if (data['user'], data['password']) in users:
+        session['user'] = data['user']
+        return 'ok'
+    else:
+        return 'Err'
 
 @app.route('/documents')
 def documents():
@@ -37,10 +34,10 @@ def objs():
         flash("Введите логин и пароль")
         return render_template('index.html')
     
-@app.route('/logout')
+@app.route('/logout', methods=['POST'])
 def clear():
     session.clear()
-    return render_template('index.html')
+    return 'Ok'
 
 if __name__ == '__main__':
     app.secret_key = "bacon"
