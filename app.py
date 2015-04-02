@@ -9,6 +9,14 @@ users = [('one','pass1'),('two','pass2')]
 def main():
     return render_template('index.html', user=session.get('user'))
 
+@app.route('/documents')
+def documents():
+    return render_template('documents.html', user=session.get('user'))
+
+@app.route('/objects')
+def objs():
+    return render_template('objects.html', user=session.get('user'))
+
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -18,26 +26,10 @@ def login():
     else:
         return 'Err'
 
-@app.route('/documents')
-def documents():
-    if 'username' in session:
-        return render_template('documents.html')
-    else:
-        flash("Введите логин и пароль")
-        return render_template('index.html')
-
-@app.route('/objects')
-def objs():
-    if 'username' in session:
-        return render_template('objects.html')
-    else:
-        flash("Введите логин и пароль")
-        return render_template('index.html')
-    
 @app.route('/logout', methods=['POST'])
 def clear():
     session.clear()
-    return 'Ok'
+    return ''
 
 if __name__ == '__main__':
     app.secret_key = "bacon"

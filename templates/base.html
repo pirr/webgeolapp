@@ -27,13 +27,11 @@
             {% block nav %}{% endblock %}
             {% if user %}
                 <li><a href="#">{{ user }}</a></li>
-            {% else %}
-                <li><a href="#">Гость</a></li>
             {% endif %}
           </ul>
         </nav>
         <div id="content">
-            {% block body %}{% endblock %}
+        {% block body %}{% endblock %}
         </div>
     </body>
 </html>

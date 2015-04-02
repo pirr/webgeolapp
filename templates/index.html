@@ -3,12 +3,12 @@
 <h2>Main</h2>
     {% if user %}
         Здравствуйте, {{user}} <br>
-        <button onclick="logout()">Выйти</button>
+        <button onclick="logout()" style="margin-top: 10px">Выйти</button>
     {% else %}
         <form class="navbar-form navbar-left">
             <div class="form-group">
                 <input id="user" class="form-control" type="text" placeholder="Name" style="margin-bottom: 10px" required autofocus oninvalid="this.setCustomValidity('Введите верное имя пользователя')"><br>
-                <input id="password" class="form-control" type="password" placeholder="Password" style="margin-bottom: 10px" required oninvalid="this.setCustomValidity('Введите верный пароль')"><br>
+                <input id="password" class="form-control" type="password" placeholder="Password" style="margin-bottom: 10px" required oninvalid="this.setCustomValidity('Имя пользователя или парольневерные')"><br>
                 <button onclick="login()">Войти</button>
             </div>
         </form>
