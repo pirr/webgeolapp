@@ -1,4 +1,22 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Documents</h2>
+<table>
+    <th>номер п/п</th>
+    <th>источник</th>
+    <th>название</th>
+    <th>полезное ископаемое</th>
+    <th>долгота</th>
+    <th>широта</th>
+    {% for doc in data %}
+        <tr>
+            <td><a href="#">{{id}}</a></td>
+            <td>{{source}}</td>
+            <td>{{name}}</td>
+            <td>{{pi}}</td>
+            <td>{{lon}}</td>
+            <td>{{lat}}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}
