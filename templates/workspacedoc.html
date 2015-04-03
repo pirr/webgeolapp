@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
-<h2>Документы</h2>
+<h2>Работа с документом</h2>
 <table class="table table-bordered">
     <col width="10">
     <col width="40">
@@ -10,9 +10,6 @@
     <col width="60px">
     <col width="40">
     <tr>
-    {% if user %}
-    <th></th>
-    {% endif %}
     <th>номер п/п</th>
     <th>источник</th>
     <th>название</th>
@@ -20,11 +17,7 @@
     <th>долгота</th>
     <th>широта</th>
     </tr>
-    {% for doc in data %}
         <tr>
-            {% if user %}
-            <td><a id="doc" href='#' value='{{doc}}' onclick="choosedoc()">Выбрать</a></td>
-            {% endif %}
             <td>{{doc.id}}</td>
             <td>{{doc.source}}</td>
             <td>{{doc.name}}</td>

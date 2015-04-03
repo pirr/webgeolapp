@@ -16,14 +16,20 @@ def main():
 
 @app.route('/documents')
 def documents():
-    session['docdata'] = dw.data_return()
+    session['docdata'] = dw.data_return('data//test.csv')
     return render_template('documents.html', 
                             user=session.get('user'),
                             data=session['docdata'])
 
-@app.route('/objects')
+@app.route('/objects', methods=['POST'])
 def objs():
     return render_template('objects.html', 
+                            user=session.get('user'))
+
+@app.route('/workspacedoc')
+def workspacedoc():
+    doc = request.get_json()
+    return render_template('workspacedoc.html', 
                             user=session.get('user'))
 
 @app.route('/login', methods=['POST'])

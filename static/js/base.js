@@ -12,6 +12,18 @@ function login() {
     } )     
 }
 
+function choosedoc() {
+    doc = $('#doc').val();
+    console.log(JSON.stringify('doc'));
+    $.ajax( {
+        url: '/documents',
+        doc: JSON.stringify(doc)
+        success: function(response) {
+            if (response=='Err');
+            else location.reload();
+    })
+}
+
 function logout() {
     $.ajax( {
         url: '/logout',
