@@ -31,7 +31,6 @@ $(document).ready(function () {
     });
 
 $(document).ready( function() {
-
     jQuery.ajaxSetup( {
         type:'POST', 
         contentType: 'application/json',

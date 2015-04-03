@@ -33,7 +33,6 @@ def clear():
 
 if __name__ == '__main__':
     app.secret_key = "bacon"
-    app.debug = True
     app.config['TRAP_BAD_REQUEST_ERRORS'] = True
     app.run(
             debug=True, 
