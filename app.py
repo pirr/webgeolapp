@@ -1,21 +1,30 @@
 from flask import Flask, render_template, request, session
 import ipdb
+import importlib
+import data.workdata as dw
+importlib.reload(dw)
 
 app = Flask(__name__)
 
 users = [('one','pass1'),('two','pass2')]
 
+
 @app.route('/')
 def main():
-    return render_template('index.html', user=session.get('user'))
+    return render_template('index.html', 
+                            user=session.get('user'))
 
 @app.route('/documents')
 def documents():
-    return render_template('documents.html', user=session.get('user'))
+    session['docdata'] = dw.data_return()
+    return render_template('documents.html', 
+                            user=session.get('user'),
+                            data=session['docdata'])
 
 @app.route('/objects')
 def objs():
-    return render_template('objects.html', user=session.get('user'))
+    return render_template('objects.html', 
+                            user=session.get('user'))
 
 @app.route('/login', methods=['POST'])
 def login():

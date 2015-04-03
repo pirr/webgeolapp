@@ -1,21 +1,32 @@
 {% extends "base.html" %}
 {% block body %}
-<h2>Documents</h2>
-<table>
+<h2>Документы</h2>
+<table class="table table-bordered">
+    <col width="10">
+    <col width="40">
+    <col width="80">
+    <col width="250">
+    <col width="250">
+    <col width="60px">
+    <col width="40">
+    <tr>
+    <th></th>
     <th>номер п/п</th>
     <th>источник</th>
     <th>название</th>
     <th>полезное ископаемое</th>
     <th>долгота</th>
     <th>широта</th>
+    </tr>
     {% for doc in data %}
         <tr>
-            <td><a href="#">{{id}}</a></td>
-            <td>{{source}}</td>
-            <td>{{name}}</td>
-            <td>{{pi}}</td>
-            <td>{{lon}}</td>
-            <td>{{lat}}</td>
+            <td><input type="checkbox" value="{{doc}}"></td>
+            <td>{{doc.id}}</td>
+            <td>{{doc.source}}</td>
+            <td>{{doc.name}}</td>
+            <td>{{doc.pi}}</td>
+            <td>{{doc.lon}}</td>
+            <td>{{doc.lat}}</td>
         </tr>
     {% endfor %}
 </table>
