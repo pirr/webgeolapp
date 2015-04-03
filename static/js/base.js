@@ -21,7 +21,7 @@ function logout() {
     });
 }
 
-//active navbar button
+//active class navbar button
 $(document).ready(function () {
         var url = window.location;
         $('ul.nav a[href="" + url + ""]').parent().addClass('active');
