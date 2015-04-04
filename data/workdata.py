@@ -2,8 +2,8 @@ import csv
 import ipdb
 
 
-def data_return():
-    with open('d://Smaga//bitbucket//webgeolapp//data//test.csv', 'r') as csvfile:
+def data_return(file):
+    with open(file) as csvfile:
         spamreader = csv.DictReader(csvfile, delimiter=';')
         data = []
         for row in spamreader:
