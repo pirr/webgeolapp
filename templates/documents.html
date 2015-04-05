@@ -23,7 +23,7 @@
     {% for doc in data %}
         <tr>
             {% if user %}
-            <td><a id="doc" href='#' value='{{doc}}' onclick="choosedoc()">Выбрать</a></td>
+            <td><button id='doc' value='{{doc}}' onclick="checkdoc(this)">Выбрать</button></td>
             {% endif %}
             <td>{{doc.id}}</td>
             <td>{{doc.source}}</td>
