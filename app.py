@@ -21,7 +21,7 @@ def documents():
                             user=session.get('user'),
                             data=session['docdata'])
 
-@app.route('/objects', methods=['POST'])
+@app.route('/objects')
 def objs():
     return render_template('objects.html', 
                             user=session.get('user'))
