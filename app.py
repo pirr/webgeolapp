@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session
+from flask import Flask, render_template, request, session, jsonify
 import ipdb
 import importlib
 import data.workdata as dw
@@ -21,16 +21,18 @@ def documents():
                             user=session.get('user'),
                             data=session['docdata'])
 
-@app.route('/objects', methods=['POST'])
+@app.route('/objects')
 def objs():
     return render_template('objects.html', 
                             user=session.get('user'))
 
-@app.route('/workspacedoc')
+@app.route('/workspacedoc', methods=["POST"])
 def workspacedoc():
-    doc = request.get_json()
-    return render_template('workspacedoc.html', 
-                            user=session.get('user'))
+    data = request.get_json()
+    return jsonify(data)
+    # return render_template('workspacedoc.html', 
+    #                         user=session.get('user'), 
+    #                         data=data)
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -42,7 +44,7 @@ def login():
         return 'Err'
 
 @app.route('/logout', methods=['POST'])
-def clear():
+def logout():
     session.clear()
     return ''
 

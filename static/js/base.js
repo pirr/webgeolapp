@@ -9,19 +9,7 @@ function login() {
             if (response=='Err');
             else location.reload(); 
         }
-    } )     
-}
-
-function choosedoc() {
-    doc = $('#doc').val();
-    console.log(JSON.stringify('doc'));
-    $.ajax( {
-        url: '/documents',
-        doc: JSON.stringify(doc)
-        success: function(response) {
-            if (response=='Err');
-            else location.reload();
-    })
+    })     
 }
 
 function logout() {
@@ -31,6 +19,18 @@ function logout() {
             location.reload();
         }
     });
+}
+
+function checkdoc(a) {
+    var check = a.getAttribute('value');
+    $.ajax({
+        url: '/workspacedoc',
+        data: JSON.stringify(check),
+        success: function(response) {
+            console.log(check);
+            location.reload();
+        }
+    })
 }
 
 //active class navbar button
@@ -50,3 +50,23 @@ $(document).ready( function() {
     });
     
 } )
+
+
+// <script type=text/javascript>
+//   $(function() {
+//     $('a#calculate').bind('click', function() {
+//       $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
+//         a: $('input[name="a"]').val(),
+//         b: $('input[name="b"]').val()
+//       }, function(data) {
+//         $("#result").text(data.result);
+//       });
+//       return false;
+//     });
+//   });
+// </script>
+// <h1>jQuery Example</h1>
+// <p><input type=text size=5 name=a> +
+//    <input type=text size=5 name=b> =
+//    <span id=result>?</span>
+// <p><a href=# id=calculate>calculate server side</a>
