@@ -23,7 +23,7 @@
     {% for doc in data %}
         <tr>
             {% if user %}
-            <td><button id='doc' value='{{doc}}' onclick="checkdoc(this)">Выбрать</button></td>
+            <td><button id='doc' value='{{data.index(doc)}}' onclick="checkdoc(this)">Выбрать</button></td>
             {% endif %}
             <td>{{doc.id}}</td>
             <td>{{doc.source}}</td>

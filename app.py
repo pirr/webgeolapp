@@ -26,14 +26,16 @@ def objs():
     return render_template('objects.html', 
                             user=session.get('user'))
 
-@app.route('/workspacedoc', methods=["POST"])
+@app.route('/workspacedoc', methods=['POST'])
 def workspacedoc():
-    data = request.get_json()
-    return jsonify(data)
+    data = request.get_json(force=True)
+    if 'check' in data:
+        return 'ok'
+    # check = json.get('check','')
     # return render_template('workspacedoc.html', 
     #                         user=session.get('user'), 
-    #                         data=data)
-
+    #                         data=check)
+    
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
