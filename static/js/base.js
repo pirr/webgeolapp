@@ -2,7 +2,7 @@ function login() {
     user = $('#user').val();
     password = $('#password').val();
     console.log(JSON.stringify({user:user, password:password}));
-    $.ajax( {
+    $.ajax({
         url: '/login',
         data: JSON.stringify({user:user, password:password}),
         success: function(response) {
@@ -23,12 +23,16 @@ function logout() {
 
 function checkdoc(a) {
     var check = a.getAttribute('value');
+    // console.log(check);
     $.ajax({
         url: '/workspacedoc',
-        data: JSON.stringify(check),
+        data: JSON.stringify({check:check}),
+        // console.log(data);
+        // console.log(JSON.stringify({check:check}));
         success: function(response) {
-            console.log(check);
-            location.reload();
+            if (response=='ok') location.reload();
+            // return(data);
+
         }
     })
 }
@@ -50,7 +54,6 @@ $(document).ready( function() {
     });
     
 } )
-
 
 // <script type=text/javascript>
 //   $(function() {
