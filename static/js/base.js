@@ -23,13 +23,15 @@ function logout() {
 
 function checkdoc(a) {
     var check = a.getAttribute('value');
-    console.log(JSON.stringify({check:check}));
+    // console.log(JSON.stringify({check:check}));
     $.ajax({
-        url: '/checkdoc',
+        url: '/workspacedoc',
         data: JSON.stringify({check:check}),
-        success: function(response) {
-            if (response=='in progress')
-            alert('in progress');
+        success: function(data) {
+            console.log(JSON.stringify({check:check}));
+            handleData(data)
+            // if (response=='in progress')
+            // alert('in progress');
         }
     })
 }

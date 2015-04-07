@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block body %}
+{% if checkdoc %}
 <table class="table table-bordered">
     <col width="40">
     <col width="80">
@@ -24,4 +25,7 @@
             <td>{{checkdoc.lat}}</td>
         </tr>
 </table>
+{% else %}
+<p>Выберите документ для работы</p>
+{% endif %}
 {% endblock %}

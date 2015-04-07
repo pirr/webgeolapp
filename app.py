@@ -34,20 +34,22 @@ def objs():
 
 @app.route('/workspacedoc', methods=['POST'])
 def workspacedoc():
+    data = request.get_json()
+    session['checkdoc'] = data['check']
     return render_template(
                         'workspacedoc.html', 
                         user=session.get('user'), 
-                        checkdoc=session.get('checkdoc')
+                        checkdoc=session['checkdoc']
                         )
 
-@app.route('/checkdoc', methods=['POST'])
-def checkdoc():
-    data = request.get_json()
-    if data['check'] == session['checkdoc']:
-        return 'in progress'
-    else:
-        session['checkdoc'] = data['check']
-        return 'new'
+# @app.route('/checkdoc', methods=['POST'])
+# def checkdoc():
+#     data = request.get_json()
+#     if data['check'] == session['checkdoc']:
+#         return 'in progress'
+#     else:
+#         session['checkdoc'] = data['check']
+#         return 'new'
         
     # return session['checkdoc']
     # return render_template(
