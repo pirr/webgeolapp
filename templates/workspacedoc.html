@@ -1,5 +1,27 @@
 {% extends "base.html" %}
 {% block body %}
-<h2>Работа с документом</h2>
-{{data}}
+<table class="table table-bordered">
+    <col width="40">
+    <col width="80">
+    <col width="250">
+    <col width="250">
+    <col width="60px">
+    <col width="40">
+    <tr>
+    <th>номер п/п</th>
+    <th>источник</th>
+    <th>название</th>
+    <th>полезное ископмое</th>
+    <th>долгота</th>
+    <th>широта</th>
+    </tr>
+        <tr>
+            <td>{{checkdoc.id}}</td>
+            <td>{{checkdoc.source}}</td>
+            <td>{{checkdoc.name}}</td>
+            <td>{{checkdoc.pi}}</td>
+            <td>{{checkdoc.lon}}</td>
+            <td>{{checkdoc.lat}}</td>
+        </tr>
+</table>
 {% endblock %}

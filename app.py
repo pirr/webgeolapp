@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, render_template, request, session, jsonify, g
 import ipdb
 import importlib
 import data.workdata as dw
@@ -11,26 +11,55 @@ users = [('one','pass1'),('two','pass2')]
 
 @app.route('/')
 def main():
-    return render_template('index.html', 
-                            user=session.get('user'))
+    return render_template(
+                        'index.html', 
+                        user=session.get('user')
+                        )
 
 @app.route('/documents')
 def documents():
     session['docdata'] = dw.data_return('data//test.csv')
-    return render_template('documents.html', 
-                            user=session.get('user'),
-                            data=session['docdata'])
+    return render_template(
+                        'documents.html', 
+                        user=session.get('user'),
+                        data=session['docdata']
+                        )
 
 @app.route('/objects')
 def objs():
-    return render_template('objects.html', 
-                            user=session.get('user'))
+    return render_template(
+                        'objects.html', 
+                        user=session.get('user')
+                        )
 
 @app.route('/workspacedoc', methods=['POST'])
 def workspacedoc():
-    data = request.get_json(force=True)
-    if 'check' in data:
-        return 'ok'
+    return render_template(
+                        'workspacedoc.html', 
+                        user=session.get('user'), 
+                        checkdoc=session.get('checkdoc')
+                        )
+
+@app.route('/checkdoc', methods=['POST'])
+def checkdoc():
+    data = request.get_json()
+    if data['check'] == session['checkdoc']:
+        return 'in progress'
+    else:
+        session['checkdoc'] = data['check']
+        return 'new'
+        
+    # return session['checkdoc']
+    # return render_template(
+    #                 'workspacedoc.html', 
+    #                 user=session.get('user'), 
+    #                 checkdoc=session['checkdoc']
+    #                 )
+
+
+    # data = request.get_json(force=True)
+    # if 'check' in data:
+    #     return 'ok'
     # check = json.get('check','')
     # return render_template('workspacedoc.html', 
     #                         user=session.get('user'), 

@@ -8,7 +8,6 @@ def data_return(file):
         data = []
         for row in spamreader:
             data.append(row)
-
         #     print(row['id'], 
         #         row['source'],
         #         row['name'],

@@ -27,6 +27,7 @@
             <li><a href="/objects">Объекты</a></li>
             {% block nav %}{% endblock %}
             {% if user %}
+                <li><a href="/workspacedoc">Работа с документом</a></li>
                 <li><a href="#">{{ user }}</a></li>
             {% endif %}
           </ul>

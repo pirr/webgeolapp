@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Документы</h2>
+<!-- <form method="post" action="/workspacedoc"> -->
 <table class="table table-bordered">
     <col width="10">
     <col width="40">
@@ -23,7 +24,7 @@
     {% for doc in data %}
         <tr>
             {% if user %}
-            <td><button id='doc' value='{{data.index(doc)}}' onclick="checkdoc(this)">Выбрать</button></td>
+            <td><button id='doc' value='{{data.index(doc)}}' name='checkdoc' onclick="checkdoc(this)">Выбрать</button></td>
             {% endif %}
             <td>{{doc.id}}</td>
             <td>{{doc.source}}</td>

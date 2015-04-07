@@ -23,16 +23,13 @@ function logout() {
 
 function checkdoc(a) {
     var check = a.getAttribute('value');
-    // console.log(check);
+    console.log(JSON.stringify({check:check}));
     $.ajax({
-        url: '/workspacedoc',
+        url: '/checkdoc',
         data: JSON.stringify({check:check}),
-        // console.log(data);
-        // console.log(JSON.stringify({check:check}));
         success: function(response) {
-            if (response=='ok') location.reload();
-            // return(data);
-
+            if (response=='in progress')
+            alert('in progress');
         }
     })
 }
