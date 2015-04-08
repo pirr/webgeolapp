@@ -30,10 +30,6 @@ function checkdoc(but) {
         success: function(data) {
             console.log(JSON.stringify({check:check}));
             return data;
-            // if (response=='in progress')
-            // alert('in progress');
-        success: function(data){
-            return data
         }
     });
    
