@@ -10,7 +10,7 @@ function login() {
             else location.reload(); 
         }
     })     
-}
+};
 
 function logout() {
     $.ajax( {
@@ -27,11 +27,12 @@ function checkdoc(but) {
     $.ajax({
         url: '/checkdoc',
         data: JSON.stringify({check:check}),
-    })
-    .done(function(data){
+        success: function(data){
+            return data
+        }
 
     });
-    return data
+   
 }
 
 //active class navbar button
@@ -50,4 +51,4 @@ $(document).ready( function() {
         async: true, 
     });
     
-} )
+});

@@ -24,12 +24,13 @@
           <ul class="nav navbar-nav">
             <li><a href="/">Главная</a></li>
             <li><a href="/documents">Документы</a></li>
+            <li><a href="/test">TEST</a></li>
             {% if user %}
                 <li><a href="/workspacedoc">Работа с документом</a></li>
             {% endif %}
                 <li><a href="/objects">Объекты</a></li>
             {% if user %}
-                <li><a href="#" style="left: 600px"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
+                <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
             {% endif %}
             {% block nav %}{% endblock %}
           </ul>
