@@ -22,7 +22,7 @@ def documents():
     return render_template(
                         'documents.html', 
                         user=session.get('user'),
-                        data=session['docdata']
+                        data=session.get('docdata')
                         )
 
 @app.route('/objects')
@@ -32,41 +32,27 @@ def objs():
                         user=session.get('user')
                         )
 
-@app.route('/workspacedoc', methods=['POST'])
+@app.route('/workspacedoc')
 def workspacedoc():
-    data = request.get_json()
-    session['checkdoc'] = data['check']
     return render_template(
                         'workspacedoc.html', 
                         user=session.get('user'), 
-                        checkdoc=session['checkdoc']
+                        checkdoc=session.get('checkdoc')
                         )
 
-# @app.route('/checkdoc', methods=['POST'])
-# def checkdoc():
-#     data = request.get_json()
-#     if data['check'] == session['checkdoc']:
-#         return 'in progress'
-#     else:
-#         session['checkdoc'] = data['check']
-#         return 'new'
+@app.route('/checkdoc', methods=['POST'])
+def checkdoc():
+    data = request.get_json()
+    check = int(data['check'])
+    session['checkdoc'] = session['docdata'][check]
+    if session['checkdoc']:
+        if session['checkdoc'] == session['docdata'][check]:
+            return 'in work'
+    else:
+        session['checkdoc'] = session['docdata'][check]
+        return 'new'
+    return session['checkdoc']
         
-    # return session['checkdoc']
-    # return render_template(
-    #                 'workspacedoc.html', 
-    #                 user=session.get('user'), 
-    #                 checkdoc=session['checkdoc']
-    #                 )
-
-
-    # data = request.get_json(force=True)
-    # if 'check' in data:
-    #     return 'ok'
-    # check = json.get('check','')
-    # return render_template('workspacedoc.html', 
-    #                         user=session.get('user'), 
-    #                         data=check)
-    
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
