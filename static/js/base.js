@@ -27,18 +27,14 @@ function checkdoc(but) {
     $.ajax({
         url: '/checkdoc',
         data: JSON.stringify({check:check}),
-<<<<<<< HEAD
         success: function(data) {
             console.log(JSON.stringify({check:check}));
             return data;
             // if (response=='in progress')
             // alert('in progress');
-=======
         success: function(data){
             return data
->>>>>>> 4ccfa3651ec0dba9eb500890cabb3b44993a5a23
         }
-
     });
    
 }
