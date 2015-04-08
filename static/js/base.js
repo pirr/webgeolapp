@@ -10,7 +10,7 @@ function login() {
             else location.reload(); 
         }
     })     
-}
+};
 
 function logout() {
     $.ajax( {
@@ -21,19 +21,26 @@ function logout() {
     });
 }
 
-function checkdoc(a) {
-    var check = a.getAttribute('value');
-    // console.log(JSON.stringify({check:check}));
+function checkdoc(but) {
+    var check = but.getAttribute('value');
+    console.log(JSON.stringify({check:check}));
     $.ajax({
-        url: '/workspacedoc',
+        url: '/checkdoc',
         data: JSON.stringify({check:check}),
+<<<<<<< HEAD
         success: function(data) {
             console.log(JSON.stringify({check:check}));
             return data;
             // if (response=='in progress')
             // alert('in progress');
+=======
+        success: function(data){
+            return data
+>>>>>>> 4ccfa3651ec0dba9eb500890cabb3b44993a5a23
         }
-    })
+
+    });
+   
 }
 
 //active class navbar button
@@ -52,23 +59,4 @@ $(document).ready( function() {
         async: true, 
     });
     
-} )
-
-// <script type=text/javascript>
-//   $(function() {
-//     $('a#calculate').bind('click', function() {
-//       $.getJSON($SCRIPT_ROOT + '/_add_numbers', {
-//         a: $('input[name="a"]').val(),
-//         b: $('input[name="b"]').val()
-//       }, function(data) {
-//         $("#result").text(data.result);
-//       });
-//       return false;
-//     });
-//   });
-// </script>
-// <h1>jQuery Example</h1>
-// <p><input type=text size=5 name=a> +
-//    <input type=text size=5 name=b> =
-//    <span id=result>?</span>
-// <p><a href=# id=calculate>calculate server side</a>
+});

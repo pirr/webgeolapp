@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% block body %}
-{% if checkdoc %}
+{% if checkid %}
 <table class="table table-bordered">
+    <col width="10">
     <col width="40">
     <col width="80">
     <col width="250">
@@ -13,16 +14,14 @@
     <th>источник</th>
     <th>название</th>
     <th>полезное ископмое</th>
-    <th>долгота</th>
-    <th>широта</th>
+    <th>группа пи</th>
     </tr>
         <tr>
-            <td>{{checkdoc.id}}</td>
-            <td>{{checkdoc.source}}</td>
-            <td>{{checkdoc.name}}</td>
-            <td>{{checkdoc.pi}}</td>
-            <td>{{checkdoc.lon}}</td>
-            <td>{{checkdoc.lat}}</td>
+            <td>{{doc.id}}</td>
+            <td>{{doc.obj_name}}</td>
+            <td>{{doc.doc_type}}</td>
+            <td>{{doc.pi}}</td>
+            <td>{{doc.group_pi}}</td>
         </tr>
 </table>
 {% else %}
