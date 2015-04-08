@@ -29,7 +29,7 @@ function checkdoc(a) {
         data: JSON.stringify({check:check}),
         success: function(data) {
             console.log(JSON.stringify({check:check}));
-            handleData(data)
+            return data;
             // if (response=='in progress')
             // alert('in progress');
         }
