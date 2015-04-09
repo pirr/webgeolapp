@@ -28,7 +28,6 @@ function checkdoc(but) {
         url: '/checkdoc',
         data: JSON.stringify({check:check}),
         success: function(data) {
-            console.log(JSON.stringify({check:check}));
             return data;
         }
     });
