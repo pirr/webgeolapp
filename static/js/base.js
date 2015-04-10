@@ -21,20 +21,24 @@ function logout() {
     });
 }
 
-function checkdoc(but) {
-    var check = but.getAttribute('value');
-    console.log(JSON.stringify({check:check}));
-    $.ajax({
-        url: '/checkdoc',
-        data: JSON.stringify({check:check}),
-        success: function(data) {
-            return data;
-        }
-    });
+// function checkdoc(but) {
+//     var check = but.getAttribute('value');
+//     console.log(JSON.stringify({check:check}));
+//     $.ajax({
+//         url: '/checkdoc',
+//         data: JSON.stringify({check:check}),
+//         success: function(data) {
+//             return data;
+//         }
+//     });
    
-}
+// }
 
 //active class navbar button
+function openurl(url) {
+    window.open(url, '_blank')
+    }
+
 $(document).ready(function () {
         var url = window.location;
         $('ul.nav a[href="" + url + ""]').parent().addClass('active');
