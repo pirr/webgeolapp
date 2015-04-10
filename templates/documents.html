@@ -12,6 +12,7 @@
     <tr>
     {% if user %}
     <th></th>
+    <th></th>
     {% endif %}
     <th>номер п/п</th>
     <th>источник</th>
@@ -22,9 +23,11 @@
     {% for doc in data %}
         <tr>
             {% if user %}
-            <td><button id='doc' value='{{doc.id}}' name='checkdoc' onclick="checkdoc(this)">Выбрать</button></td>
+           <!--  <td><button id='doc' value='{{doc.id}}' name='checkdoc' onclick="checkdoc(this)">Выбрать</button></td> -->
+            <td><button id='test' value='{{doc.id}}' onclick="openurl('/test/{{doc.id}}')" name='test'>test</button>
+            <!-- <td><button id='test' value='{{doc.id}}' onclick="" name='but'>test</button> -->
             {% endif %}
-            <td>{{doc.id}}</td>
+            <td><a href="/test/{{doc.id}}" value='{{doc.id}}'>{{doc.id}}</td>
             <td>{{doc.obj_name}}</td>
             <td>{{doc.doc_type}}</td>
             <td>{{doc.pi}}</td>
