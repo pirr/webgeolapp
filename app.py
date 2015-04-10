@@ -10,18 +10,23 @@ users = [('one','pass1'),('two','pass2')]
 
 test_page = Blueprint('test_page', __name__,
                         template_folder='templates')
-
-# @app.route('/test/')
+@app.route('/test/')
 @app.route('/test/<checkid>')
-def get_test(checkid):
-    checkid=g.checkid
-    return render_template('test.html', checkid=checkid)
+def test(checkid):
+    checkid = checkid
+    return render_template('test/%s.html' %checkid, checkid=checkid)
+    # return render_template('test.html',
+    #     user=session.get('user'),
+    #     checkid=checkid)
+    # checkid=session.get('checkid')
+    # return render_template('test.html', checkid=checkid)
 
 @app.route('/')
 def main():
     return render_template(
             'index.html', 
-            user=session.get('user')
+            user=session.get('user'),
+            checkid=session.get('checkid')
             )
 
 @app.route('/documents')
@@ -45,7 +50,7 @@ def documents():
             'documents.html', 
             user=session.get('user'),
             count=len(data),
-            data=data
+            data=data,
             )
 
 @app.route('/objects')
@@ -54,19 +59,14 @@ def objs():
             'objects.html', 
             user=session.get('user')
             )
-
-@app.route('/checkdoc', methods=['POST'])
+@app.route('/checkdoc/', methods=['POST'])
+@app.route('/checkdoc/<check>')
 def checkdoc():
     data = request.get_json()
-    checkid = getattr(g, 'checkid', None)
-    # checkid = getattr(g, data['check'], None)
-    g.checkid = data['check']
-    # session['checkid'] = data['check']
-    return g.checkid
+    session['checkid'] = data['check']
+    check = session['checkid']
+    return session['checkid']
 
-
-
-# @app.route('/workspacedoc/')
 @app.route('/workspacedoc')
 def workspacedoc():
     dic_cur.execute("""SELECT 
@@ -80,12 +80,12 @@ def workspacedoc():
         LEFT JOIN obj_doc on objects.id = obj_doc.obj_id
         LEFT JOIN dic_doc_type on dic_doc_type.id = obj_doc.doc_type_id
         WHERE objects.id = %s
-        GROUP BY objects.id""", CHECKID)
+        GROUP BY objects.id""", session.get('checkid'))
     checkdoc = dic_cur.fetchone()
     return render_template(
             'workspacedoc.html', 
             user=session.get('user'),
-            checkid=g.get(),
+            checkid=session.get('checkid'),
             doc=checkdoc,
             )
 
