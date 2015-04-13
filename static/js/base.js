@@ -21,9 +21,24 @@ function logout() {
     });
 }
 
+<<<<<<< HEAD
+// function checkdoc(but) {
+//     var check = but.getAttribute('value');
+//     console.log(JSON.stringify({check:check}));
+//     $.ajax({
+//         url: '/checkdoc',
+//         data: JSON.stringify({check:check}),
+//         success: function(data) {
+//             return data;
+//         }
+//     });
+   
+// }
+=======
 function openurl(url) {
     window.open(url, '_blank');
 }
+>>>>>>> 3dc9c0dd881b5af912ce4b0ec4562f0c2eb8b8a5
 
 $(document).ready(function($) {
     $(".clickable-row").click(function() {
@@ -55,6 +70,10 @@ $(document).ready(function($) {
 // });
 
 //active class navbar button
+function openurl(url) {
+    window.open(url, '_blank')
+    }
+
 $(document).ready(function () {
         var url = window.location;
         $('ul.nav a[href="" + url + ""]').parent().addClass('active');
