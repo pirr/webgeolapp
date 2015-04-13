@@ -15,7 +15,7 @@
     <th>группа пи</th>
     </tr>
     {% for doc in data %}
-        <tr class="clickable-row" data-href="/workspacedoc/{{doc.id}}" style="cursor: pointer">
+        <tr onclick="open_url('/objedit/{{doc.id}}')" style="cursor: pointer">
             <td>{{doc.id}}</td>
             <td>{{doc.doc_type}}</td>
             <td>{{doc.obj_name}}</td>
