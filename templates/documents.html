@@ -1,19 +1,13 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Документы - всего {{count}}</h2>
-<table class="table table-bordered">
+<table class="table table-bordered table-hover">
     <col width="10">
     <col width="40">
-    <col width="80">
     <col width="250">
-    <col width="250">
-    <col width="60px">
-    <col width="40">
+    <col width="150">
+    <col width="150">
     <tr>
-    {% if user %}
-    <th></th>
-    <th></th>
-    {% endif %}
     <th>номер п/п</th>
     <th>источник</th>
     <th>название</th>
@@ -21,15 +15,10 @@
     <th>группа пи</th>
     </tr>
     {% for doc in data %}
-        <tr>
-            {% if user %}
-           <!--  <td><button id='doc' value='{{doc.id}}' name='checkdoc' onclick="checkdoc(this)">Выбрать</button></td> -->
-            <td><button id='test' value='{{doc.id}}' onclick="openurl('/test/{{doc.id}}')" name='test'>test</button>
-            <!-- <td><button id='test' value='{{doc.id}}' onclick="" name='but'>test</button> -->
-            {% endif %}
-            <td><a href="/test/{{doc.id}}" value='{{doc.id}}'>{{doc.id}}</td>
-            <td>{{doc.obj_name}}</td>
+        <tr class="clickable-row" data-href="/workspacedoc/{{doc.id}}" style="cursor: pointer">
+            <td>{{doc.id}}</td>
             <td>{{doc.doc_type}}</td>
+            <td>{{doc.obj_name}}</td>
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
         </tr>

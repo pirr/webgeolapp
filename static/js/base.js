@@ -25,6 +25,12 @@ function openurl(url) {
     window.open(url, '_blank');
 }
 
+$(document).ready(function($) {
+    $(".clickable-row").click(function() {
+        window.open($(this).data("href"), '_blank')
+    });
+});
+
 // $(document).ready(function() {
 //     $('button').click(function(){
 //             url: '/documents'

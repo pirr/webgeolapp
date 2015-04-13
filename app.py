@@ -14,7 +14,7 @@ test_page = Blueprint('test_page', __name__,
 @app.route('/test/<checkid>')
 def test(checkid):
     checkid = checkid
-    return render_template('test/%s.html' %checkid, checkid=checkid)
+    return render_template('test.html', checkid=checkid)
     # return render_template('test.html',
     #     user=session.get('user'),
     #     checkid=checkid)
@@ -67,8 +67,9 @@ def checkdoc():
     check = session['checkid']
     return session['checkid']
 
-@app.route('/workspacedoc')
-def workspacedoc():
+@app.route('/workspacedoc/<pick_id>')
+def workspacedoc(pick_id):
+    pick_id = pick_id
     dic_cur.execute("""SELECT 
         objects.id, objects.obj_name, dic_doc_type.name AS 'doc_type',
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
@@ -80,12 +81,11 @@ def workspacedoc():
         LEFT JOIN obj_doc on objects.id = obj_doc.obj_id
         LEFT JOIN dic_doc_type on dic_doc_type.id = obj_doc.doc_type_id
         WHERE objects.id = %s
-        GROUP BY objects.id""", session.get('checkid'))
+        GROUP BY objects.id""", pick_id)
     checkdoc = dic_cur.fetchone()
     return render_template(
             'workspacedoc.html', 
             user=session.get('user'),
-            checkid=session.get('checkid'),
             doc=checkdoc,
             )
 
