@@ -63,11 +63,9 @@ function openurl(url) {
 // });
 // });
 
-//active class navbar button
-function openurl(url) {
-    window.open(url, '_blank')
-    }
 
+
+//active class navbar button
 $(document).ready(function () {
         var url = window.location;
         $('ul.nav a[href="" + url + ""]').parent().addClass('active');
