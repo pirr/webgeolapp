@@ -23,12 +23,12 @@ function logout() {
 
 function search() {
     searchname = $('#searchname').val();
-    console.log(JSON.stringify({'searchname':searchname}))
     $.ajax({
         url: '/search',
         data: JSON.stringify({'searchname': searchname}),
         success: function(response) {
-            location.reload(); 
+            console.log(response);
+            $('#search_results').html(response.html)
         }
     });
 }
@@ -49,4 +49,6 @@ $(document).ready( function() {
         $('ul.nav a').filter(function() {
              return this.href == url;
         }).parent().addClass('active');
-    });
+   
+});
+    

@@ -5,12 +5,16 @@
         Здравствуйте, {{user}} <br>
         <button onclick="logout()" style="margin-top: 10px">Выйти</button>
     {% else %}
-        <form class="navbar-form navbar-left">
+        <input id="user" type="text"><br>
+        <input id="password" type="password"><br>
+        <button onclick="login()">Войти</button>
+
+        <!-- <form class="navbar-form navbar-left">
             <div class="form-group">
                 <input id="user" class="form-control" type="text" placeholder="Имя" style="margin-bottom: 10px" required autofocus><br>
                 <input id="password" class="form-control" type="password" placeholder="Пароль" style="margin-bottom: 10px" required oninvalid="this.setCustomValidity('Имя пользователя или пароль неверные')"><br>
                 <button onclick="login()">Войти</button>
             </div>
-        </form>
+        </form> -->
     {% endif %}
 {% endblock %}
