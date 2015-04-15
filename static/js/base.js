@@ -37,6 +37,18 @@ function open_url(url){
     window.open(url, '_blank');
 }
 
+function docs_in_objs_response(url, id){
+$(document).ready( function() {
+    $.ajax({
+        url: url,
+        success: function(response) {
+            console.log(response);
+            $(id).html(response.html)
+        }
+    });
+}); 
+}
+
 $(document).ready( function() {
     jQuery.ajaxSetup( {
         type:'POST', 

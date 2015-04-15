@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Документы</h2>
+<div id='filters'>
+    <table class="table table-bordered">
+        <tr>
+            <td><input id="searchname" type="text" value="" /></td>
+            <td>полезное ископаемое</td>
+            <td><button id="search" onclick="search()">Искать</button></td>
+        </tr>
+    </table>
+</div>
+<div id="search_results"></div>
+
+<script type="text/javascript">
+docs_in_objs_response('/documents', '#docs')
+</script>
+<div id="docs"></div>
+{% endblock %}

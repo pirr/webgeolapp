@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block body %}
+<h2>Объекты (группы)</h2>
+
+<script type="text/javascript">
+docs_in_objs_response('/objects', '#docs')
+</script>
+
+<div id="docs"></div>
+{% endblock %}
