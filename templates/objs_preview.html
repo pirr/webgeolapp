@@ -1,10 +1,27 @@
 {% extends "base.html" %}
 {% block body %}
 <h2>Объекты (группы)</h2>
-
-<script type="text/javascript">
-docs_in_objs_response('/objects', '#docs')
-</script>
-
-<div id="docs"></div>
+<table class="table table-bordered">
+    <col width="10">
+    <col width="40">
+    <col width="250">
+    <col width="150">
+    <col width="150">
+    <tr>
+        <th>номер объекта</th>
+        <th>название</th>
+        <th>кол-во документов в объекте</th>
+        <th>полезное ископмое</th>
+        <th>группы пи</th>
+    </tr>
+    {% for obj in objs %}
+        <tr>
+            <td><a href="/obj/{{obj.obj_id}}" target="_blank">{{obj.obj_id}}</a></td>
+            <td></td>
+            <td>{{obj.docs_count}}</td>
+            <td>{{obj.pi}}</td>
+            <td>{{obj.group_pi}}</td>
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}
