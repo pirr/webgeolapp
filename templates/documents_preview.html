@@ -1,5 +1,6 @@
-{% extends "base_obj.html" %}
+{% extends "base.html" %}
 {% block body %}
+<<<<<<< HEAD:templates/objedit.html
 <script type="text/javascript">
 //picked doc template former
 $(document).ready( function() {
@@ -13,17 +14,22 @@ $(document).ready( function() {
 });
 </script>
 <div id="doc_in_obj"></div>
+=======
+<h2>Документы</h2>
+>>>>>>> b9474fec51d43649d4ab30e97f8c937bfcc3a80d:templates/documents_preview.html
 <div id='filters'>
     <table class="table table-bordered">
         <tr>
-            <td>расстояние</td>
             <td><input id="searchname" type="text" value="" /></td>
             <td>полезное ископаемое</td>
             <td><button id="search" onclick="search()">Искать</button></td>
         </tr>
     </table>
 </div>
-</br>
 <div id="search_results"></div>
 
+<script type="text/javascript">
+docs_in_objs_response('/documents', '#docs')
+</script>
+<div id="docs"></div>
 {% endblock %}

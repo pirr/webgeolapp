@@ -1,25 +1,30 @@
+{% if match %}
 <table class="table table-bordered">
     <col width="10">
     <col width="40">
     <col width="250">
     <col width="150">
     <col width="150">
+    <caption>Результаты поиска</caption>
     <tr>
-        <th>номер документа</th>
         <th>номер объекта</th>
+        <th>номер документа</th>
         <th>источник</th>
         <th>название</th>
         <th>полезное ископмое</th>
         <th>группа пи</th>
     </tr>
-    {% for doc in matchdoc %}
+        {% for doc in matchdocs %}
         <tr>
-            <td>{{doc.id}}</td>
             <td>{{doc.obj_id}}</td>
+            <td>{{doc.id}}</td>
             <td>{{doc.source_type}}</td>
             <td>{{doc.doc_name}}</td>
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
         </tr>
-    {% endfor %}
+        {% endfor %}
+{% else %}
+Введите данные для поиска
+{% endif %}
 </table>

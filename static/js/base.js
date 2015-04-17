@@ -73,6 +73,18 @@ function open_url(url){
 }
 >>>>>>> 751610120d0f3ff750ecbc9101bb2ca2a5007739
 
+function docs_in_objs_response(url, id){
+$(document).ready( function() {
+    $.ajax({
+        url: url,
+        success: function(response) {
+            console.log(response);
+            $(id).html(response.html)
+        }
+    });
+}); 
+}
+
 $(document).ready( function() {
     jQuery.ajaxSetup( {
         type:'POST', 
