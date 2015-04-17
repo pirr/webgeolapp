@@ -1,25 +1,13 @@
-from flask import Flask, render_template, request, session, jsonify, g, url_for, redirect, Blueprint
+from flask import Flask, render_template, request, session, jsonify
 import importlib
 import pymysql
 import data.db_con as db
+import difflib
 
 app = Flask(__name__)
 dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
 users = [('one','pass1'),('two','pass2')]
-
-test_page = Blueprint('test_page', __name__,
-                        template_folder='templates')
-@app.route('/test/')
-@app.route('/test/<checkid>')
-def test(checkid):
-    checkid = checkid
-    return render_template('test/%s.html' %checkid, checkid=checkid)
-    # return render_template('test.html',
-    #     user=session.get('user'),
-    #     checkid=checkid)
-    # checkid=session.get('checkid')
-    # return render_template('test.html', checkid=checkid)
 
 @app.route('/')
 def main():
@@ -31,18 +19,18 @@ def main():
 
 @app.route('/documents')
 def documents():
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     dic_cur.execute("""SELECT 
-        objects.id, objects.obj_name, dic_doc_type.name AS 'doc_type',
-        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi 
-            SEPARATOR ', ') AS 'pi',
-        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi 
-            SEPARATOR ', ') AS 'group_pi'
-        FROM objects
-        LEFT JOIN obj_pi on objects.id = obj_pi.obj_id 
-        LEFT JOIN dic_pi on dic_pi.id = obj_pi.pi_id
-        LEFT JOIN obj_doc on objects.id = obj_doc.obj_id
-        LEFT JOIN dic_doc_type on dic_doc_type.id = obj_doc.doc_type_id
-        GROUP BY objects.id
+        documents.id, objects.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
+        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
+        FROM documents
+        LEFT JOIN objects ON documents.id = objects.doc_id
+        LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN source ON documents.id = source.doc_id
+        LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+        GROUP BY documents.id
         LIMIT 500""")
     
     data = dic_cur.fetchall()
@@ -59,38 +47,88 @@ def objs():
             'objects.html', 
             user=session.get('user')
             )
-@app.route('/checkdoc/', methods=['POST'])
-@app.route('/checkdoc/<check>')
-def checkdoc():
-    data = request.get_json()
-    session['checkid'] = data['check']
-    check = session['checkid']
-    return session['checkid']
 
-@app.route('/workspacedoc')
-def workspacedoc():
-    dic_cur.execute("""SELECT 
-        objects.id, objects.obj_name, dic_doc_type.name AS 'doc_type',
-        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi 
-            SEPARATOR ', ') AS 'group_pi'
-        FROM objects
-        LEFT JOIN obj_pi on objects.id = obj_pi.obj_id 
-        LEFT JOIN dic_pi on dic_pi.id = obj_pi.pi_id
-        LEFT JOIN obj_doc on objects.id = obj_doc.obj_id
-        LEFT JOIN dic_doc_type on dic_doc_type.id = obj_doc.doc_type_id
-        WHERE objects.id = %s
-        GROUP BY objects.id""", session.get('checkid'))
-    checkdoc = dic_cur.fetchone()
+@app.route('/objedit/<pick_id>')
+def objedit(pick_id):
     return render_template(
-            'workspacedoc.html', 
-            user=session.get('user'),
-            checkid=session.get('checkid'),
-            doc=checkdoc,
+            'objedit.html',
+            pick_id=pick_id
             )
 
-
+@app.route('/doc_in_obj/<pick_id>', methods=['POST', 'GET'])
+def doc_in_obj(pick_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    
+    dic_cur.execute("""SELECT
+        objects.obj_id FROM objects
+        WHERE objects.doc_id = %s""", pick_id)
+    picked_group_sql = dic_cur.fetchone()
+    
+    if not picked_group_sql:
+        dic_cur.execute("""SELECT 
+            MAX(objects.obj_id) AS obj_id from objects
+            """)
+        obj_last_id = dic_cur.fetchone()
+        obj_id = int(obj_last_id['obj_id']) + 1
+        dic_cur.execute("""INSERT IGNORE INTO 
+                    objects (obj_id, doc_id)
+                    VALUES (%s, %s)""",
+                    (obj_id, pick_id))
+        picked_group = obj_id
+    else:
+        picked_group = picked_group_sql['obj_id']
         
+
+    dic_cur.execute("""SELECT 
+        documents.id, objects.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
+        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
+        FROM documents
+        LEFT JOIN objects ON documents.id = objects.doc_id
+        LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN source ON documents.id = source.doc_id
+        LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+        WHERE objects.obj_id = %s
+        GROUP BY documents.id
+        """, picked_group)
+    doc_in_obj = dic_cur.fetchall()
+
+    html = render_template(
+            'doc_in_obj.html',
+            doc_in_obj=doc_in_obj,
+            )
+
+    return jsonify(html=html)
+
+
+@app.route('/search', methods=['POST', 'GET'])    
+def search():
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    data = request.get_json()
+    
+    dic_cur.execute("""SELECT 
+                documents.id, objects.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
+            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
+            FROM documents
+            LEFT JOIN objects ON documents.id = objects.doc_id
+            LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            LEFT JOIN source ON documents.id = source.doc_id
+            LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+            WHERE documents.doc_name LIKE %s
+            GROUP BY documents.id""", '%'+data['searchname']+'%')
+    matchdoc = dic_cur.fetchall()
+    
+    html = render_template(
+            'search.html',
+            matchdoc=matchdoc,
+            )
+    
+    return jsonify(html=html)
+
+    
 @app.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -108,6 +146,7 @@ def logout():
 if __name__ == '__main__':
     app.secret_key = "bacon"
     app.config['TRAP_BAD_REQUEST_ERRORS'] = True
+    app.debug = True
     app.run(
         debug=True, 
         host="0.0.0.0"

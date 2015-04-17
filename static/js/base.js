@@ -6,7 +6,7 @@ function login() {
         url: '/login',
         data: JSON.stringify({user:user, password:password}),
         success: function(response) {
-            if (response=='Err');
+            if (response=='Err') 'Err';
             else location.reload(); 
         }
     })     
@@ -21,25 +21,19 @@ function logout() {
     });
 }
 
-<<<<<<< HEAD
-// function checkdoc(but) {
-//     var check = but.getAttribute('value');
-//     console.log(JSON.stringify({check:check}));
-//     $.ajax({
-//         url: '/checkdoc',
-//         data: JSON.stringify({check:check}),
-//         success: function(data) {
-//             return data;
-//         }
-//     });
-   
-// }
-=======
-function openurl(url) {
-    window.open(url, '_blank');
+function search() {
+    searchname = $('#searchname').val();
+    $.ajax({
+        url: '/search',
+        data: JSON.stringify({'searchname': searchname}),
+        success: function(response) {
+            console.log(response);
+            $('#search_results').html(response.html)
+        }
+    });
 }
->>>>>>> 3dc9c0dd881b5af912ce4b0ec4562f0c2eb8b8a5
 
+<<<<<<< HEAD
 // $(document).ready(function() {
 //     $('button').click(function(){
 //             url: '/documents'
@@ -73,6 +67,11 @@ $(document).ready(function () {
              return this.href == url;
         }).parent().addClass('active');
     });
+=======
+function open_url(url){
+    window.open(url, '_blank');
+}
+>>>>>>> 751610120d0f3ff750ecbc9101bb2ca2a5007739
 
 $(document).ready( function() {
     jQuery.ajaxSetup( {
@@ -80,5 +79,12 @@ $(document).ready( function() {
         contentType: 'application/json',
         async: true, 
     });
-    
+    //active class navbar button
+    var url = window.location;
+        $('ul.nav a[href="" + url + ""]').parent().addClass('active');
+        $('ul.nav a').filter(function() {
+             return this.href == url;
+        }).parent().addClass('active');
+   
 });
+    

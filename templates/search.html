@@ -1,7 +1,4 @@
-{% extends "base.html" %}
-{% block body %}
-<h2>Документы - всего {{count}}</h2>
-<table class="table table-bordered table-hover">
+<table class="table table-bordered">
     <col width="10">
     <col width="40">
     <col width="250">
@@ -15,8 +12,8 @@
         <th>полезное ископмое</th>
         <th>группа пи</th>
     </tr>
-    {% for doc in data %}
-        <tr onclick="open_url('/objedit/{{doc.id}}')" style="cursor: pointer">
+    {% for doc in matchdoc %}
+        <tr>
             <td>{{doc.id}}</td>
             <td>{{doc.obj_id}}</td>
             <td>{{doc.source_type}}</td>
@@ -26,4 +23,3 @@
         </tr>
     {% endfor %}
 </table>
-{% endblock %}
