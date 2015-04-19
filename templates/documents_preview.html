@@ -1,6 +1,22 @@
 {% extends "base.html" %}
 {% block body %}
+<<<<<<< HEAD:templates/objedit.html
+<script type="text/javascript">
+//picked doc template former
+$(document).ready( function() {
+    $.ajax({
+        url:'/doc_in_obj/{{pick_id}}',
+        success: function(response) {
+            console.log(response);
+            $("#doc_in_obj").html(response.html)
+        }
+    });
+});
+</script>
+<div id="doc_in_obj"></div>
+=======
 <h2>Документы</h2>
+>>>>>>> b9474fec51d43649d4ab30e97f8c937bfcc3a80d:templates/documents_preview.html
 <div id='filters'>
     <table class="table table-bordered">
         <tr>
