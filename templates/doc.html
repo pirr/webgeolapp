@@ -36,6 +36,12 @@
 </tr>
 </table>
 
+<table border="1">
+<col>
+<col width="50">
+<col>
+<tr>
+<td>
 <div id="map" style="width: 600px; height: 400px"></div>
 <script>
     var map = L.map('map').setView([{{doc.lat}},{{doc.lon}}], 10);
@@ -73,3 +79,17 @@
 
     map.on('click', onMapClick);
 </script>
+</td>
+<td>
+</td>
+<td valign="top">
+<table class="table table-bordered" align="top">
+    <tr>
+        <td>
+            Filters
+        </td>
+    </tr>
+</table>
+</td>
+</tr>
+</table>

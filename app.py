@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify
+from flask import Flask, render_template, request, session, jsonify, json
 import importlib
 import pymysql
 import data.db_con as db
@@ -78,7 +78,7 @@ def objs_preview():
             )
 
 @app.route('/object/<doc_id>', methods=['POST'])
-def obj(doc_id):
+def doc_in_obj(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
     dic_cur.execute("""SELECT
@@ -153,8 +153,30 @@ def doc(doc_id):
     return jsonify(html=html)
 
 @app.route('/obj/<obj_id>')
-def obj_(obj_id):
-    return render_template('obj.html')
+def obj(obj_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    
+    dic_cur.execute("""SELECT 
+        documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type', objects.obj_name, doc_coordinates.lat, doc_coordinates.lon,
+        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
+        FROM objs_docs
+        LEFT JOIN documents ON documents.id = objs_docs.doc_id
+        LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN source ON documents.id = source.doc_id
+        LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+        LEFT JOIN objects ON objects.obj_id = objs_docs.obj_id
+        LEFT JOIN doc_coordinates ON documents.id = doc_coordinates.doc_id
+        WHERE objs_docs.obj_id = %s
+        GROUP BY objs_docs.id
+        """, obj_id)
+    obj = dic_cur.fetchall()
+
+    return render_template(
+            'obj.html',
+            obj = obj,
+            )
 
 @app.route('/search', methods=['POST'])    
 def search():

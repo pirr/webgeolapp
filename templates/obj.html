@@ -1,0 +1,77 @@
+{% extends "base_doc.html" %}
+{% block body %}
+<h2>{{obj[0].obj_name}}</h2>
+<table class="table table-bordered">
+    <col width="10">
+    <col width="40">
+    <col width="250">
+    <col width="150">
+    <col width="150">
+    <tr>
+        <th>номер объекта</th>
+        <th>номер документа</th>
+        <th>источник</th>
+        <th>название</th>
+        <th>полезное ископмое</th>
+        <th>группы пи</th>
+    </tr>
+    
+    {% for doc in obj %}
+        <tr>
+            <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
+            <td><a href="/doc_about/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
+            <td>{{doc.source_type}}</td>
+            <td>{{doc.doc_name}}</td>
+            <td>{{doc.pi}}</td>
+            <td>{{doc.group_pi}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+<div id="map" style="width: 600px; height: 400px"></div>
+<script>
+    var map = L.map('map').setView([{{obj[0].lat}},{{obj[0].lon}}], 10);
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        id: 'examples.map-i875mjb7'
+    }).addTo(map);
+
+    var obj = ({{obj|tojson}});
+    console.log(typeof(obj));
+    console.log(obj);
+    for (var i = 0; i < obj.length; i++) {
+        var lon = obj[i].lon;
+        var lat = obj[i].lat;
+        var objLocation = new L.LatLng(lat, lon);
+        var docMarker = new L.Marker(objLocation);
+        map.addLayer(docMarker)
+    }
+    
+    // L.marker([51.7, -0.09]).addTo(map)
+    //     .bindPopup('<a href="http://www.w3schools.com" target="_blank">link</a>').openPopup();
+
+    // L.circle([51.508, -0.11], 500, {
+    //     color: 'red',
+    //     fillColor: '#f03',
+    //     fillOpacity: 0.5
+    // }).addTo(map).bindPopup("I am a circle.");
+
+    // L.polygon([
+    //     [51.509, -0.08],
+    //     [51.503, -0.06],
+    //     [51.51, -0.047]
+    // ]).addTo(map).bindPopup("I am a polygon.");
+
+    var popup = L.popup();
+
+    function onMapClick(e) {
+        popup
+            .setLatLng(e.latlng)
+            .setContent(e.latlng.toString())
+            .openOn(map);
+    }
+
+    map.on('click', onMapClick);
+</script>
+
+{% endblock %}
