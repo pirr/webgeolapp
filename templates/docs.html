@@ -15,7 +15,7 @@
     {% for doc in docs %}
         <tr>
         {% if doc.obj_id %}
-            <td><a href="#">{{doc.obj_id}}</a></td>
+            <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
         {% else %}
             <td><a href="#">Создать</a></td>
         {% endif %}
