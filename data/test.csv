@@ -1,3 +1,15 @@
 id;source;name;pi;lon;lat
 1;ГКМ;Белотагнинское;ниобий;104.4;64.3
 2;ГК-1000;Непское;соль;106.4;56.3
+{% if near_docs %}
+    {% for near_doc in near_docs %}
+    <tr>
+    <td>{{near_doc.obj_id}}</td>
+    <td><a href="/doc_about/{{doc.id}}" target="_blank">{{near_doc.id}}</a></td>
+    <td>{{near_doc.source_type}}</td>
+    <td>{{near_doc.doc_name}}</td>
+    <td>{{near_doc.pi}}</td>
+    <td>{{near_doc.group_pi}}</td>
+    </tr>
+    {% endfor %}
+    {% endif %}

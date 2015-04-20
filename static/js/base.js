@@ -1,4 +1,4 @@
-function login() {
+function login(){
     user = $('#user').val();
     password = $('#password').val();
     console.log(JSON.stringify({user:user, password:password}));
@@ -21,7 +21,20 @@ function logout() {
     });
 }
 
-function search() {
+function search_dist() {
+    dist = $('#dist').val();
+    doc_id = $('#but').val()
+    $.ajax({
+        url: '/doc/'+doc_id,
+        data: JSON.stringify({dist:dist}),
+        success: function(data) {
+            console.log(JSON.stringify({dist:dist}))
+            return(data)
+        }
+    })
+}
+
+function search(){
     searchname = $('#searchname').val();
     $.ajax({
         url: '/search',
