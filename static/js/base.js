@@ -27,9 +27,9 @@ function search_dist() {
     $.ajax({
         url: '/doc/'+doc_id,
         data: JSON.stringify({dist:dist}),
-        success: function(data) {
-            console.log(JSON.stringify({dist:dist}))
-            return(data)
+        success: function(response) {
+            console.log(response)
+            $('#near_docs').html(response.html)
         }
     })
 }

@@ -73,11 +73,12 @@
     function onMapClick(e) {
         popup
             .setLatLng(e.latlng)
-            .setContent("You clicked the map at " + e.latlng.toString())
+            .setContent(e.latlng.toString())
             .openOn(map);
     }
 
     map.on('click', onMapClick);
+
 </script>
 </td>
 <td>
@@ -86,10 +87,11 @@
 <table class="table table-bordered" align="top">
     <tr>
         <td>
-            <input type="text" id='dist'>
-            <button id='but' value="{{doc_id}}" onclick="search_dist()">Найти</button>
+            <input type="text" id="dist" value="">
+            <button id="but" value="{{doc_id}}" onclick="search_dist()">Найти</button>
         </td>
     </tr>
+    <!-- <div id="near_docs"></div> -->
 </table>
 </td>
 </tr>
