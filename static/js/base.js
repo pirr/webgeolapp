@@ -21,18 +21,9 @@ function logout() {
     });
 }
 
-function search_dist() {
-    dist = $('#dist').val();
-    doc_id = $('#but').val()
-    $.ajax({
-        url: '/doc/'+doc_id,
-        data: JSON.stringify({dist:dist}),
-        success: function(response) {
-            console.log(response)
-            $('#near_docs').html(response.html)
-        }
-    })
-}
+// $(document).ready(function(){
+//     $('#search').click()
+// });
 
 function search(){
     searchname = $('#searchname').val();
@@ -50,7 +41,7 @@ function search(){
 //     window.open(url, '_blank');
 // }
 
-function prepare_view(url, id){
+function html_response(url, id){
 $(document).ready( function() {
     $.ajax({
         url: url,
@@ -61,6 +52,27 @@ $(document).ready( function() {
     });
 }); 
 }
+
+$('#doc_tabs a').click(function (e) {
+    e.preventDefault();
+  
+    var url = $(this).attr("data-url");
+    var href = this.hash;
+    var pane = $(this);
+    
+    // ajax load from data-url
+    $(href).load(url,function(result){      
+        pane.tab('show');
+    });
+});
+// load first tab content
+$('#doc_about').load($('.active a').attr("data-url"),function(result){
+  $('.active a').tab('show');
+});
+// load first tab content
+$('#home').load($('.active a').attr("data-url"),function(result){
+  $('.active a').tab('show');
+});
 
 $(document).ready( function() {
     jQuery.ajaxSetup( {

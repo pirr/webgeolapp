@@ -1,4 +1,3 @@
-{% if match %}
 <table class="table table-bordered">
     <col width="10">
     <col width="40">
@@ -11,20 +10,21 @@
         <th>номер документа</th>
         <th>источник</th>
         <th>название</th>
-        <th>полезное ископмое</th>
+        <th>полезное ископаемое</th>
         <th>группа пи</th>
     </tr>
-        {% for doc in matchdocs %}
+        {% for doc in docs %}
         <tr>
-            <td>{{doc.obj_id}}</td>
-            <td>{{doc.id}}</td>
+        {% if doc.obj_id %}
+            <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
+        {% else %}
+            <td><a href="#">Создать</a></td>
+        {% endif %}
+            <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
             <td>{{doc.source_type}}</td>
             <td>{{doc.doc_name}}</td>
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
         </tr>
         {% endfor %}
-{% else %}
-Введите данные для поиска
-{% endif %}
 </table>

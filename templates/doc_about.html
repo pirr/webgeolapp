@@ -1,7 +1,36 @@
-{% extends "base_doc.html" %}
-{% block body %}
-<script type="text/javascript">
-prepare_view('/doc/{{doc_id}}', '#doc')
-</script>
-<div id="doc"></div>
-{% endblock %}
+<table class="table table-bordered">
+<caption>Данные документа</caption>
+<tr><td>Название по документу:</td><td>{{doc.doc_name}}</td></tr>
+<tr><td>Вид документа регистрации:</td><td>{{doc.source_type}}</td></tr>
+<tr><td>Орган регистрации:</td><td></td></tr>
+<tr><td>Субъект РФ:</td><td></td></tr>
+<tr><td>Административный район:</td><td></td></tr>
+<tr><td>Входимость в объект (группу):</td>
+    <td>
+        <script type="text/javascript">
+            html_response('/object/{{doc.id}}', '#docs')
+        </script>
+        <div id="docs"></div>
+    </td>
+</tr>
+</table>
+
+<table class="table table-bordered">
+<caption>Запасы</caption>
+<tr>
+    <td>Полезное ископаемое</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
+</tr>
+<tr>
+    <td>{{doc.pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+</table>
+
+<table class="table table-bordered">
+<caption>Прогнозные ресурсы</caption>
+<tr>
+    <td>Полезное ископаемое</td><td>P1</td><td>P2</td><td>P3</td><td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
+</tr>
+<tr>
+    <td>{{doc.pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+</tr>
+</table>
