@@ -1,82 +1,106 @@
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-        <title>Geol Base</title>
-        <script src="/static/ext/jquery/jquery.js" type="text/javascript"></script>
-        <!-- Bootstrap -->
-        <link rel="stylesheet" href="/static/ext/bootstrap/css/bootstrap.min.css" />
-        <script src="/static/js/base.js" type="text/javascript"></script>
-        <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
-        
-</head>
-<body data-twttr-rendered="true">
-<div class="container bs-docs-container">
-    <nav class="navbar navbar-default">
-        <ul class="nav navbar-nav">
-        <li><a href="#">Редактировать</a></li>
-        {% if user %}
-            <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
-        {% endif %}
-        </ul>
-    </nav>
+{% extends "base.html" %}
 
-    <ul class="nav nav-tabs" id="myTab">
-              <li class="active"><a data-target="#home" data-toggle="tab">Home</a></li>
-              <li><a data-target="#profile" data-toggle="tab">Profile</a></li>
-              <li><a data-target="#messages" data-toggle="tab">Messages</a></li>
-              <li><a data-target="#settings" data-toggle="tab">Settings</a></li>
-            </ul>
-
-            <div class="tab-content">
-              <div class="tab-pane active" id="home">Home</div>
-              <div class="tab-pane" id="profile">Profile</div>
-              <div class="tab-pane" id="messages">Message</div>
-              <div class="tab-pane" id="settings">Settings</div>
-            </div>
-
-    <div class="container-fluid">
-        <ul class="nav nav-tabs" id="doc_tabs">
-          <li class="active"><a href="#doc_about" data-toggle="tab" data-url="/doc_about/{{doc_id}}">Документ</a></li>
-          <li><a href="#doc_map" data-toggle="tab" data-url="/doc_map/{{doc_id}}">Карта</a></li>
-          <li><a href="#doc_edit" data-toggle="tab" data-url="/doc_edit/{{doc_id}}">Редактировать</a></li>
-        </ul>
-        <h2>{{doc.doc_name}}</h2>
-
-        <div class="tab-content">
-        <div class="tab-pane active" id="doc_about"></div>
-        <div class="tab-pane" id="doc_map"></div>
-        <div class="tab-pane" id="doc_edit"></div>
-      </div>
-    </div>
-
+{% block body %}
 <script type="text/javascript">
-jQuery(function () {
-    jQuery('#myTab a:last').tab('show')
-})
-//     $('#doc_tabs a').click(function (e) {
-//     e.preventDefault();
-  
-//     var url = $(this).attr("data-url");
-//     var href = this.hash;
-//     var pane = $(this);
-    
-//     // ajax load from data-url
-//     $(href).load(url,function(result){      
-//         pane.tab('show');
-//     });
-// });
-// // load first tab content
-// $('#doc_about').load($('.active a').attr("data-url"),function(result){
-//   $('.active a').tab('show');
-// });
+    jQuery(document).ready(function ($) {
+        $('#tabs').tab();
+    });
 </script>
+<!-- doc_editor button -->
+<button class="btn btn-default btn-sm pull-right" type="button" onclick="open_url('/doc_editor/{{doc[0].id}}')">Редактировать</button>
+<div class="container">
+<!-- ! -->
+
+<div id="content">
+    
+    <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
+        <li class="active"><a href="#doc_about" data-toggle="tab">{{doc[0].doc_name}}</a></li>
+        <li ><a href="#doc_map" data-toggle="tab">Карта</a></li>
+    </ul>
+    
+    <!-- doc_about -->
+    <div id="my-tab-content" class="tab-content">
+        <div class="tab-pane active" id="doc_about">
+            <table class="table table-bordered">
+            <caption>Данные документа</caption>
+            <tr><td>Название по документу:</td><td>{{doc[0].doc_name}}</td></tr>
+            <tr><td>Вид документа регистрации:</td><td>{{doc[0].source_type}}</td></tr>
+            <tr><td>Орган регистрации:</td><td></td></tr>
+            <tr><td>Субъект РФ:</td><td></td></tr>
+            <tr><td>Административный район:</td><td></td></tr>
+            <tr><td>Входимость в объект (группу):</td>
+                <td>
+                    <script type="text/javascript">
+                        html_response('/object/{{doc.id}}', '#docs')
+                    </script>
+                    <div id="docs"></div>
+                </td>
+            </tr>
+            </table>
+
+            <table class="table table-bordered">
+            <caption>Запасы</caption>
+            <tr>
+                <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
+            </tr>
+            {% for item in doc %}
+            <tr>
+                <td>{{item.pi}}</td><td>{{item.group_pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            {% endfor %}
+            </table>
+
+            <table class="table table-bordered">
+            <caption>Прогнозные ресурсы</caption>
+            <tr>
+                <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>P1</td><td>P2</td><td>P3</td>
+                <td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
+            </tr>
+            {% for item in doc %}
+            <tr>
+                <td>{{item.pi}}</td><td>{{item.group_pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            {% endfor %}
+            </table>
+        </div>
+        <!-- ! -->
+
+        <!-- map -->
+        <div class="tab-pane" id="doc_map" >
+        <script type="text/javascript">
+            </script>
+            <div id="map" style="width: 1140px; height: 800px"></div>
+            <script type="text/javascript">
+                console.log('MAP!')
+                var map = L.map('map').setView([{{doc.lat}},{{doc.lon}}], 10);
+                
+                L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                    id: 'examples.map-i875mjb7'
+                }).addTo(map);
+            
+                L.marker([{{doc.lat}},{{doc.lon}}]).addTo(map)
+                    .bindPopup('{{doc.lat}}, {{doc.lon}}').openPopup();
+
+                var popup = L.popup();
+
+                function onMapClick(e) {
+                    popup
+                        .setLatLng(e.latlng)
+                        .setContent(e.latlng.toString())
+                        .openOn(map);
+                }
+                map.on('click', onMapClick);
+            </script>
+        </div>
+        <!-- ! -->
+</div>
+ 
+
+</div> <!-- container -->
+<script type="text/javascript">
+function reload_map(){
+    L.Util.requestAnimFrame(map.invalidateSize,map,!1,map._container);
+}
+
+{% endblock %}
