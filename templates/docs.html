@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block script %}
 <script>
-jQuery(function(){
-      jQuery('#search').click();
+$(document).ready( function() {
+    search()
     });
 </script>
 {% endblock %}
@@ -11,9 +11,10 @@ jQuery(function(){
 <div id='filters'>
     <table class="table table-bordered">
         <tr>
-            <td><input id="searchname" type="text" value="" /></td>
-            <td>полезное ископаемое</td>
-            <td><button id="search" onclick="search()">Искать</button></td>
+            <td><input id="searchname" type="text" 
+                    onkeyup="search()" placeholder="Найти по названию"/>
+                <!-- <button onclick="search()">Искать</button> -->
+            </td>
         </tr>
     </table>
 </div>
