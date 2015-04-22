@@ -33,9 +33,9 @@ function search(){
     });
 }
 
-// function open_url(url){
-//     window.open(url, '_blank');
-// }
+function open_url(url){
+    window.open(url, '_blank');
+}
 
 function html_response(url, id){
 $(document).ready( function() {

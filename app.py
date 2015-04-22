@@ -95,6 +95,30 @@ def doc(doc_id):
 
     dic_cur.execute("""SELECT 
         documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
+            dic_pi.pi AS 'pi', dic_pi.type_pi AS 'group_pi' 
+        FROM documents
+        LEFT JOIN objs_docs ON documents.id = objs_docs.doc_id
+        LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN source ON documents.id = source.doc_id
+        LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+        WHERE documents.id = %s
+        GROUP BY dic_pi.pi
+        """, doc_id)
+    doc = dic_cur.fetchall()
+
+    return render_template(
+            'doc.html',
+            doc=doc,
+            user=session.get('user')
+            )
+
+@app.route('/doc_editor/<doc_id>', methods=['GET','POST'])
+def doc_editor(doc_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    
+    dic_cur.execute("""SELECT 
+        documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
         GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', doc_coordinates.lat, doc_coordinates.lon 
         FROM documents
@@ -107,14 +131,14 @@ def doc(doc_id):
         WHERE documents.id = %s
         GROUP BY documents.id
         """, doc_id)
-    doc = dic_cur.fetchone()
+    doc = dic_cur.fetchall()
 
     return render_template(
-            'doc.html',
+            'doc_editor.html',
             doc=doc,
-            doc_id=doc_id,
             user=session.get('user')
             )
+
 
 # @app.route('/near_docs/<doc_id>')
 # def near_docs(doc_id):

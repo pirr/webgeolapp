@@ -7,14 +7,14 @@
     });
 </script>
 <!-- doc_editor button -->
-<button class="btn btn-default btn-sm pull-right" type="button" onclick="doc_editor">Редактировать</button>
+<button class="btn btn-default btn-sm pull-right" type="button" onclick="open_url('/doc_editor/{{doc[0].id}}')">Редактировать</button>
 <div class="container">
 <!-- ! -->
- 
+
 <div id="content">
     
     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
-        <li class="active"><a href="#doc_about" data-toggle="tab">{{doc.doc_name}}</a></li>
+        <li class="active"><a href="#doc_about" data-toggle="tab">{{doc[0].doc_name}}</a></li>
         <li ><a href="#doc_map" data-toggle="tab">Карта</a></li>
     </ul>
     
@@ -23,8 +23,8 @@
         <div class="tab-pane active" id="doc_about">
             <table class="table table-bordered">
             <caption>Данные документа</caption>
-            <tr><td>Название по документу:</td><td>{{doc.doc_name}}</td></tr>
-            <tr><td>Вид документа регистрации:</td><td>{{doc.source_type}}</td></tr>
+            <tr><td>Название по документу:</td><td>{{doc[0].doc_name}}</td></tr>
+            <tr><td>Вид документа регистрации:</td><td>{{doc[0].source_type}}</td></tr>
             <tr><td>Орган регистрации:</td><td></td></tr>
             <tr><td>Субъект РФ:</td><td></td></tr>
             <tr><td>Административный район:</td><td></td></tr>
@@ -41,22 +41,26 @@
             <table class="table table-bordered">
             <caption>Запасы</caption>
             <tr>
-                <td>Полезное ископаемое</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
+                <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
             </tr>
+            {% for item in doc %}
             <tr>
-                <td>{{doc.pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>{{item.pi}}</td><td>{{item.group_pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
+            {% endfor %}
             </table>
 
             <table class="table table-bordered">
             <caption>Прогнозные ресурсы</caption>
             <tr>
-                <td>Полезное ископаемое</td><td>P1</td><td>P2</td><td>P3</td>
+                <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>P1</td><td>P2</td><td>P3</td>
                 <td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
             </tr>
+            {% for item in doc %}
             <tr>
-                <td>{{doc.pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>{{item.pi}}</td><td>{{item.group_pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
             </tr>
+            {% endfor %}
             </table>
         </div>
         <!-- ! -->
