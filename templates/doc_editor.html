@@ -23,7 +23,7 @@ $(document).ready(function() {
 <tr><td>Входимость в объект (группу):</td>
     <td>
         <script type="text/javascript">
-            html_response('/object/{{doc.id}}', '#docs')
+            html_response('/object/{{doc[0].id}}', '#docs')
         </script>
         <div id="docs"></div>
     </td>
