@@ -210,47 +210,25 @@ def doc_edit_post(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
     
-    dic_cur.execute("""DELETE doc_pi
-        FROM doc_pi
-        WHERE doc_pi.doc_id = %s
-        """, doc_id)
+    if data:
+        
+        dic_cur.execute("""DELETE doc_pi
+            FROM doc_pi
+            WHERE doc_pi.doc_id = %s
+            """, doc_id)
 
-    for pi in data['features_pis']:
-        dic_cur.execute("""INSERT INTO doc_pi 
-            (doc_pi.doc_id, doc_pi.pi_id)
-            VALUES (%s, %s)""",
-            (int(doc_id), int(pi)))
+        for pi in data['features_pis']:
+            dic_cur.execute("""INSERT INTO doc_pi 
+                (doc_pi.doc_id, doc_pi.pi_id)
+                VALUES (%s, %s)""",
+                (int(doc_id), int(pi)))
 
+        return 'ok'
 
-    # return render_template(
-    #         'test.html',
-    #         doc_id=doc_id,
-    #         features_pis=data['features_pis'],
-    #         doc_name=data['doc_name']
-                        # )
+    
+    else:
+        return 'Err'
 
-
-    # dic_cur.execute("""SELECT 
-    #     documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
-    #     GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-    #     GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', doc_coordinates.lat, doc_coordinates.lon 
-    #     FROM documents
-    #     LEFT JOIN objs_docs ON documents.id = objs_docs.doc_id
-    #     LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
-    #     LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-    #     LEFT JOIN source ON documents.id = source.doc_id
-    #     LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-    #     LEFT JOIN doc_coordinates ON documents.id = doc_coordinates.doc_id
-    #     WHERE documents.id = %s
-    #     GROUP BY documents.id
-    #     """, doc_id)
-    # doc = dic_cur.fetchall()
-
-    # return render_template(
-    #         'doc_editor.html',
-    #         doc=doc,
-    #         user=session.get('user')
-    #         )
 
 @app.route('/obj/<obj_id>')
 def obj(obj_id):

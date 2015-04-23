@@ -16,8 +16,9 @@ function postData() {
         data: JSON.stringify({features_pis:features_pis,
                             doc_name:doc_name,
                             source_type:source_type}),
-        success: function(result) {
-            console.log(result);
+        success: function(response) {
+            if (response=='Err') 'Err';
+            else location.reload();
         }
     });
 }
