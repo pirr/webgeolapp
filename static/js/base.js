@@ -37,6 +37,18 @@ function open_url(url){
     window.open(url, '_blank');
 }
 
+function doc_edit_data(){
+    var doc_name = $('#doc_name').text()
+    var source_type = $('#source_type').text()
+    var pi = $('#pi option:selected').text()
+    var group_pi = $('#group_pi option:selected').text()
+    console.log(JSON.stringify(
+            {doc_name:doc_name, 
+            source_type:source_type,
+            pi:pi,
+            group_pi:group_pi}))
+}
+
 function html_response(url, id){
 $(document).ready( function() {
     $.ajax({

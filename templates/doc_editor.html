@@ -1,59 +1,101 @@
-{% extends "base.html" %}
-
+{% extends "doc_base.html" %}
 {% block script %}
-<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
-<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
 <script type="text/javascript">
-$.fn.editable.defaults.mode = 'inline';
-$(document).ready(function() {
-    $('#doc_name').editable();
-    $('#doc_source_type').editable();
-});
+function postData() {
+    var doc_id = {{{{doc.id|tojson|safe}}
+    var features_pis = new Array();
+    $('#features_pis:checked').each(function(){
+        features_pis[features_pis.length] = $(this).val()
+    });
+    var doc_name = $('#doc_name').val()
+    var source_type = $('#source_type:checked').val()
+    console.log(features_pis, doc_name, source_type);
+    $.ajax({
+        url: '/doc_edit_post',
+        data: JSON.stringify({doc_id:doc_id},
+                                {features_pis:features_pis},
+                                {doc_name:doc_name},
+                                {source_type:source_type}),
+        
+    });
+}
 </script>
 {% endblock %}
-
 {% block body %}
-<table class="table table-bordered">
-<caption>Редактор документа</caption>
-<tr><td>Название по документу:</td><td><a href="#" id="doc_name" data-type="textarea" data-pk="1" data-name="doc_name" data-url="/edit/{{doc[0].id}}">{{doc[0].doc_name}}</a></td></tr>
-<tr><td>Вид документа регистрации:</td><td><a href="#" id="doc_source_type" data-type="text" data-pk="1" data-name="doc_source_type" data-url="/edit/{{doc[0].id}}">{{doc[0].source_type}}</a></td></tr>
-<tr><td>Орган регистрации:</td><td></td></tr>
-<tr><td>Субъект РФ:</td><td></td></tr>
-<tr><td>Административный район:</td><td></td></tr>
-<tr><td>Входимость в объект (группу):</td>
-    <td>
-        <script type="text/javascript">
-            html_response('/object/{{doc[0].id}}', '#docs')
-        </script>
-        <div id="docs"></div>
+    <table class="table table-bordered">
+    <caption>Данные документа</caption>
+    <tr><td>Название по документу:</td><td><input type="text" class="form-control" value="{{doc.doc_name}}" id="doc_name">
     </td>
-</tr>
-</table>
+    </tr>
+    <tr><td>Вид документа регистрации:</td>
+    <td>
+        <select class="form-control">
+        <option id="source_type" value="{{source_type.id}}">{{source_type.name}}</option>
+        {% for source in dic_source_types %}
+        <option id="source_type" value="{{source.id}}">{{source.name}}</option>
+        {% endfor %}
+        </select>
 
- <table class="table table-bordered">
-            <caption>Запасы</caption>
-            <tr>
-                <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
-            </tr>
-            {% for item in doc %}
-            <tr>
-                <td>{{item.pi}}</td><td>{{item.group_pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            {% endfor %}
-            </table>
+    <!-- <input type="text" class="form-control" value="{{doc.source_type}}" id="source_type"> -->
+    </td>
+    </tr>
+    <tr><td>Орган регистрации:</td><td></td></tr>
+    <tr><td>Субъект РФ:</td><td></td></tr>
+    <tr><td>Административный район:</td><td></td></tr>
+    <tr><td>Входимость в объект (группу):</td>
+        <td>
+            <script type="text/javascript">
+                html_response('/object/{{doc.id}}', '#docs')
+            </script>
+            <div id="docs"></div>
+        </td>
+    </tr>
+    </table>
+    <table class="table table-bordered">
+    <caption>Запасы</caption>
+    <tr>
+        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
+    </tr>
+    {% for pi in pis %}
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td><td></td><td></td><td></td><td></td><td></td>
+    </tr>
+    {% endfor %}
+    </table>
 
-            <table class="table table-bordered">
-            <caption>Прогнозные ресурсы</caption>
-            <tr>
-                <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>P1</td><td>P2</td><td>P3</td>
-                <td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
-            </tr>
-            {% for item in doc %}
-            <tr>
-                <td>{{item.pi}}</td><td>{{item.group_pi}}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-            </tr>
-            {% endfor %}
-            </table>
+    <table  class="table table-bordered">
+    <caption>Прогнозные ресурсы</caption>
+    <tr>
+        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>P1</td><td>P2</td><td>P3</td>
+        <td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
+    </tr>
+    
+    <tr>
+    {% for pi in pis %}
+    <tr>
+        <td><select class="form-control">
+        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% for pi in dic_pi %}
+        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% endfor %}
+        </select>
+        </td>
 
+        <td>
+        {{pi.type_pi}}
+        </td>
+        <td></td><td></td><td></td><td></td>
+        <td></td><td></td><td></td><td></td>
+    </tr>
+    {% endfor %}
+    </tr>
+    </table>
+</div>
+
+<button class="btn btn-primary btn-lg center-block" type="button" id="postBut" size="50" onclick="postData()">Сохранить</button>
+<div class="container">
 {% endblock %}
+
 
