@@ -136,7 +136,6 @@ def doc(doc_id):
 @app.route('/doc_editor/<doc_id>', methods=['GET','POST'])
 def doc_editor(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
-    data = request.get_json()
 
     dic_cur.execute("""SELECT 
         documents.id, 
@@ -187,7 +186,11 @@ def doc_editor(doc_id):
         """, doc_id)
     pis = dic_cur.fetchall()
 
-    dic_cur.execute("""SELECT dic_pi.id AS 'pi_id', dic_pi.pi, dic_pi.type_pi FROM dic_pi""")
+    dic_cur.execute("""SELECT 
+        dic_pi.id AS 'pi_id', 
+        dic_pi.pi, 
+        dic_pi.type_pi 
+        FROM dic_pi""")
     dic_pi = dic_cur.fetchall()
     for pi in pis: dic_pi.remove(pi)
 
@@ -201,7 +204,32 @@ def doc_editor(doc_id):
             dic_pi=dic_pi,
             user=session.get('user'),
             )
+
+@app.route('/doc_edit_post/<doc_id>', methods=['GET','POST'])
+def doc_edit_post(doc_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    data = request.get_json()
     
+    dic_cur.execute("""DELETE doc_pi
+        FROM doc_pi
+        WHERE doc_pi.doc_id = %s
+        """, doc_id)
+
+    for pi in data['features_pis']:
+        dic_cur.execute("""INSERT INTO doc_pi 
+            (doc_pi.doc_id, doc_pi.pi_id)
+            VALUES (%s, %s)""",
+            (int(doc_id), int(pi)))
+
+
+    # return render_template(
+    #         'test.html',
+    #         doc_id=doc_id,
+    #         features_pis=data['features_pis'],
+    #         doc_name=data['doc_name']
+                        # )
+
+
     # dic_cur.execute("""SELECT 
     #     documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
     #     GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
@@ -268,6 +296,7 @@ def search():
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             WHERE LOWER(documents.doc_name) LIKE LOWER(%s)
             GROUP BY documents.id
+            LIMIT 250
             """, '%'+data['searchname']+'%')
     
     docs = dic_cur.fetchall()

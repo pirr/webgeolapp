@@ -2,21 +2,23 @@
 {% block script %}
 <script type="text/javascript">
 function postData() {
-    var doc_id = {{{{doc.id|tojson|safe}}
     var features_pis = new Array();
+    var doc_name = $('#doc_name:input').val()
+    var source_type = $('#source_type:checked').val()
     $('#features_pis:checked').each(function(){
         features_pis[features_pis.length] = $(this).val()
     });
-    var doc_name = $('#doc_name').val()
-    var source_type = $('#source_type:checked').val()
     console.log(features_pis, doc_name, source_type);
     $.ajax({
-        url: '/doc_edit_post',
-        data: JSON.stringify({doc_id:doc_id},
-                                {features_pis:features_pis},
-                                {doc_name:doc_name},
-                                {source_type:source_type}),
-        
+        type: "POST",
+        contentType: 'application/json;charset=UTF-8',
+        url: '/doc_edit_post/{{doc.id}}',
+        data: JSON.stringify({features_pis:features_pis,
+                            doc_name:doc_name,
+                            source_type:source_type}),
+        success: function(result) {
+            console.log(result);
+        }
     });
 }
 </script>
@@ -35,8 +37,6 @@ function postData() {
         <option id="source_type" value="{{source.id}}">{{source.name}}</option>
         {% endfor %}
         </select>
-
-    <!-- <input type="text" class="form-control" value="{{doc.source_type}}" id="source_type"> -->
     </td>
     </tr>
     <tr><td>Орган регистрации:</td><td></td></tr>
