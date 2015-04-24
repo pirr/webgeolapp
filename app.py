@@ -359,8 +359,6 @@ def obj_docs(obj_id):
                 objs_docs (obj_id, doc_id)
                 VALUES (%s,%s)
                 """, (obj_id, data['doc_id_pull']))
-
-        
     
     dic_cur.execute("""SELECT 
             docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,

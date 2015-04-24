@@ -2,7 +2,7 @@
 {% block script %}
 <script type="text/javascript">
     $(document).ready(function (){
-        $('#tabs').tab();
+        // $('#tabs').tab();
         console.log('MAP!');
         var map = L.map('map').setView([{{coord.lat}},{{coord.lon}}], 10);
         
@@ -23,6 +23,7 @@
                 .openOn(map);
         }
         map.on('click', onMapClick);
+        document.getElementById('map').style.display = 'block';
     });
 </script>
 {% endblock %}
@@ -43,7 +44,7 @@
     
     <ul id="tabs" class="nav nav-tabs" data-tabs="tabs">
         <li class="active"><a href="#doc_about" data-toggle="tab">О документе</a></li>
-        <li ><a href="#doc_map" data-toggle="tab">Карта</a></li>
+        <li><a href="#doc_map" data-toggle="tab">Карта</a></li>
     </ul>
     
     <!-- doc_about -->
@@ -66,7 +67,7 @@
             </tr>
             </table>
 
-            <table class="table table-bordered">
+            <table class="tab-pane active" class="table table-bordered">
             <caption>Запасы</caption>
             <tr>
                 <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td>
@@ -99,7 +100,7 @@
         <!-- ! -->
 
         <!-- map -->
-        <div class="tab-pane" id="doc_map" >
+        <div  class="tab-pane active" id="doc_map" >
             <div id="map" style="width: 1140px; height: 800px"></div>
             <!-- <script type="text/javascript">
                 console.log('MAP!')
