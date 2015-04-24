@@ -306,13 +306,16 @@ def obj_editor(obj_id):
             user=session.get('user')
             )
 
-@app.route('/obj_search/<obj_id>', methods=['GET','POST'])
-def search_for_obj_editor(obj_id):
+@app.route('/obj_search/<obj_id>', methods=['POST'])
+def obj_search(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
 
     dic_cur.execute("""SELECT 
-            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type',
+            docs.id, 
+            objs_docs.obj_id, 
+            docs.name, 
+            dic_source_type.name AS 'source_type',
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
             GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', 
             doc_coordinates.lat, 
@@ -324,7 +327,9 @@ def search_for_obj_editor(obj_id):
             LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
-            WHERE objs_docs.obj_id <> %s OR objs_docs.obj_id IS NULL AND docs.name LIKE %s
+            WHERE objs_docs.obj_id <> %s 
+                    OR objs_docs.obj_id IS NULL
+                    AND docs.name LIKE %s
             GROUP BY docs.id
             LIMIT 250
             """, (obj_id, '%'+data['searchname']+'%'))
@@ -342,11 +347,20 @@ def obj_docs(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
 
-    if data:
+    if 'doc_id_push' in data:
+        dic_cur.execute("""DELETE 
+            objs_docs
+            FROM objs_docs
+            WHERE objs_docs.doc_id = %s
+            """, data['doc_id_push'])
+    
+    if 'doc_id_pull' in data:
         dic_cur.execute("""INSERT INTO
                 objs_docs (obj_id, doc_id)
                 VALUES (%s,%s)
-                """, (obj_id, data['doc_id']))
+                """, (obj_id, data['doc_id_pull']))
+
+        
     
     dic_cur.execute("""SELECT 
             docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,

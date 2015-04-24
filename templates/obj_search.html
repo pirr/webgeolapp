@@ -17,7 +17,7 @@
     </tr>
         {% for doc in docs %}
         <tr>
-            <td><label><input type="radio" name="doc_id" id="doc_id" value="{{doc.id}}"></label></td>
+            <td><label><input type="radio" name="doc_id_pull" id="doc_id_pull" value="{{doc.id}}"></label></td>
         {% if doc.obj_id %}
             <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
         {% else %}
