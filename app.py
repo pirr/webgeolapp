@@ -211,7 +211,6 @@ def doc_edit_post(doc_id):
     data = request.get_json()
     
     if data:
-        
         dic_cur.execute("""DELETE doc_pi
             FROM doc_pi
             WHERE doc_pi.doc_id = %s
@@ -224,8 +223,6 @@ def doc_edit_post(doc_id):
                 (int(doc_id), int(pi)))
 
         return 'ok'
-
-    
     else:
         return 'Err'
 
