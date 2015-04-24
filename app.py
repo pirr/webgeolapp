@@ -33,12 +33,12 @@ def objs_preview():
     dic_cur.execute("""SELECT 
         objs_docs.obj_id, COUNT(*) AS docs_count,
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', objects.obj_name
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', objs.name
         FROM objs_docs 
         LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id 
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-        LEFT JOIN objects ON objects.obj_id = objs_docs.obj_id
-        WHERE objs_docs.obj_id<>0 
+        LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+        WHERE objs_docs.obj_id IS NOT NULL 
         GROUP BY objs_docs.obj_id
         """)
     
@@ -63,19 +63,19 @@ def doc_in_obj(doc_id):
     if picked_group_sql:
         obj_id = picked_group_sql['obj_id']
         dic_cur.execute("""SELECT 
-            documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type', objects.obj_name, doc_coordinates.lat, doc_coordinates.lon,
+            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', objs.name, doc_coordinates.lat, doc_coordinates.lon,
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
             GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
-            FROM documents
-            LEFT JOIN objs_docs ON documents.id = objs_docs.doc_id
-            LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+            FROM docs
+            LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+            LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
             LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-            LEFT JOIN source ON documents.id = source.doc_id
+            LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-            LEFT JOIN objects ON objects.obj_id = objs_docs.obj_id
-            LEFT JOIN doc_coordinates ON documents.id = doc_coordinates.doc_id
+            LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+            LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
             WHERE objs_docs.obj_id = %s
-            GROUP BY documents.id
+            GROUP BY docs.id
             """, obj_id)
         
         docs = dic_cur.fetchall()
@@ -94,17 +94,17 @@ def doc(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     
     dic_cur.execute("""SELECT 
-        documents.id, 
+        docs.id, 
         objs_docs.obj_id, 
-        documents.doc_name, 
+        docs.name, 
         dic_source_type.name AS 'source_type'
-        FROM documents
-        LEFT JOIN objs_docs ON documents.id = objs_docs.doc_id
-        LEFT JOIN source ON documents.id = source.doc_id
+        FROM docs
+        LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+        LEFT JOIN source ON docs.id = source.doc_id
         LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-        LEFT JOIN doc_coordinates ON documents.id = doc_coordinates.doc_id
-        WHERE documents.id = %s
-        GROUP BY documents.id
+        LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+        WHERE docs.id = %s
+        GROUP BY docs.id
         """, doc_id)
     doc = dic_cur.fetchone()
     
@@ -138,17 +138,17 @@ def doc_editor(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
     dic_cur.execute("""SELECT 
-        documents.id, 
+        docs.id, 
         objs_docs.obj_id, 
-        documents.doc_name, 
+        docs.name, 
         dic_source_type.name AS 'source_type'
-        FROM documents
-        LEFT JOIN objs_docs ON documents.id = objs_docs.doc_id
-        LEFT JOIN source ON documents.id = source.doc_id
+        FROM docs
+        LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+        LEFT JOIN source ON docs.id = source.doc_id
         LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-        LEFT JOIN doc_coordinates ON documents.id = doc_coordinates.doc_id
-        WHERE documents.id = %s
-        GROUP BY documents.id
+        LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+        WHERE docs.id = %s
+        GROUP BY docs.id
         """, doc_id)
     doc = dic_cur.fetchone()
     
@@ -211,51 +211,174 @@ def doc_edit_post(doc_id):
     data = request.get_json()
     
     if data:
-        
-        dic_cur.execute("""DELETE doc_pi
+        dic_cur.execute("""DELETE 
+            doc_pi
             FROM doc_pi
             WHERE doc_pi.doc_id = %s
             """, doc_id)
 
-        for pi in data['features_pis']:
-            dic_cur.execute("""INSERT INTO doc_pi 
+        for pi_id in data['features_pis_id']:
+            dic_cur.execute("""INSERT INTO 
+                doc_pi 
                 (doc_pi.doc_id, doc_pi.pi_id)
                 VALUES (%s, %s)""",
-                (int(doc_id), int(pi)))
+                (int(doc_id), int(pi_id)))
+
+        dic_cur.execute("""UPDATE
+            docs
+            SET docs.name = %s
+            WHERE docs.id = %s""",
+            (data['name'],doc_id))
+
+        dic_cur.execute("""UPDATE
+            source
+            SET source.source_type_id = %s
+            WHERE source.doc_id = %s""",
+            (data['source_type_id'], doc_id))
 
         return 'ok'
-
     
     else:
         return 'Err'
-
 
 @app.route('/obj/<obj_id>')
 def obj(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     
     dic_cur.execute("""SELECT 
-        documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type', objects.obj_name, doc_coordinates.lat, doc_coordinates.lon,
+        docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
         GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
         FROM objs_docs
-        LEFT JOIN documents ON documents.id = objs_docs.doc_id
-        LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+        LEFT JOIN docs ON docs.id = objs_docs.doc_id
+        LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-        LEFT JOIN source ON documents.id = source.doc_id
+        LEFT JOIN source ON docs.id = source.doc_id
         LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-        LEFT JOIN objects ON objects.obj_id = objs_docs.obj_id
-        LEFT JOIN doc_coordinates ON documents.id = doc_coordinates.doc_id
+        LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+        LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
         WHERE objs_docs.obj_id = %s
         GROUP BY objs_docs.id
         """, obj_id)
     obj = dic_cur.fetchall()
 
+    dic_cur.execute("""SELECT
+        objs.name, 
+        objs.obj_id, 
+        GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
+        FROM objs_docs
+        LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
+        LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        WHERE objs.obj_id = %s
+        """, obj_id)
+    objs = dic_cur.fetchone()
+
     return render_template(
             'obj.html',
-            obj = obj,
+            obj=obj,
+            objs=objs,
             user=session.get('user')
             )
+
+@app.route('/obj_editor/<obj_id>')
+def obj_editor(obj_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    
+    # dic_cur.execute("""SELECT 
+    #     docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,
+    #     GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+    #     GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
+    #     FROM objs_docs
+    #     LEFT JOIN docs ON docs.id = objs_docs.doc_id
+    #     LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
+    #     LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+    #     LEFT JOIN source ON docs.id = source.doc_id
+    #     LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+    #     LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+    #     LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+    #     WHERE objs_docs.obj_id = %s
+    #     GROUP BY objs_docs.id
+    #     """, obj_id)
+    # obj = dic_cur.fetchall()
+
+    dic_cur.execute("""SELECT
+        objs.name, 
+        objs.obj_id, 
+        GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
+        FROM objs_docs
+        LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
+        LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        WHERE objs.obj_id = %s
+        """, obj_id)
+    objs = dic_cur.fetchone()
+
+    return render_template(
+            'obj_editor.html',
+            obj=obj,
+            objs=objs,
+            user=session.get('user')
+            )
+
+@app.route('/obj_search/<obj_id>', methods=['GET','POST'])
+def search_for_obj_editor(obj_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    data = request.get_json()
+
+    dic_cur.execute("""SELECT 
+            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type',
+            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', 
+            doc_coordinates.lat, 
+            doc_coordinates.lon
+            FROM docs
+            LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+            LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
+            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            LEFT JOIN source ON docs.id = source.doc_id
+            LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+            LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+            WHERE objs_docs.obj_id <> %s OR objs_docs.obj_id IS NULL AND docs.name LIKE %s
+            GROUP BY docs.id
+            LIMIT 250
+            """, (obj_id, '%'+data['searchname']+'%'))
+
+    docs = dic_cur.fetchall()
+    html = render_template(
+        'obj_search.html',
+        docs=docs
+        )
+
+    return jsonify(html=html)
+
+@app.route('/obj_docs/<obj_id>', methods=['POST'])
+def obj_docs(obj_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    data = request.get_json()
+    
+    dic_cur.execute("""SELECT 
+        docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,
+        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
+        FROM objs_docs
+        LEFT JOIN docs ON docs.id = objs_docs.doc_id
+        LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN source ON docs.id = source.doc_id
+        LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+        LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+        LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+        WHERE objs_docs.obj_id = %s
+        GROUP BY objs_docs.id
+        """, obj_id)
+    obj = dic_cur.fetchall()
+
+    html = render_template(
+        'obj_docs.html',
+        obj = obj)
+    return jsonify(html=html)
+
 
 @app.route('/search', methods=['POST'])    
 def search():
@@ -263,17 +386,17 @@ def search():
     data = request.get_json()
     
     dic_cur.execute("""SELECT 
-            documents.id, objs_docs.obj_id, documents.doc_name, dic_source_type.name AS 'source_type',
+            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type',
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
             GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
-            FROM documents
-            LEFT JOIN objs_docs ON documents.id = objs_docs.doc_id
-            LEFT JOIN doc_pi ON documents.id = doc_pi.doc_id 
+            FROM docs
+            LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+            LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
             LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-            LEFT JOIN source ON documents.id = source.doc_id
+            LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-            WHERE LOWER(documents.doc_name) LIKE LOWER(%s)
-            GROUP BY documents.id
+            WHERE LOWER(docs.name) LIKE LOWER(%s)
+            GROUP BY docs.id
             LIMIT 250
             """, '%'+data['searchname']+'%')
     
