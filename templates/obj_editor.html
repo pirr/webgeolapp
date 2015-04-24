@@ -1,0 +1,61 @@
+{% extends "obj_base.html" %}
+{% block script %}
+<script type="text/javascript">
+function canselEdit() {
+    location.reload();
+}
+function pullDoc() {
+    var doc_id = $("input[name = doc_id]:checked").val();
+    $.ajax({
+        type: "POST",
+        url: '/obj_docs/{{objs.obj_id}}',
+        data: JSON.stringify({doc_id:doc_id}),
+        success: function(response) {
+            console.log(response);
+            $('#obj_docs').html(response.html)
+        }
+    });
+}
+$(document).ready( function() {
+    pullDoc()
+    });
+</script>
+{% endblock %}
+{% block nav %}
+<div class="container theme-showcase" role="main" style="margin-top: 0.5%;">
+<p>
+<button class="btn btn-default" type="button" id="postBut" onclick="postDataObj()">Сохранить изменения</button>
+<button class="btn btn-default" type="button" onclick="canselEdit()">Отменить изменения</button>
+</p>
+</div>
+
+{% endblock %}
+
+{% block body %}
+<h2>{{objs.name}}</h2>
+<!-- obj_about -->
+<table class="table table-bordered">
+<caption>Данные объекта</caption>
+<col width="250">
+<tr><td>Название присвоенное объекту:</td><td>{{objs.name}}</td></tr>
+<tr><td>Полезные ископаемые объекта:</td><td>{{objs.pi}}</td></tr>
+</table>
+
+<div id="obj_docs"></div>
+
+<h3>Поиск документов для группировки</h3>
+<div id='filters'>
+    <table class="table table-bordered">
+        <tr>
+            <td><input id="searchname" type="text" 
+                    onkeyup="search('/obj_search/{{objs.obj_id}}')" placeholder="Найти по названию"/>
+            </td>
+        </tr>
+    </table>
+</div>
+<button class="btn btn-xs btn-success" type="button" id="pullDoc" onclick="pullDoc()">
+Добавить выбранный документ в объект
+</button>
+<div id="search_results"></div>
+
+{% endblock %}

@@ -21,10 +21,10 @@ function logout() {
     });
 }
 
-function search(){
+function search(url){
     searchname = $('#searchname').val();
     $.ajax({
-        url: '/search',
+        url: url,
         data: JSON.stringify({'searchname': searchname}),
         success: function(response) {
             console.log(response);

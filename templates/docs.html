@@ -2,7 +2,7 @@
 {% block script %}
 <script>
 $(document).ready( function() {
-    search()
+    search('/search')
     });
 </script>
 {% endblock %}
@@ -12,7 +12,7 @@ $(document).ready( function() {
     <table class="table table-bordered">
         <tr>
             <td><input id="searchname" type="text" 
-                    onkeyup="search()" placeholder="Найти по названию"/>
+                    onkeyup="search('/search')" placeholder="Найти по названию"/>
                 <!-- <button onclick="search()">Искать</button> -->
             </td>
         </tr>

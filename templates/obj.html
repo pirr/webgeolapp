@@ -1,11 +1,25 @@
-
-{% extends "base.html" %}
-
-{% extends "doc_base.html" %}
+{% extends "obj_base.html" %}
+{% block nav %}
+<div class="container theme-showcase" role="main" style="margin-top: 0.5%;">
+<p>
+<!-- obj_editor button -->
+<button class="btn btn-default" type="button" onclick="open_url('/obj_editor/{{objs.obj_id}}')">Редактировать</button>
+</p>
+</div>
+{% endblock %}
 
 {% block body %}
-<h2>{{obj.obj_name}}</h2>
+<h2>{{obj.name}}</h2>
+<!-- obj_about -->
 <table class="table table-bordered">
+<caption>Данные объекта</caption>
+<col width="250">
+<tr><td>Название присвоенное объекту:</td><td>{{objs.name}}</td></tr>
+<tr><td>Полезные ископаемые объекта:</td><td>{{objs.pi}}</td></tr>
+</table>
+
+<table class="table table-bordered">
+<caption>Документы в объекте</caption>
     <col width="10">
     <col width="40">
     <col width="250">
@@ -19,13 +33,12 @@
         <th>полезное ископмое</th>
         <th>группы пи</th>
     </tr>
-    
     {% for doc in obj %}
         <tr>
             <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
             <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
             <td>{{doc.source_type}}</td>
-            <td>{{doc.doc_name}}</td>
+            <td>{{doc.name}}</td>
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
         </tr>
