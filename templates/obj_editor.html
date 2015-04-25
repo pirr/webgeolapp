@@ -7,10 +7,10 @@ function canselEdit() {
 
 function pullDoc() {
     var doc_id_pull = $("input[name = doc_id_pull]:checked").val();
-        $.ajax({
-        type: "POST",
-        url: '/obj_docs/{{objs.obj_id}}',
-        data: JSON.stringify({doc_id_pull:doc_id_pull}),
+    $.ajax({
+    type: "POST",
+    url: '/obj_docs/{{objs.obj_id}}',
+    data: JSON.stringify({doc_id_pull:doc_id_pull}),
         success: function(response) {
             console.log(response);
             $('#obj_docs').html(response.html);
@@ -28,11 +28,13 @@ function pushDoc() {
         data: JSON.stringify({doc_id_push:doc_id_push}),
         success: function(response) {
             console.log(response);
-            $('#obj_docs').html(response.html);
-            search('/obj_search/{{objs.obj_id}}');
+            if (response=='Empty') 
+                window.location.replace('/objs');
+            else
+                $('#obj_docs').html(response.html);
+                search('/obj_search/{{objs.obj_id}}');
         }
-
-    })
+    });
 } 
 
 $(document).ready( function() {

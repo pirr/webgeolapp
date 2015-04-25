@@ -17,7 +17,7 @@
         {% if doc.obj_id %}
             <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
         {% else %}
-            <td><a href="#">Создать</a></td>
+            <td><a href="" onclick="createGroup()">Создать</a></td>
         {% endif %}
             <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
             <td>{{doc.source_type}}</td>

@@ -27,11 +27,11 @@ def docs():
             )
 
 @app.route('/objs')
-def objs_preview():
+def objs():
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     
     dic_cur.execute("""SELECT 
-        objs_docs.obj_id, COUNT(*) AS docs_count,
+        objs_docs.obj_id, COUNT(DISTINCT objs_docs.doc_id) AS docs_count,
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
         GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', objs.name
         FROM objs_docs 
@@ -327,12 +327,11 @@ def obj_search(obj_id):
             LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
-            WHERE objs_docs.obj_id <> %s 
-                    OR objs_docs.obj_id IS NULL
-                    AND docs.name LIKE %s
+            WHERE docs.name LIKE %s
+                    AND objs_docs.obj_id IS NULL
             GROUP BY docs.id
             LIMIT 250
-            """, (obj_id, '%'+data['searchname']+'%'))
+            """, '%'+data['searchname']+'%')
 
     docs = dic_cur.fetchall()
     html = render_template(
@@ -342,6 +341,36 @@ def obj_search(obj_id):
 
     return jsonify(html=html)
 
+@app.route('/creategroup/<doc_id>', methods=['POST'])
+def creategroup(doc_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+
+    dic_cur.execute("""SELECT 
+            MAX(objs.obj_id)
+            FROM objs
+            """)
+    obj_id = dic_cur.fetchone()
+    obj_id = int(obj_id['obj_id']) + 1
+
+    dic_cur.execute("""INSERT INTO
+            objs_docs (obj_id, doc_id)
+            VALUES (%s,%s)
+            """, (obj_id, doc_id))
+
+    dic_cur.execute("""SELECT 
+            docs.name 
+            FROM docs
+            WHERE docs.id = %s
+            """, doc_id )
+    obj_name = dic_cur.fetchone()
+
+    dic_cur.execute("""INSERT INTO
+            objs (obj_id, name)
+            VALUES (%s,%s)
+            """, (obj_id, obj_name['name']))
+
+    return 'Ok'
+
 @app.route('/obj_docs/<obj_id>', methods=['POST'])
 def obj_docs(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
@@ -349,10 +378,10 @@ def obj_docs(obj_id):
 
     if 'doc_id_push' in data:
         dic_cur.execute("""DELETE 
-            objs_docs
-            FROM objs_docs
-            WHERE objs_docs.doc_id = %s
-            """, data['doc_id_push'])
+                objs_docs
+                FROM objs_docs
+                WHERE objs_docs.doc_id = %s
+                """, data['doc_id_push'])
     
     if 'doc_id_pull' in data:
         dic_cur.execute("""INSERT IGNORE INTO
@@ -378,10 +407,19 @@ def obj_docs(obj_id):
     
     obj = dic_cur.fetchall()
 
-    html = render_template(
-        'obj_docs.html',
-        obj = obj)
-    return jsonify(html=html)
+    if not obj:
+        dic_cur.execute("""DELETE 
+            objs
+            FROM objs
+            WHERE objs.obj_id = %s
+            """, obj_id)
+        return 'Empty'
+
+    else:
+        html = render_template(
+            'obj_docs.html',
+            obj = obj)
+        return jsonify(html=html)
 
 
 @app.route('/search', methods=['POST'])    
