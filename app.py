@@ -347,18 +347,22 @@ def obj_docs(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
 
-    if 'doc_id_push' in data:
-        dic_cur.execute("""DELETE 
-            objs_docs
-            FROM objs_docs
-            WHERE objs_docs.doc_id = %s
-            """, data['doc_id_push'])
-    
-    if 'doc_id_pull' in data:
-        dic_cur.execute("""INSERT INTO
-                objs_docs (obj_id, doc_id)
-                VALUES (%s,%s)
-                """, (obj_id, data['doc_id_pull']))
+    if 'check' in data:
+        pass
+
+    else:
+        if 'doc_id_push' in data:
+            dic_cur.execute("""DELETE 
+                objs_docs
+                FROM objs_docs
+                WHERE objs_docs.doc_id = %s
+                """, data['doc_id_push'])
+        
+        if 'doc_id_pull' in data:
+            dic_cur.execute("""INSERT INTO
+                    objs_docs (obj_id, doc_id)
+                    VALUES (%s,%s)
+                    """, (obj_id, data['doc_id_pull']))
     
     dic_cur.execute("""SELECT 
             docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,
@@ -375,6 +379,7 @@ def obj_docs(obj_id):
             WHERE objs_docs.obj_id = %s
             GROUP BY objs_docs.id
             """, obj_id)
+    
     obj = dic_cur.fetchall()
 
     html = render_template(

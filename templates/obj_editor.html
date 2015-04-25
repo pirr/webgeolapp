@@ -5,7 +5,19 @@ function canselEdit() {
     location.reload();
 }
 
+function serverCheck() {
+     $.ajax({
+            type: "POST",
+            url: '/obj_docs/{{objs.obj_id}}',
+            data: JSON.stringify({check:'check'}),
+        success: function() {
+        $('#obj_docs').html();
+        }
+    });
+}
+
 function pullDoc() {
+    serverCheck()
     var doc_id_pull = $("input[name = doc_id_pull]:checked").val();
         $.ajax({
         type: "POST",
@@ -13,13 +25,14 @@ function pullDoc() {
         data: JSON.stringify({doc_id_pull:doc_id_pull}),
         success: function(response) {
             console.log(response);
-            $('#obj_docs').html(response.html)
-            search('/obj_search/{{objs.obj_id}}')
+            $('#obj_docs').html(response.html);
+            search('/obj_search/{{objs.obj_id}}');
         }
     });
 }
 
 function pushDoc() {
+    serverCheck()
     var doc_id_push = $("input[name = doc_id_push]:checked").val();
     console.log(doc_id_push);
     $.ajax({
@@ -28,8 +41,8 @@ function pushDoc() {
         data: JSON.stringify({doc_id_push:doc_id_push}),
         success: function(response) {
             console.log(response);
-            $('#obj_docs').html(response.html)
-            search('/obj_search/{{objs.obj_id}}')
+            $('#obj_docs').html(response.html);
+            search('/obj_search/{{objs.obj_id}}');
         }
 
     })
