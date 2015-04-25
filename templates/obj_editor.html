@@ -5,19 +5,7 @@ function canselEdit() {
     location.reload();
 }
 
-function serverCheck() {
-     $.ajax({
-            type: "POST",
-            url: '/obj_docs/{{objs.obj_id}}',
-            data: JSON.stringify({check:'check'}),
-        success: function() {
-        $('#obj_docs').html();
-        }
-    });
-}
-
 function pullDoc() {
-    serverCheck()
     var doc_id_pull = $("input[name = doc_id_pull]:checked").val();
         $.ajax({
         type: "POST",
@@ -32,7 +20,6 @@ function pullDoc() {
 }
 
 function pushDoc() {
-    serverCheck()
     var doc_id_push = $("input[name = doc_id_push]:checked").val();
     console.log(doc_id_push);
     $.ajax({
