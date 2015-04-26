@@ -341,15 +341,19 @@ def obj_search(obj_id):
     return jsonify(html=html)
 
 @app.route('/obj_create/<doc_id>', methods=['POST'])
-def objCreate(doc_id):
+def obj_create(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
     dic_cur.execute("""SELECT 
-            MAX(objs.obj_id)
+            MAX(objs.obj_id) AS obj_id
             FROM objs
             """)
     obj_id = dic_cur.fetchone()
-    obj_id = int(obj_id['obj_id']) + 1
+    
+    if obj_id['obj_id']:
+        obj_id = int(obj_id['obj_id']) + 1 
+    else:
+        obj_id = 1
 
     dic_cur.execute("""SELECT 
             docs.name 
@@ -369,7 +373,6 @@ def objCreate(doc_id):
             """, (obj_id, doc_id))
 
     return jsonify(obj_id=obj_id)
-
 
 @app.route('/obj_docs/<obj_id>', methods=['POST'])
 def obj_docs(obj_id):

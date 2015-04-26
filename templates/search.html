@@ -38,8 +38,10 @@ $('a.create').click(function(){
         type: "POST",
         url:'/obj_create/'+doc_id,
         success: function(response){
-             console.log(response);
-            // open_url('/obj_editor/'+text(response.obj_id))
+            console.log(response);
+            console.log(response.obj_id);
+            console.log(typeof(response));
+            open_url('/obj_editor/'+response.obj_id);
         }
     });
 });
