@@ -211,7 +211,6 @@ def doc_edit_post(doc_id):
     data = request.get_json()
     
     if data:
-
         dic_cur.execute("""DELETE 
             doc_pi
             FROM doc_pi
@@ -224,7 +223,6 @@ def doc_edit_post(doc_id):
                 (doc_pi.doc_id, doc_pi.pi_id)
                 VALUES (%s, %s)""",
                 (int(doc_id), int(pi_id)))
-
 
         dic_cur.execute("""UPDATE
             docs
@@ -248,7 +246,12 @@ def obj(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     
     dic_cur.execute("""SELECT 
-        docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,
+        docs.id, 
+        objs_docs.obj_id,
+        docs.name, 
+        dic_source_type.name AS 'source_type', 
+        doc_coordinates.lat, 
+        doc_coordinates.lon,
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
         GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
         FROM objs_docs
@@ -327,7 +330,7 @@ def obj_search(obj_id):
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
             WHERE docs.name LIKE %s
-                    AND objs_docs.obj_id IS NULL
+                AND objs_docs.obj_id IS NULL
             GROUP BY docs.id
             LIMIT 250
             """, '%'+data['searchname']+'%')
@@ -393,7 +396,12 @@ def obj_docs(obj_id):
                 """, (obj_id, data['doc_id_pull']))
     
     dic_cur.execute("""SELECT 
-            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', doc_coordinates.lat, doc_coordinates.lon,
+            docs.id, 
+            objs_docs.obj_id, 
+            docs.name, 
+            dic_source_type.name AS 'source_type', 
+            doc_coordinates.lat, 
+            doc_coordinates.lon,
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
             GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
             FROM objs_docs
