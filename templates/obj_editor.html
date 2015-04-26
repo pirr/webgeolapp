@@ -9,12 +9,12 @@ function pullDoc() {
     var doc_id_pull = $("input[name = doc_id_pull]:checked").val();
     $.ajax({
     type: "POST",
-    url: '/obj_docs/{{objs.obj_id}}',
+    url: '/obj_docs/{{obj.obj_id}}',
     data: JSON.stringify({doc_id_pull:doc_id_pull}),
         success: function(response) {
             console.log(response);
             $('#obj_docs').html(response.html);
-            search('/obj_search/{{objs.obj_id}}');
+            search('/obj_search/{{obj.obj_id}}');
         }
     });
 }
@@ -24,7 +24,7 @@ function pushDoc() {
     console.log(doc_id_push);
     $.ajax({
         type: "POST",
-        url: '/obj_docs/{{objs.obj_id}}',
+        url: '/obj_docs/{{obj.obj_id}}',
         data: JSON.stringify({doc_id_push:doc_id_push}),
         success: function(response) {
             console.log(response);
@@ -32,7 +32,7 @@ function pushDoc() {
                 window.location.replace('/objs');
             else
                 $('#obj_docs').html(response.html);
-                search('/obj_search/{{objs.obj_id}}');
+                search('/obj_search/{{obj.obj_id}}');
         }
     });
 } 
@@ -52,13 +52,13 @@ $(document).ready( function() {
 {% endblock %}
 
 {% block body %}
-<h2>{{objs.name}}</h2>
+<h2>{{obj.name}}</h2>
 <!-- obj_about -->
 <table class="table table-bordered">
 <caption>Данные объекта</caption>
 <col width="250">
-<tr><td>Название присвоенное объекту:</td><td>{{objs.name}}</td></tr>
-<tr><td>Полезные ископаемые объекта:</td><td>{{objs.pi}}</td></tr>
+<tr><td>Название присвоенное объекту:</td><td>{{obj.name}}</td></tr>
+<tr><td>Полезные ископаемые объекта:</td><td>{{obj.pi}}</td></tr>
 </table>
 
 <div id="obj_docs"></div>
@@ -68,7 +68,7 @@ $(document).ready( function() {
     <table class="table table-bordered">
         <tr>
             <td><input id="searchname" type="text" 
-                    onkeyup="search('/obj_search/{{objs.obj_id}}')" placeholder="Найти по названию" value="{{objs.name}}" />
+                    onkeyup="search('/obj_search/{{obj.obj_id}}')" placeholder="Найти по названию" value="{{obj.name}}" />
             </td>
         </tr>
     </table>

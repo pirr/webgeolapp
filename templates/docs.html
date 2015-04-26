@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block script %}
-<script>
+<script type="text/javascript">
 $(document).ready( function() {
     search('/search')
     });
@@ -13,7 +13,6 @@ $(document).ready( function() {
         <tr>
             <td><input id="searchname" type="text" 
                     onkeyup="search('/search')" placeholder="Найти по названию"/>
-                <!-- <button onclick="search()">Искать</button> -->
             </td>
         </tr>
     </table>

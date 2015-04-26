@@ -297,12 +297,11 @@ def obj_editor(obj_id):
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
         WHERE objs.obj_id = %s
         """, obj_id)
-    objs = dic_cur.fetchone()
+    obj = dic_cur.fetchone()
 
     return render_template(
             'obj_editor.html',
             obj=obj,
-            objs=objs,
             user=session.get('user')
             )
 
@@ -341,8 +340,8 @@ def obj_search(obj_id):
 
     return jsonify(html=html)
 
-@app.route('/creategroup/<doc_id>', methods=['POST'])
-def creategroup(doc_id):
+@app.route('/obj_create/<doc_id>', methods=['POST'])
+def objCreate(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
     dic_cur.execute("""SELECT 
@@ -351,11 +350,6 @@ def creategroup(doc_id):
             """)
     obj_id = dic_cur.fetchone()
     obj_id = int(obj_id['obj_id']) + 1
-
-    dic_cur.execute("""INSERT INTO
-            objs_docs (obj_id, doc_id)
-            VALUES (%s,%s)
-            """, (obj_id, doc_id))
 
     dic_cur.execute("""SELECT 
             docs.name 
@@ -369,7 +363,13 @@ def creategroup(doc_id):
             VALUES (%s,%s)
             """, (obj_id, obj_name['name']))
 
-    return 'Ok'
+    dic_cur.execute("""INSERT INTO
+            objs_docs (obj_id, doc_id)
+            VALUES (%s,%s)
+            """, (obj_id, doc_id))
+
+    return jsonify(obj_id=obj_id)
+
 
 @app.route('/obj_docs/<obj_id>', methods=['POST'])
 def obj_docs(obj_id):

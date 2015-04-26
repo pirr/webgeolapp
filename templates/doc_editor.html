@@ -11,7 +11,6 @@ function postDataDoc() {
     console.log(features_pis_id, doc_name, source_type_id);
     $.ajax({
         type: "POST",
-        contentType: 'application/json;charset=UTF-8',
         url: '/doc_edit_post/{{doc.id}}',
         data: JSON.stringify({features_pis_id:features_pis_id,
                             name:doc_name,
