@@ -1,11 +1,7 @@
 {% extends "obj_base.html" %}
 {% block nav %}
-<div class="container theme-showcase" role="main" style="margin-top: 0.5%;">
-<p>
 <!-- obj_editor button -->
-<button class="btn btn-default" type="button" onclick="open_url('/obj_editor/{{objs.obj_id}}')">Редактировать</button>
-</p>
-</div>
+<button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/obj_editor/{{objs.obj_id}}')">Редактировать</button>
 {% endblock %}
 
 {% block body %}

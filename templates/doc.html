@@ -1,12 +1,8 @@
 {% extends "doc_base.html" %}
 
 {% block nav %}
-<div class="container theme-showcase" role="main" style="margin-top: 0.5%;">
-<p>
 <!-- doc_editor button -->
-<button class="btn btn-default" type="button" onclick="open_url('/doc_editor/{{doc.id}}')">Редактировать</button>
-</p>
-</div>
+<button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/doc_editor/{{doc.id}}')">Редактировать</button>
 {% endblock %}
 
 <div class="container">

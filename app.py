@@ -22,7 +22,8 @@ def main():
 def docs():
     return render_template(
             'docs.html',
-            user=session.get('user')
+            user=session.get('user'),
+            title='Документы'
             )
 
 @app.route('/objs')
@@ -51,7 +52,8 @@ def objs():
     return render_template(
             'objs.html',
             objs = objs,
-            user=session.get('user')
+            user=session.get('user'),
+            title='Объекты'
             )
 
 @app.route('/object/<doc_id>', methods=['POST'])
@@ -85,7 +87,7 @@ def doc_in_obj(doc_id):
         docs = dic_cur.fetchall()
         # docs = sorted(docs, key=lambda doc: int(doc['obj_id']))
         html = render_template(
-                'search.html',
+                'docs_table.html',
                 docs=docs, 
                 )
     else:
@@ -134,7 +136,8 @@ def doc(doc_id):
             doc=doc,
             pis=pis,
             coord=coord,
-            user=session.get('user')
+            user=session.get('user'),
+            title='док-{}'.format(doc['id'])
             )
 
 @app.route('/doc_editor/<doc_id>', methods=['GET','POST'])
@@ -207,6 +210,7 @@ def doc_editor(doc_id):
             coord=coord,
             dic_pi=dic_pi,
             user=session.get('user'),
+            title='ред.док-{}'.format(doc['id'])
             )
 
 @app.route('/doc_edit_post/<doc_id>', methods=['GET','POST'])
@@ -287,7 +291,8 @@ def obj(obj_id):
             'obj.html',
             obj=obj,
             objs=objs,
-            user=session.get('user')
+            user=session.get('user'),
+            title=('объект-{}'.format(obj_id))
             )
 
 @app.route('/obj_editor/<obj_id>')
@@ -318,7 +323,8 @@ def obj_editor(obj_id):
         return render_template(
                 'obj_editor.html',
                 obj=obj,
-                user=session.get('user')
+                user=session.get('user'),
+                title=('ред.объект-{}'.format(obj_id))
                 )
 
     else:
@@ -476,7 +482,7 @@ def search():
     
     docs = dic_cur.fetchall()
     html = render_template(
-            'search.html',
+            'docs_table.html',
             docs=docs,
             )
     
@@ -505,7 +511,8 @@ def log(user):
     return render_template(
             "log.html",
             user=user,
-            objs = objs
+            objs = objs,
+            title='Пользователь'
             )
     
 @app.route('/login', methods=['POST'])

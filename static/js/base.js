@@ -34,7 +34,11 @@ function search(url){
 }
 
 function open_url(url) {
-    window.open(url, '_blank');
+    window.open(url);
+}
+
+function open_url_self(url) {
+    window.open(url, '_self');
 }
 
 function html_response(url, id){

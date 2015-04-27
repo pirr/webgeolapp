@@ -6,15 +6,6 @@
     <col width="150">
     <col width="150">
     <tr>
-    <td colspan="7">
-    <button class="btn btn-danger" type="button" id="delDoc" 
-    onclick="pushDoc()">
-    Удалить выбранный</br> 
-    документ из объекта
-    </button>
-    </td>
-    </tr>
-    <tr>
         <th>выбор</th>
         <th>номер объекта</th>
         <th>номер документа</th>
@@ -26,7 +17,9 @@
 
  {% for doc in obj %}
     <tr>
-        <td><label><input type="radio" value="{{doc.id}}" name="doc_id_push"></label></td>
+    <td>
+    <button class="btn btn-xs btn-danger" id="doc_id_push" onclick="pushDoc()" value="{{doc.id}}">Удалить</button>
+    </td>
         <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
         <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
         <td>{{doc.source_type}}</td>

@@ -6,7 +6,7 @@ function canselEdit() {
 }
 
 function pullDoc() {
-    var doc_id_pull = $("input[name = doc_id_pull]:checked").val();
+    var doc_id_pull = $('#doc_id_pull').val();
     $.ajax({
     type: "POST",
     url: '/obj_docs/{{obj.obj_id}}',
@@ -20,7 +20,7 @@ function pullDoc() {
 }
 
 function pushDoc() {
-    var doc_id_push = $("input[name = doc_id_push]:checked").val();
+    var doc_id_push = $('#doc_id_push').val();
     console.log(doc_id_push);
     $.ajax({
         type: "POST",
@@ -35,6 +35,8 @@ function pushDoc() {
                 search('/obj_search/{{obj.obj_id}}');
         }
     });
+
+
 }
 
 $(document).ready( function() {
@@ -65,9 +67,7 @@ $(document).ready( function() {
         </tr>
     </table>
 </div>
-<button class="btn btn-success" type="button" id="pullDoc" onclick="pullDoc()">
-Добавить выбранный документ в объект
-</button>
+
 <div id="search_results"></div>
 
 {% endblock %}
