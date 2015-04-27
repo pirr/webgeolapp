@@ -8,8 +8,7 @@ import difflib
 
 app = Flask(__name__)
 dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
-
-users = [('one','pass1'),('two','pass2')]
+cur = db.dbCon().cursor(pymysql.cursors.Cursor)
 
 @app.route('/')
 def main():
@@ -31,13 +30,18 @@ def objs():
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     
     dic_cur.execute("""SELECT 
-        objs_docs.obj_id, COUNT(DISTINCT objs_docs.doc_id) AS docs_count,
+        objs_docs.obj_id, 
+        COUNT(DISTINCT objs_docs.doc_id) AS docs_count,
         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', objs.name
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', 
+        objs.name,
+        users.name AS user_name
         FROM objs_docs 
         LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id 
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
         LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+        LEFT JOIN log_objs ON log_objs.obj_id = objs_docs.obj_id
+        LEFT JOIN users ON users.id = log_objs.user_id
         WHERE objs_docs.obj_id IS NOT NULL 
         GROUP BY objs_docs.obj_id
         """)
@@ -209,7 +213,7 @@ def doc_editor(doc_id):
 def doc_edit_post(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
-    
+
     if data:
         dic_cur.execute("""DELETE 
             doc_pi
@@ -290,23 +294,35 @@ def obj(obj_id):
 def obj_editor(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
-    dic_cur.execute("""SELECT
-        objs.name, 
-        objs.obj_id, 
-        GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
-        FROM objs_docs
-        LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
-        LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
-        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-        WHERE objs.obj_id = %s
-        """, obj_id)
-    obj = dic_cur.fetchone()
+    dic_cur.execute("""SELECT 
+        log_objs.user_id
+        FROM log_objs
+        WHERE log_objs.obj_id = %s
+            AND log_objs.user_id = %s
+        """, (obj_id, session['user_id']))
+    user_id = dic_cur.fetchone()
+    
+    if user_id:
+        dic_cur.execute("""SELECT
+            objs.name, 
+            objs.obj_id, 
+            GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
+            FROM objs_docs
+            LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
+            LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
+            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            WHERE objs.obj_id = %s
+            """, obj_id)
+        obj = dic_cur.fetchone()
 
-    return render_template(
-            'obj_editor.html',
-            obj=obj,
-            user=session.get('user')
-            )
+        return render_template(
+                'obj_editor.html',
+                obj=obj,
+                user=session.get('user')
+                )
+
+    else:
+        return 'Это не Ваш объект'
 
 @app.route('/obj_search/<obj_id>', methods=['POST'])
 def obj_search(obj_id):
@@ -374,6 +390,11 @@ def obj_create(doc_id):
             objs_docs (obj_id, doc_id)
             VALUES (%s,%s)
             """, (obj_id, doc_id))
+    
+    dic_cur.execute("""INSERT INTO
+            log_objs (user_id, obj_id)
+            VALUES (%s,%s)
+            """, (session['user_id'], obj_id))
 
     return jsonify(obj_id=obj_id)
 
@@ -461,12 +482,47 @@ def search():
     
     return jsonify(html=html)
 
+
+@app.route('/log/<user>', methods=['GET','POST'])
+def log(user):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    
+    dic_cur.execute("""SELECT 
+        objs_docs.obj_id, COUNT(DISTINCT objs_docs.doc_id) AS docs_count,
+        GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+        GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', objs.name
+        FROM objs_docs 
+        LEFT JOIN log_objs ON log_objs.obj_id = objs_docs.obj_id
+        LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+        WHERE objs_docs.obj_id IS NOT NULL AND log_objs.user_id = %s
+        GROUP BY objs_docs.obj_id
+        """, session['user_id'])
+    
+    objs = dic_cur.fetchall()
+
+    return render_template(
+            "log.html",
+            user=user,
+            objs = objs
+            )
     
 @app.route('/login', methods=['POST'])
 def login():
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
-    if (data['user'], data['password']) in users:
-        session['user'] = data['user']
+
+    dic_cur.execute("""SELECT *
+                    FROM users
+                    WHERE users.name = %s 
+                        AND users.pass = %s
+                        """, (data['user'], data['password']))
+    user = dic_cur.fetchone()
+
+    if user:
+        session['user'] = user['name']
+        session['user_id'] = user['id']
         return 'ok'
     else:
         return 'Err'

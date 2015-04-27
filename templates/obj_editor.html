@@ -42,14 +42,6 @@ $(document).ready( function() {
     });
 </script>
 {% endblock %}
-{% block nav %}
-<div class="container theme-showcase" role="main" style="margin-top: 0.5%;">
-<p>
-<button class="btn btn-default" type="button" id="postBut" onclick="postDataObj()">Сохранить изменения</button>
-<button class="btn btn-default" type="button" onclick="canselEdit()">Отменить изменения</button>
-</p>
-</div>
-{% endblock %}
 
 {% block body %}
 <h2>{{obj.name}}</h2>

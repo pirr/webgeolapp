@@ -29,7 +29,7 @@
             <li><a href="/docs">Документы</a></li>
             <li><a href="/objs">Объекты</a></li>
             {% if user %}
-                <li><a href="#"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
+                <li><a href="/log/{{user}}"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
             {% endif %}
             {% block nav %}{% endblock %}
           </ul>

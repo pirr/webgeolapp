@@ -1,20 +1,20 @@
 {% extends "base.html" %}
 {% block body %}
-<h2>Объекты (группы)</h2>
+<h2>{{user}}</h2>
+
 <table class="table table-bordered">
+<caption>Объекты созданные {{user}}</caption>
     <col width="10">
     <col width="40">
     <col width="250">
     <col width="150">
     <col width="150">
-    <col width="10">
     <tr>
         <th>номер объекта</th>
         <th>название</th>
         <th>кол-во документов в объекте</th>
         <th>полезное ископмое</th>
         <th>группы пи</th>
-        <th>создал</th>
     </tr>
     {% for obj in objs %}
         <tr>
@@ -23,7 +23,6 @@
             <td>{{obj.docs_count}}</td>
             <td>{{obj.pi}}</td>
             <td>{{obj.group_pi}}</td>
-            <td>{{obj.user_name}}</td>
         </tr>
     {% endfor %}
 </table>
