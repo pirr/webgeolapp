@@ -35,8 +35,6 @@ function pushDoc() {
                 search('/obj_search/{{obj.obj_id}}');
         }
     });
-
-
 }
 
 $(document).ready( function() {
@@ -51,8 +49,12 @@ $(document).ready( function() {
 <table class="table table-bordered">
 <caption>Данные объекта</caption>
 <col width="250">
-<tr><td>Название присвоенное объекту:</td><td>{{obj.name}}</td></tr>
-<tr><td>Полезные ископаемые объекта:</td><td>{{obj.pi}}</td></tr>
+<tr>
+<td>Название присвоенное объекту:</td><td>{{obj.name}}</td>
+</tr>
+<tr>
+<td>Полезные ископаемые объекта:</td><td>{{obj.pi}}</td>
+</tr>
 </table>
 
 <div id="obj_docs"></div>

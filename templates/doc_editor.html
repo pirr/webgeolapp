@@ -39,9 +39,38 @@ function canselEdit() {
 {% block body %}
     <table class="table table-bordered">
     <caption>Данные документа</caption>
-    <tr><td>Название по документу:</td><td><input type="text" class="form-control" value="{{doc.name}}" id="doc_name">
-    </td>
+    <tr>
+        <td>Название по документу:</td><td><input type="text" class="form-control" value="{{doc.name}}" id="doc_name"></td>
+     <!-- map -->
+    <td align="center" width="20%" rowspan="5">
+        <div id="map" style="width: 400px; height: 300px"></div>
+            <script type="text/javascript">
+                console.log('MAP!')
+                var map = L.map('map').setView([{{coord.lat}},{{coord.lon}}], 10);
+                
+                L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+                    maxZoom: 18,
+                    id: 'examples.map-i875mjb7'
+                }).addTo(map);
+            
+                L.marker([{{coord.lat}},{{coord.lon}}]).addTo(map)
+                    .bindPopup('{{coord.lat}}, {{coord.lon}}').openPopup();
+
+                var popup = L.popup();
+
+                function onMapClick(e) {
+                    popup
+                        .setLatLng(e.latlng)
+                        .setContent(e.latlng.toString())
+                        .openOn(map);
+                }
+                map.on('click', onMapClick);
+                L.control.fullscreen().addTo(map);
+            </script>
+
+
     </tr>
+
     <tr><td>Вид документа регистрации:</td>
     <td>
         <select class="form-control">
@@ -56,7 +85,7 @@ function canselEdit() {
     <tr><td>Субъект РФ:</td><td></td></tr>
     <tr><td>Административный район:</td><td></td></tr>
     <tr><td>Входимость в объект (группу):</td>
-        <td>
+        <td colspan="2">
             <script type="text/javascript">
                 html_response('/object/{{doc.id}}', '#docs')
             </script>

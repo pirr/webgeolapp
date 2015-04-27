@@ -316,6 +316,7 @@ def obj_editor(obj_id):
             LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
             LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
             LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            LEFT JOIN docs ON docs.id = objs_docs.doc_id
             WHERE objs.obj_id = %s
             """, obj_id)
         obj = dic_cur.fetchone()
@@ -460,7 +461,7 @@ def obj_docs(obj_id):
         return jsonify(html=html)
 
 
-@app.route('/search', methods=['POST'])    
+@app.route('/docs_table', methods=['POST'])    
 def search():
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()

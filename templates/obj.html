@@ -10,38 +10,10 @@
 <table class="table table-bordered">
 <caption>Данные объекта</caption>
 <col width="250">
-<tr><td>Название присвоенное объекту:</td><td>{{objs.name}}</td></tr>
-<tr><td>Полезные ископаемые объекта:</td><td>{{objs.pi}}</td></tr>
-</table>
-
-<table class="table table-bordered">
-<caption>Документы в объекте</caption>
-    <col width="10">
-    <col width="40">
-    <col width="250">
-    <col width="150">
-    <col width="150">
-    <tr>
-        <th>номер объекта</th>
-        <th>номер документа</th>
-        <th>источник</th>
-        <th>название</th>
-        <th>полезное ископмое</th>
-        <th>группы пи</th>
-    </tr>
-    {% for doc in obj %}
-        <tr>
-            <td><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
-            <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
-            <td>{{doc.source_type}}</td>
-            <td>{{doc.name}}</td>
-            <td>{{doc.pi}}</td>
-            <td>{{doc.group_pi}}</td>
-        </tr>
-    {% endfor %}
-</table>
-
-<div id="map" style="width: 600px; height: 400px"></div>
+<tr>
+<td>Название присвоенное объекту:</td><td>{{objs.name}}</td>
+<td align="center" width="20%" rowspan="2">
+    <div id="map" style="width: 600px; height: 400px"></div>
 <script>
     var map = L.map('map').setView([{{obj[0].lat}},{{obj[0].lon}}], 10);
     L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
@@ -87,5 +59,38 @@
     map.on('click', onMapClick);
     L.control.fullscreen().addTo(map);
 </script>
+</td>
+</tr>
+<tr><td>Полезные ископаемые объекта:</td><td>{{objs.pi}}</td></tr>
+</table>
+
+<table class="table table-bordered">
+<caption>Документы в объекте</caption>
+    <col width="10">
+    <col width="40">
+    <col width="250">
+    <col width="150">
+    <col width="150">
+    <tr>
+        <th>номер объекта</th>
+        <th>номер документа</th>
+        <th>источник</th>
+        <th>название</th>
+        <th>полезное ископмое</th>
+        <th>группы пи</th>
+    </tr>
+    {% for doc in obj %}
+        <tr>
+            <td><a href="/obj/{{doc.obj_id}}" target="blank">{{doc.obj_id}}</a></td>
+            <td><a href="/doc/{{doc.id}}" target="blank">{{doc.id}}</a></td>
+            <td>{{doc.source_type}}</td>
+            <td>{{doc.name}}</td>
+            <td>{{doc.pi}}</td>
+            <td>{{doc.group_pi}}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
 
 {% endblock %}
