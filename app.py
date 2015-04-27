@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify, json
+from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect
 import importlib
 import pymysql
 import data.db_con as db
@@ -359,7 +359,7 @@ def obj_search(obj_id):
 
     return jsonify(html=html)
 
-@app.route('/obj_create/<doc_id>', methods=['POST'])
+@app.route('/obj_create/<doc_id>', methods=['GET','POST'])
 def obj_create(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
@@ -396,7 +396,7 @@ def obj_create(doc_id):
             VALUES (%s,%s)
             """, (session['user_id'], obj_id))
 
-    return jsonify(obj_id=obj_id)
+    return redirect(url_for('obj_editor',obj_id=obj_id))
 
 @app.route('/obj_docs/<obj_id>', methods=['POST'])
 def obj_docs(obj_id):
