@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, session, jsonify, json, url_f
 import importlib
 import pymysql
 import app.db_con as db
-import app.data.calculation_module as calc
+import app.calculation_module as calc
 import difflib
 
 from app import app
