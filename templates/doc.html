@@ -1,12 +1,14 @@
 {% extends "doc_base.html" %}
 
-{% block nav %}
+{% block leftnav %}
 <!-- doc_editor button -->
 <button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/doc_editor/{{doc.id}}')">Редактировать</button>
 {% endblock %}
+{% block nav %}
+<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
+{% endblock %}
 
 <div class="container">
-
 {% block body %}
 <!-- ! -->
 <div id="content">

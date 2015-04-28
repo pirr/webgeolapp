@@ -42,7 +42,9 @@ $(document).ready( function() {
     });
 </script>
 {% endblock %}
-
+{% block nav %}
+<li><a>Объект №<b>{{obj.obj_id}}</b> Название: <b>{{obj.name}}</b></a></li>
+{% endblock %}
 {% block body %}
 <h2>{{obj.name}}</h2>
 <!-- obj_about -->

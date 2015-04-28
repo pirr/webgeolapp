@@ -27,13 +27,13 @@ function canselEdit() {
 </script>
 {% endblock %}
 
+{% block leftnav %}
+<button class="btn btn-default navbar-btn" type="button" onclick="postDataDoc()">Сохранить изменения</button>
+<button class="btn btn-default navbar-btn" type="button" onclick="canselEdit()"
+>Отменить изменения</button>
+{% endblock %}
 {% block nav %}
-<div class="container theme-showcase" role="main" style="margin-top: 0.5%;">
-<p>
-<button class="btn btn btn-default" type="button" id="postBut" size="50" onclick="postDataDoc()">Сохранить изменения</button>
-<button class="btn btn btn-default" type="button" id="" size="50" onclick="canselEdit()">Отменить изменения</button>
-</p>
-</div>
+<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
 {% endblock %}
 <div class="container">
 {% block body %}

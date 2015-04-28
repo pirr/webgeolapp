@@ -273,7 +273,7 @@ def obj(obj_id):
         WHERE objs_docs.obj_id = %s
         GROUP BY objs_docs.id
         """, obj_id)
-    obj = dic_cur.fetchall()
+    docs = dic_cur.fetchall()
 
     dic_cur.execute("""SELECT
         objs.name, 
@@ -285,12 +285,12 @@ def obj(obj_id):
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
         WHERE objs.obj_id = %s
         """, obj_id)
-    objs = dic_cur.fetchone()
+    obj = dic_cur.fetchone()
 
     return render_template(
             'obj.html',
+            docs=docs,
             obj=obj,
-            objs=objs,
             user=session.get('user'),
             title=('объект-{}'.format(obj_id))
             )

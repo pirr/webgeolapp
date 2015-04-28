@@ -1,9 +1,11 @@
 {% extends "obj_base.html" %}
-{% block nav %}
+{% block leftnav %}
 <!-- obj_editor button -->
-<button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/obj_editor/{{objs.obj_id}}')">Редактировать</button>
+<button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/obj_editor/{{obj.obj_id}}')">Редактировать</button>
 {% endblock %}
-
+{% block nav %}
+<li><a>Объект №<b>{{obj.obj_id}}</b> Название: <b>{{obj.name}}</b></a></li>
+{% endblock %}
 {% block body %}
 <h2>{{obj.name}}</h2>
 <!-- obj_about -->
@@ -11,57 +13,44 @@
 <caption>Данные объекта</caption>
 <col width="250">
 <tr>
-<td>Название присвоенное объекту:</td><td>{{objs.name}}</td>
+<td>Название присвоенное объекту:</td><td>{{obj.name}}</td>
 <td align="center" width="20%" rowspan="2">
     <div id="map" style="width: 600px; height: 400px"></div>
 <script>
-    var map = L.map('map').setView([{{obj[0].lat}},{{obj[0].lon}}], 10);
+    L.Map = L.Map.extend({
+    openPopup: function(popup) {
+        //        this.closePopup();  // just comment this
+        this._popup = popup;
+
+        return this.addLayer(popup).fire('popupopen', {
+            popup: this._popup
+        });
+        }
+    });
+
+    var map = L.map('map').setView([{{docs[0].lat}},{{docs[0].lon}}], 10);
     L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
         maxZoom: 18,
         id: 'examples.map-i875mjb7'
     }).addTo(map);
 
-    var obj = ({{obj|tojson}});
-    console.log(typeof(obj));
-    console.log(obj);
-    for (var i = 0; i < obj.length; i++) {
-        var lon = obj[i].lon;
-        var lat = obj[i].lat;
+    var docs = ({{docs|tojson}});
+    console.log(typeof(docs));
+    console.log(docs);
+    for (var i = 0; i < docs.length; i++) {
+        var lon = docs[i].lon;
+        var lat = docs[i].lat;
         var objLocation = new L.LatLng(lat, lon);
-        var docMarker = new L.Marker(objLocation);
+        var docMarker = new L.Marker(objLocation).addTo(map).bindPopup("id: "+(docs[i].id).toString()+"</br> name: "+docs[i].name);
         map.addLayer(docMarker)
+        var popup = L.popup();
     }
     
-    // L.marker([51.7, -0.09]).addTo(map)
-    //     .bindPopup('<a href="http://www.w3schools.com" target="_blank">link</a>').openPopup();
-
-    // L.circle([51.508, -0.11], 500, {
-    //     color: 'red',
-    //     fillColor: '#f03',
-    //     fillOpacity: 0.5
-    // }).addTo(map).bindPopup("I am a circle.");
-
-    // L.polygon([
-    //     [51.509, -0.08],
-    //     [51.503, -0.06],
-    //     [51.51, -0.047]
-    // ]).addTo(map).bindPopup("I am a polygon.");
-
-    var popup = L.popup();
-
-    function onMapClick(e) {
-        popup
-            .setLatLng(e.latlng)
-            .setContent(e.latlng.toString())
-            .openOn(map);
-    }
-
-    map.on('click', onMapClick);
-    L.control.fullscreen().addTo(map);
+L.control.fullscreen().addTo(map);
 </script>
 </td>
 </tr>
-<tr><td>Полезные ископаемые объекта:</td><td>{{objs.pi}}</td></tr>
+<tr><td>Полезные ископаемые объекта:</td><td>{{obj.pi}}</td></tr>
 </table>
 
 <table class="table table-bordered">
@@ -79,7 +68,7 @@
         <th>полезное ископмое</th>
         <th>группы пи</th>
     </tr>
-    {% for doc in obj %}
+    {% for doc in docs %}
         <tr>
             <td><a href="/obj/{{doc.obj_id}}" target="blank">{{doc.obj_id}}</a></td>
             <td><a href="/doc/{{doc.id}}" target="blank">{{doc.id}}</a></td>
