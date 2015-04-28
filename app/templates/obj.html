@@ -4,8 +4,10 @@
 <li><a>Объект №<b>{{obj.obj_id}}</b> Название: <b>{{obj.name}}</b></a></li>
 {% endblock %}
 {% block nav %}
+{% if user %}
 <!-- obj_editor button -->
 <button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/obj_editor/{{obj.obj_id}}')">Редактировать</button>
+{% endif %}
 {% endblock %}
 {% block body %}
 <!-- obj_about -->

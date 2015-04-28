@@ -47,9 +47,14 @@
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% block rightnav %}{% endblock %}
-                    {% if user %}
-                        <li><a href="/log/{{user}}">{{user}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
-                    {% endif %}
+            {% if user %}
+                <li><a href="/log/{{user}}">{{user}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
+                <button onclick="logout()">Выйти</button>
+            {% else %}
+                <input id="user" type="text">
+                <input id="password" type="password">
+                <button onclick="login()">Войти</button>
+            {% endif %}
 
                 </ul>
                 </div>

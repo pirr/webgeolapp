@@ -36,7 +36,6 @@
         </div>
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-            <li><a href="/">Главная</a></li>
             <li><a href="/docs">Документы</a></li>
             <li><a href="/objs">Объекты</a></li>
             {% block nav %}{% endblock %}
@@ -44,6 +43,11 @@
             <ul class="nav navbar-nav navbar-right">
             {% if user %}
                 <li><a href="/log/{{user}}">{{user}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
+                <button onclick="logout()">Выйти</button>
+            {% else %}
+                <input id="user" type="text">
+                <input id="password" type="password">
+                <button onclick="login()">Войти</button>
             {% endif %}
             </ul>
             </div>

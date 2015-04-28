@@ -1,7 +1,7 @@
 function login(){
     user = $('#user').val();
     password = $('#password').val();
-    console.log(JSON.stringify({user:user, password:password}));
+    // console.log(JSON.stringify({user:user, password:password}));
     $.ajax({
         url: '/login',
         data: JSON.stringify({user:user, password:password}),
