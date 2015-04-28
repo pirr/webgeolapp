@@ -21,19 +21,19 @@ function logout() {
     });
 }
 
-function search(url){
+function search(){
     var searchname = $('#searchname').val();
-    var pi = $('#pi').val()
     $.ajax({
-        url: url,
-        data: JSON.stringify({searchname: searchname,
-                                pi:pi}),
+        url: '/docs_table',
+        data: JSON.stringify({searchname: searchname}),
         success: function(response) {
             console.log(response);
             $('#search_results').html(response.html)
         }
     });
 }
+
+
 
 function open_url(url) {
     window.open(url, '_blank');

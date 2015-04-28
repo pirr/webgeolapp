@@ -495,12 +495,19 @@ def obj_edit_post(obj_id):
         return 'Err'
 
 @app.route('/docs_table', methods=['POST'])    
-def search():
+def docs_table():
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
     data = request.get_json()
-    
+    if 'pis_id' in data:
+        pis_id = ','.join(map(str,data['pis_id']))
+    else:
+        dic_cur.execute("""SELECT doc_pi.pi_id FROM doc_pi""")
+        pis_id = dic_cur.fetchall
+        pis_id = list(pis_id.values())
+
+
     dic_cur.execute("""SELECT 
-            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type',
+            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', dic_pi.id AS 'pi_id',
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
             GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
             FROM docs
@@ -509,16 +516,17 @@ def search():
             LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
             LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-            WHERE LOWER(docs.name) LIKE LOWER(%s) AND doc_pi.pi_id = %s
+            WHERE doc_pi.pi_id IN %s docs.name LIKE %s
             GROUP BY docs.id
             LIMIT 250
-            """, ('%'+data['searchname']+'%', data['pi']))
+            """,(pis_id ,'%'+data['searchname']+'%'))
     
     docs = dic_cur.fetchall()
+   
     html = render_template(
-            'docs_table.html',
-            docs=docs,
-            )
+        'docs_table.html',
+        docs=docs,
+        )
     
     return jsonify(html=html)
 
