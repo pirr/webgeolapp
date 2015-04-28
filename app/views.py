@@ -21,10 +21,19 @@ def main():
 
 @app.route('/docs', methods=['POST', 'GET'])
 def docs():
+    
+    dic_cur.execute("""SELECT 
+        dic_pi.id AS 'pi_id', 
+        dic_pi.pi, 
+        dic_pi.type_pi 
+        FROM dic_pi""")
+    dic_pi = dic_cur.fetchall()
+
     return render_template(
             'docs.html',
+            dic_pi=dic_pi,
             user=session.get('user'),
-            title='Документы'
+            title='Документы',
             )
 
 @app.route('/objs')
@@ -500,10 +509,10 @@ def search():
             LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
             LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-            WHERE LOWER(docs.name) LIKE LOWER(%s)
+            WHERE LOWER(docs.name) LIKE LOWER(%s) AND doc_pi.pi_id = %s
             GROUP BY docs.id
             LIMIT 250
-            """, '%'+data['searchname']+'%')
+            """, ('%'+data['searchname']+'%', data['pi']))
     
     docs = dic_cur.fetchall()
     html = render_template(

@@ -15,6 +15,14 @@ $(document).ready( function() {
             <input id="searchname" type="text" 
             onkeyup="search('/docs_table')" placeholder="Найти по названию"/>
             </td>
+            <td>
+                <select class="form-control">
+                <option id="pi"></option>
+                {% for pi in dic_pi %}
+                <option id="pi" value="{{pi.pi_id}}">{{pi.pi}}</option>
+                {% endfor %}
+                </select>
+            </td>
         </tr>
     </table>
 </div>

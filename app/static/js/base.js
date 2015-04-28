@@ -22,10 +22,12 @@ function logout() {
 }
 
 function search(url){
-    searchname = $('#searchname').val();
+    var searchname = $('#searchname').val();
+    var pi = $('#pi').val()
     $.ajax({
         url: url,
-        data: JSON.stringify({'searchname': searchname}),
+        data: JSON.stringify({searchname: searchname,
+                                pi:pi}),
         success: function(response) {
             console.log(response);
             $('#search_results').html(response.html)
