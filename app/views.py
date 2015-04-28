@@ -37,6 +37,7 @@ def objs():
         GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
         GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi', 
         objs.name,
+        log_objs.user_id AS user_id,
         users.name AS user_name
         FROM objs_docs 
         LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id 
@@ -54,6 +55,7 @@ def objs():
             'objs.html',
             objs = objs,
             user=session.get('user'),
+            user_id=session.get('user_id'),
             title='Объекты'
             )
 
@@ -257,7 +259,8 @@ def obj(obj_id):
     dic_cur.execute("""SELECT 
         docs.id, 
         objs_docs.obj_id,
-        docs.name, 
+        docs.name,
+        
         dic_source_type.name AS 'source_type', 
         doc_coordinates.lat, 
         doc_coordinates.lon,
@@ -278,10 +281,12 @@ def obj(obj_id):
 
     dic_cur.execute("""SELECT
         objs.name, 
-        objs.obj_id, 
+        objs.obj_id,
+        log_objs.user_id, 
         GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
         FROM objs_docs
         LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
+        LEFT JOIN log_objs ON log_objs.obj_id = objs.obj_id
         LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
         WHERE objs.obj_id = %s
@@ -293,6 +298,7 @@ def obj(obj_id):
             docs=docs,
             obj=obj,
             user=session.get('user'),
+            user_id=session.get('user_id'),
             title=('объект-{}'.format(obj_id))
             )
 
