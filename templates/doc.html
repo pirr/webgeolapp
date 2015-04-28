@@ -1,18 +1,17 @@
 {% extends "doc_base.html" %}
 
 {% block leftnav %}
-<!-- doc_editor button -->
-<button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/doc_editor/{{doc.id}}')">Редактировать</button>
+<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
 {% endblock %}
 {% block nav %}
-<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
+<!-- doc_editor button -->
+<button class="btn btn-default navbar-btn" type="button" onclick="open_url_self('/doc_editor/{{doc.id}}')">Редактировать</button>
 {% endblock %}
 
 <div class="container">
 {% block body %}
 <!-- ! -->
 <div id="content">
-<h2>{{doc.name}}</h2>
  <table class="table table-bordered">
     <caption>Данные документа</caption>
     <tr>

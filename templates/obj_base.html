@@ -46,11 +46,10 @@
                 {% block nav %}{% endblock %}
         </ul>
         <ul class="nav navbar-nav navbar-right">
-                {% block rightnav %}{% endblock %}
+            {% block rightnav %}{% endblock %}
             {% if user %}
                 <li><a href="/log/{{user}}">{{user}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
             {% endif %}
-            
         </ul>
         </div>
         </div>

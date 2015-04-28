@@ -460,6 +460,23 @@ def obj_docs(obj_id):
             obj = obj)
         return jsonify(html=html)
 
+@app.route('/obj_edit_post/<obj_id>', methods=['GET','POST'])
+def obj_edit_post(obj_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+    data = request.get_json()
+
+    if data:
+        
+        dic_cur.execute("""UPDATE
+            objs
+            SET objs.name = %s
+            WHERE objs.obj_id = %s""",
+            (data['obj_name'],obj_id))
+
+        return 'ok'
+
+    else:
+        return 'Err'
 
 @app.route('/docs_table', methods=['POST'])    
 def search():

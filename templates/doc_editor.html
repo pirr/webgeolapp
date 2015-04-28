@@ -10,7 +10,7 @@ function postDataDoc() {
     });
     console.log(features_pis_id, doc_name, source_type_id);
     $.ajax({
-        type: "POST",
+        type: 'POST',
         url: '/doc_edit_post/{{doc.id}}',
         data: JSON.stringify({features_pis_id:features_pis_id,
                             name:doc_name,
@@ -28,13 +28,14 @@ function canselEdit() {
 {% endblock %}
 
 {% block leftnav %}
+<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
+{% endblock %}
+{% block nav %}
 <button class="btn btn-default navbar-btn" type="button" onclick="postDataDoc()">Сохранить изменения</button>
 <button class="btn btn-default navbar-btn" type="button" onclick="canselEdit()"
 >Отменить изменения</button>
 {% endblock %}
-{% block nav %}
-<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
-{% endblock %}
+
 <div class="container">
 {% block body %}
     <table class="table table-bordered">

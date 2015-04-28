@@ -34,7 +34,7 @@ function search(url){
 }
 
 function open_url(url) {
-    window.open(url);
+    window.open(url, '_blank');
 }
 
 function open_url_self(url) {

@@ -1,9 +1,7 @@
 {% extends "obj_base.html" %}
 {% block script %}
 <script type="text/javascript">
-function canselEdit() {
-    location.reload();
-}
+
 
 function pullDoc() {
     var doc_id_pull = $('#doc_id_pull').val();
@@ -40,19 +38,41 @@ function pushDoc() {
 $(document).ready( function() {
     pullDoc()
     });
+
+function canselEdit() {
+    location.reload();
+}
+
+function postDataObj() {
+    var obj_name = $('#obj_name:input').val();
+    $.ajax({
+        type: 'POST',
+        url: '/obj_edit_post/{{obj.obj_id}}',
+        data: JSON.stringify({obj_name:obj_name}),
+        success: function(response) {
+            if (response=='Err') 'Err';
+            else location.reload();
+        }
+    })
+}
 </script>
 {% endblock %}
-{% block nav %}
+
+{% block leftnav %}
 <li><a>Объект №<b>{{obj.obj_id}}</b> Название: <b>{{obj.name}}</b></a></li>
 {% endblock %}
+{% block nav %}
+<button class="btn btn-default navbar-btn" type="button" onclick="postDataObj()">Сохранить изменения</button>
+<button class="btn btn-default navbar-btn" type="button" onclick="canselEdit()">Отменить изменения</button>
+{% endblock %}
+
 {% block body %}
-<h2>{{obj.name}}</h2>
 <!-- obj_about -->
 <table class="table table-bordered">
 <caption>Данные объекта</caption>
 <col width="250">
 <tr>
-<td>Название присвоенное объекту:</td><td>{{obj.name}}</td>
+<td>Название присвоенное объекту:</td><td><input type="text" class="form-control" value="{{obj.name}}" id="obj_name"></td>
 </tr>
 <tr>
 <td>Полезные ископаемые объекта:</td><td>{{obj.pi}}</td>
