@@ -523,10 +523,7 @@ def docs_table():
             """,(pis_id, '%'+searchname+'%', sources_id))
     docs = dic_cur.fetchall()
     count = len(docs)
-
-    # if request.method == 'POST':
-    #     if request.form['submit'] == postDataDocs
-
+    
     html = render_template(
         'docs_table.html',
         docs=docs,
@@ -534,6 +531,37 @@ def docs_table():
         )
 
     return jsonify(html=html)
+
+@app.route('/export.csv')
+def generate_csv():
+    
+
+    def generate():
+        dic_cur.execute("""SELECT
+            docs.id, 
+            objs_docs.obj_id, 
+            docs.name, 
+            dic_source_type.name AS 'source_type', 
+            dic_pi.id AS 'pi_id',
+            doc_coordinates.lat,
+            doc_coordinates.lon,
+            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
+            FROM docs
+            LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+            LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
+            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            LEFT JOIN source ON docs.id = source.doc_id
+            LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+            LEFT JOIN doc_coordinates ON doc_coordinates.doc_id = docs.id
+            GROUP BY docs.id
+            """)
+        # docs = dic_cur.fetchall()
+
+        for row in dic_cur.fetchall():
+            yield ';'.join(row) + '\n'
+
+    return Response(generate(), mimetype='text/csv')
 
 
 @app.route('/log/<user>', methods=['GET','POST'])
