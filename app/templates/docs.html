@@ -15,7 +15,7 @@ filterPlaceholder: 'Найти',
 buttonWidth: '200px',
 nonSelectedText: 'Выбрать источник',
 selectAllText: 'Выбрать все',
-allSelectedText: 'Все',
+allSelectedText: 'Все источники',
 maxHeight: 300,
 checkboxName: 'multiselect[]',
 onChange: function(source, checked) {
@@ -37,7 +37,7 @@ filterPlaceholder: 'Найти',
 buttonWidth: '250px',
 nonSelectedText: 'Выбрать ПИ',
 selectAllText: 'Выбрать все',
-allSelectedText: 'Все',
+allSelectedText: 'Все ПИ',
 maxHeight: 300,
 checkboxName: 'multiselect[]',
 onChange: function(pi, checked) {
@@ -50,7 +50,7 @@ onChange: function(pi, checked) {
 });
 });
 
-function postDataDocs(){
+function DataDocs(butt){
     searchname = $('#searchname').val();
     selected_pis = selected_pis;
     selected_sources = selected_sources;
@@ -61,13 +61,15 @@ function postDataDocs(){
                                 pis_id:selected_pis,
                                 sources_id:selected_sources}),
         success: function(response) {
-            console.log(response);
-            $('#search_results').html(response.html)
+            if ($(butt).attr('id') == 'postDataDocs')
+            $('#search_results').html(response.html);
+            else if ($(butt).attr('id') == 'saveCsvDocs')
+                console.log('CSV');
+                return 'CSV';
+
         }
 });
 }
-
-
 </script>
 <link rel="stylesheet" href="/static/ext/bootstrap/multiple_select/css/bootstrap-multiselect.css" type="text/css"/>
 <script src="/static/ext/bootstrap/multiple_select/js/bootstrap-multiselect.js" type="text/javascript"></script>
@@ -87,6 +89,7 @@ function postDataDocs(){
             {% for source in sources_type %}
             <option value="{{source.id}}">{{source.name}}</option>
             {% endfor %}
+            </select>
             </td>
             <td align="center">
             <select id="pis" multiple="multiple" name="select[]">
@@ -95,10 +98,12 @@ function postDataDocs(){
             {% endfor %}
             </select>
             </td>
-            <td>
-            <button id="postDataDocs" class="btn btn-default" onclick="postDataDocs()">Найти</button>
+            <td align="center">
+            <button type="submit" id="postDataDocs" name="postDataDocs" class="btn btn-default" value="postDataDocs" onclick="DataDocs(this)">Найти</button>
             </td>
-            
+            <td align="center">
+            <button type="submit" id="saveCsvDocs" name="saveCsvDocs" class="btn btn-default" onclick="DataDocs(this)">Сохранить выборку</button>
+            </td>
         </tr>
     </table>
 </div>

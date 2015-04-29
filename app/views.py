@@ -1,9 +1,9 @@
-from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect
+from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, Response
 import importlib
 import pymysql
 import app.db_con as db
+import csv
 import app.calculation_module as calc
-import difflib
 
 from app import app
 
@@ -321,37 +321,25 @@ def obj(obj_id):
 def obj_editor(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
-    dic_cur.execute("""SELECT 
-        log_objs.user_id
-        FROM log_objs
-        WHERE log_objs.obj_id = %s
-            AND log_objs.user_id = %s
-        """, (obj_id, session['user_id']))
-    user_id = dic_cur.fetchone()
-    
-    if user_id:
-        dic_cur.execute("""SELECT
-            objs.name, 
-            objs.obj_id, 
-            GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
-            FROM objs_docs
-            LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
-            LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
-            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-            LEFT JOIN docs ON docs.id = objs_docs.doc_id
-            WHERE objs.obj_id = %s
-            """, obj_id)
-        obj = dic_cur.fetchone()
+    dic_cur.execute("""SELECT
+        objs.name, 
+        objs.obj_id, 
+        GROUP_CONCAT(DISTINCT dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi'
+        FROM objs_docs
+        LEFT JOIN objs ON objs_docs.obj_id = objs.obj_id
+        LEFT JOIN doc_pi ON objs_docs.doc_id = doc_pi.doc_id
+        LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN docs ON docs.id = objs_docs.doc_id
+        WHERE objs.obj_id = %s
+        """, obj_id)
+    obj = dic_cur.fetchone()
 
-        return render_template(
-                'obj_editor.html',
-                obj=obj,
-                user=session.get('user'),
-                title=('ред.объект-{}'.format(obj_id))
-                )
-
-    else:
-        return 'Это не Ваш объект'
+    return render_template(
+            'obj_editor.html',
+            obj=obj,
+            user=session.get('user'),
+            title=('ред.объект-{}'.format(obj_id))
+            )
 
 @app.route('/obj_search/<obj_id>', methods=['POST'])
 def obj_search(obj_id):
@@ -515,7 +503,7 @@ def docs_table():
     if 'sources_id' in data:
         sources_id = ','.join(map(str,data['sources_id']))
 
-    dic_cur.execute("""SELECT 
+    dic_cur.execute("""SELECT
             docs.id, 
             objs_docs.obj_id, 
             docs.name, 
@@ -533,15 +521,18 @@ def docs_table():
             GROUP BY docs.id
             LIMIT 150
             """,(pis_id, '%'+searchname+'%', sources_id))
-    
-
     docs = dic_cur.fetchall()
-   
+    count = len(docs)
+
+    # if request.method == 'POST':
+    #     if request.form['submit'] == postDataDocs
+
     html = render_template(
         'docs_table.html',
         docs=docs,
+        count=count
         )
-    
+
     return jsonify(html=html)
 
 
@@ -563,6 +554,8 @@ def log(user):
         """, session['user_id'])
     
     objs = dic_cur.fetchall()
+
+   
 
     return render_template(
             "log.html",
