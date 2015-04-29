@@ -1,44 +1,71 @@
 {% extends "base.html" %}
 {% block script %}
 <script type="text/javascript">
-$(document).ready( function() {
-    $('.filter').multifilter()
+var selected_pis;
+var selected_sources;
 
-       search();
-       $('#pis').multiselect({
-        selectAllValue: 'multiselect-all',
-        includeSelectAllOption: true,
-        enableFiltering: true,
-        filterBehavior: 'text',
-        filterPlaceholder: 'Найти',
-        buttonWidth: '250px',
-        nonSelectedText: 'Выбрать ПИ',
-        selectAllText: 'Выбрать всё',
-        allSelectedText: 'Всё',
-        maxHeight: 200,
-        checkboxName: 'multiselect[]',
-        onChange: function(pi, checked) {
-            var pis = $('#pis option:selected');
-            var selected = [];
-            $(pis).each(function(index, pi){
-                selected.push($(this).val());
-            });
-            console.log(selected)
-            $.ajax({
-                url: '/docs_table',
-                type: 'POST',
-                data: JSON.stringify({pis_id: selected}),
-                success: function(response) {
-                    console.log(response)
-            }
-        });
-    }
-});   
+$(document).ready(function() {
+
+$('#sources_type').multiselect({
+selectAllValue: 'multiselect-all',
+includeSelectAllOption: true,
+enableFiltering: true,
+filterBehavior: 'text',
+filterPlaceholder: 'Найти',
+buttonWidth: '200px',
+nonSelectedText: 'Выбрать источник',
+selectAllText: 'Выбрать все',
+allSelectedText: 'Все',
+maxHeight: 300,
+checkboxName: 'multiselect[]',
+onChange: function(source, checked) {
+    var sources = $('#sources_type option:selected');
+    selected_sources = [];
+    $(sources).each(function(index, source){
+        selected_sources.push($(this).val());
+    });
+}
 });
 
 
+$('#pis').multiselect({
+selectAllValue: 'multiselect-all',
+includeSelectAllOption: true,
+enableFiltering: true,
+filterBehavior: 'text',
+filterPlaceholder: 'Найти',
+buttonWidth: '250px',
+nonSelectedText: 'Выбрать ПИ',
+selectAllText: 'Выбрать все',
+allSelectedText: 'Все',
+maxHeight: 300,
+checkboxName: 'multiselect[]',
+onChange: function(pi, checked) {
+    var pis = $('#pis option:selected');
+    selected_pis = [];
+    $(pis).each(function(index, pi){
+        selected_pis.push($(this).val());
+    });
+}
+});
+});
 
-
+function postDataDocs(){
+    searchname = $('#searchname').val();
+    selected_pis = selected_pis;
+    selected_sources = selected_sources;
+    $.ajax({
+        url: '/docs_table',
+        type: 'POST',
+        data: JSON.stringify({searchname:searchname,
+                                pis_id:selected_pis,
+                                sources_id:selected_sources}),
+        success: function(response) {
+            console.log(response);
+            $('#search_results').html(response.html)
+        }
+});
+}
 
 
 </script>
@@ -52,17 +79,26 @@ $(document).ready( function() {
     <table class="table table-bordered">
         <tr>
             <td>
-            <input id="searchname" type="text" 
-            onkeyup="search()" class="filter" placeholder="Найти по названию"/>
+            <input class="form-control" id="searchname" type="text"
+             placeholder="Найти по названию"/>
             </td>
-            <td>
-            <select id="pis" class="filter" multiple="multiple" name="select[]">
+            <td align="center">
+            <select id="sources_type" multiple="multiple" name="select[]">
+            {% for source in sources_type %}
+            <option value="{{source.id}}">{{source.name}}</option>
+            {% endfor %}
+            </td>
+            <td align="center">
+            <select id="pis" multiple="multiple" name="select[]">
             {% for pi in dic_pi %}
-                <option value="{{pi.pi_id}}">{{pi.pi}}</option>
+            <option value="{{pi.pi_id}}">{{pi.pi}}</option>
             {% endfor %}
             </select>
             </td>
+            <td>
+            <button id="postDataDocs" class="btn btn-default" onclick="postDataDocs()">Найти</button>
             </td>
+            
         </tr>
     </table>
 </div>

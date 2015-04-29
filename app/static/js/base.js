@@ -21,10 +21,10 @@ function logout() {
     });
 }
 
-function search(){
+function search(url){
     var searchname = $('#searchname').val();
     $.ajax({
-        url: '/docs_table',
+        url: url,
         data: JSON.stringify({searchname: searchname}),
         success: function(response) {
             console.log(response);
