@@ -487,7 +487,7 @@ def obj_docs(obj_id):
     else:
         html = render_template(
             'obj_docs.html',
-            obj = obj)
+            obj=obj)
         return jsonify(html=html)
 
 @app.route('/obj_edit_post/<obj_id>', methods=['GET','POST'])
@@ -579,10 +579,8 @@ def download_registry():
             """)
 
     docs = dic_cur.fetchall()
-
     
     return excel.make_response(docs, 'csv')
-        
 
 @app.route('/log/<user>', methods=['GET','POST'])
 def log(user):
@@ -602,8 +600,6 @@ def log(user):
         """, session['user_id'])
     
     objs = dic_cur.fetchall()
-
-   
 
     return render_template(
             "log.html",
