@@ -1,8 +1,52 @@
 <h3>Найдено: {{count}} документов</h3>
+<div class="col">
+<a href="#map_spoiler"  data-toggle="collapse" class="btn btn-sm btn-info" style="width: 100%;">Карта</a>
+<div class="map_ext collapse in" id="map_spoiler">
+<div class="well">
+<div id="map" style="width: 100%; height: 400px"></div>
+<script type="text/javascript">
+    
+    L.Map = L.Map.extend({
+    openPopup: function(popup) {
+        //        this.closePopup();  // just comment this
+        this._popup = popup;
+
+        return this.addLayer(popup).fire('popupopen', {
+            popup: this._popup
+        });
+        }
+    });
+
+    var map = L.map('map').setView([{{docs[0].lat}},{{docs[0].lon}}], 10);
+    L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
+        maxZoom: 18,
+        id: 'examples.map-i875mjb7'
+    }).addTo(map);
+
+    var docs = ({{docs|tojson}});
+    console.log(typeof(docs));
+    console.log(docs);
+    for (var i = 0; i < docs.length; i++) {
+        var lon = docs[i].lon;
+        var lat = docs[i].lat;
+        var objLocation = new L.LatLng(lat, lon);
+        var docMarker = new L.Marker(objLocation).addTo(map).bindPopup(
+            '<a href="/doc/'+docs[i].id+'"target="blank">№ '+(docs[i].id).toString()+'</br> Название: '+docs[i].name+'</a>');
+        map.addLayer(docMarker)
+        var popup = L.popup();
+    }
+    
+    L.control.fullscreen().addTo(map);
+
+</script>
+</div>
+</div>
+</div>
 <table class="table table-bordered">
     <col width="10">
     <col width="40">
-    <col width="250">
+    <col width="150">
+    <col width="350">
     <col width="150">
     <col width="150">
     <tr>
@@ -17,10 +61,12 @@
         <tr>
         {% if doc.obj_id %}
             <td><a href="/obj/{{doc.obj_id}}" target="blank">{{doc.obj_id}}</a></td>
-        {% else %}
+        {% elif user %}
             <td>
             <a href="/obj_create/{{doc.id}}" value="{{doc.id}}" target="blank">Создать</a>
             </td>
+        {% else %}
+        <td></td>
         {% endif %}
             <td><a href="/doc/{{doc.id}}" target="blank">{{doc.id}}</a></td>
             <td>{{doc.source_type}}</td>

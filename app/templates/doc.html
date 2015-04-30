@@ -18,7 +18,6 @@
     <caption>Данные документа</caption>
     <tr>
         <td>Название по документу:</td><td>{{doc.name}}</td>
-    
     <!-- map -->
     <td align="center" width="20%" rowspan="5">
         <div id="map" style="width: 400px; height: 300px"></div>
@@ -52,13 +51,13 @@
     <tr><td>Субъект РФ:</td><td></td></tr>
     <tr><td>Административный район:</td><td></td></tr>
     <tr>
-    <td>Входимость в объект (группу):</td>
-        <td colspan="2">
-            <script type="text/javascript">
-                html_response('/object/{{doc.id}}', '#docs')
-            </script>
-            <div id="docs"></div>
-        </td>
+        <td>Входимость в объект (группу):</td>
+            <td colspan="2">
+                <script type="text/javascript">
+                    html_response('/docs_in_obj/{{doc.id}}', '#docs')
+                </script>
+                <div id="docs"></div>
+            </td>
     </tr>
     </table>
     

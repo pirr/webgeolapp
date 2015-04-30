@@ -39,3 +39,12 @@ if __name__ == "__main__":
         debug=True, 
         host="0.0.0.0"
         )
+
+    csvfile = io.StringIO.StringIO()
+    fieldnames = ['id','obj_id','name','source_type','pi','group_pi','lat','lon']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';', lineterminator='\n', extrasaction='ignore')
+    writer.writeheader()
+    for doc in docs:
+        writer.writerow(doc)
+   
+    return send_file(csvfile, attachment_filename='export.csv', as_attachment=True)

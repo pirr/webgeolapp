@@ -1,8 +1,9 @@
 from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, Response
+from flask.ext import excel
 import importlib
 import pymysql
 import app.db_con as db
-import csv
+import csv, io
 import app.calculation_module as calc
 
 from app import app
@@ -21,7 +22,8 @@ def main():
 
 @app.route('/docs', methods=['POST', 'GET'])
 def docs():
-    
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)    
+
     dic_cur.execute("""SELECT 
         dic_pi.id AS 'pi_id', 
         dic_pi.pi, 
@@ -74,45 +76,6 @@ def objs():
             title='Объекты'
             )
 
-@app.route('/object/<doc_id>', methods=['POST'])
-def doc_in_obj(doc_id):
-    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
-
-    dic_cur.execute("""SELECT
-        objs_docs.obj_id FROM objs_docs
-        WHERE objs_docs.doc_id = %s
-        """, doc_id)
-    picked_group_sql = dic_cur.fetchone()
-
-    if picked_group_sql:
-        obj_id = picked_group_sql['obj_id']
-        dic_cur.execute("""SELECT 
-            docs.id, objs_docs.obj_id, docs.name, dic_source_type.name AS 'source_type', objs.name, doc_coordinates.lat, doc_coordinates.lon,
-            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
-            FROM docs
-            LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
-            LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
-            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-            LEFT JOIN source ON docs.id = source.doc_id
-            LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
-            LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
-            LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
-            WHERE objs_docs.obj_id = %s
-            GROUP BY docs.id
-            """, obj_id)
-        
-        docs = dic_cur.fetchall()
-        # docs = sorted(docs, key=lambda doc: int(doc['obj_id']))
-        html = render_template(
-                'docs_table.html',
-                docs=docs, 
-                )
-    else:
-        html = 'Нет группы'
-
-    return jsonify(html=html)
-
 @app.route('/doc/<doc_id>', methods=['GET','POST'])
 def doc(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
@@ -148,6 +111,14 @@ def doc(doc_id):
         WHERE doc_coordinates.doc_id = %s
         """, doc_id)
     coord = dic_cur.fetchone()
+
+    dic_cur.execute("""SELECT
+        objs_docs.obj_id FROM objs_docs
+        WHERE objs_docs.doc_id = %s
+        """, doc_id)
+    picked_group_sql = dic_cur.fetchone()
+
+   
 
     return render_template(
             'doc.html',
@@ -257,6 +228,13 @@ def doc_edit_post(doc_id):
             (data['name'],doc_id))
 
         dic_cur.execute("""UPDATE
+            doc_coordinates
+            SET doc_coordinates.lat = %s,
+                doc_coordinates.lon = %s
+            WHERE doc_coordinates.doc_id = %s""",
+            (data['lat'], data['lon'], doc_id))
+
+        dic_cur.execute("""UPDATE
             source
             SET source.source_type_id = %s
             WHERE source.doc_id = %s""",
@@ -267,6 +245,48 @@ def doc_edit_post(doc_id):
     else:
         return 'Err'
 
+@app.route('/docs_in_obj/<doc_id>', methods=['POST'])
+def docs_in_obj(doc_id):
+    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
+
+    dic_cur.execute("""SELECT
+        objs_docs.obj_id FROM objs_docs
+        WHERE objs_docs.doc_id = %s
+        """, doc_id)
+    picked_group_sql = dic_cur.fetchone()
+
+    docs = None
+    if picked_group_sql:
+        obj_id = picked_group_sql['obj_id']
+        dic_cur.execute("""SELECT 
+            docs.id, 
+            objs_docs.obj_id, 
+            docs.name, 
+            dic_source_type.name AS 'source_type', 
+            objs.name, doc_coordinates.lat, 
+            doc_coordinates.lon,
+            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi' 
+            FROM docs
+            LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
+            LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
+            LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            LEFT JOIN source ON docs.id = source.doc_id
+            LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
+            LEFT JOIN objs ON objs.obj_id = objs_docs.obj_id
+            LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+            WHERE objs_docs.obj_id = %s
+            GROUP BY docs.id
+            """, obj_id)
+        
+        docs = dic_cur.fetchall()
+
+    html = render_template('docs_in_obj.html',
+                            docs=docs)
+
+    return jsonify(html=html)
+
+
 @app.route('/obj/<obj_id>')
 def obj(obj_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
@@ -275,7 +295,6 @@ def obj(obj_id):
         docs.id, 
         objs_docs.obj_id,
         docs.name,
-        
         dic_source_type.name AS 'source_type', 
         doc_coordinates.lat, 
         doc_coordinates.lon,
@@ -399,14 +418,14 @@ def obj_create(doc_id):
     obj_name = dic_cur.fetchone()
 
     dic_cur.execute("""INSERT INTO
-            objs (obj_id, name)
-            VALUES (%s,%s)
-            """, (obj_id, obj_name['name']))
-
-    dic_cur.execute("""INSERT INTO
             objs_docs (obj_id, doc_id)
             VALUES (%s,%s)
             """, (obj_id, doc_id))
+
+    dic_cur.execute("""INSERT INTO
+            objs (obj_id, name)
+            VALUES (%s,%s);
+            """, (obj_id, obj_name['name']))
     
     dic_cur.execute("""INSERT INTO
             log_objs (user_id, obj_id)
@@ -462,6 +481,7 @@ def obj_docs(obj_id):
             FROM objs
             WHERE objs.obj_id = %s
             """, obj_id)
+
         return 'Empty'
 
     else:
@@ -509,6 +529,8 @@ def docs_table():
             docs.name, 
             dic_source_type.name AS 'source_type', 
             dic_pi.id AS 'pi_id',
+            doc_coordinates.lat, 
+            doc_coordinates.lon,
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
             GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
             FROM docs
@@ -516,6 +538,7 @@ def docs_table():
             LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
             LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
             LEFT JOIN source ON docs.id = source.doc_id
+            LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             WHERE FIND_IN_SET (doc_pi.pi_id, %s) AND docs.name LIKE %s AND FIND_IN_SET (dic_source_type.id, %s)
             GROUP BY docs.id
@@ -527,26 +550,24 @@ def docs_table():
     html = render_template(
         'docs_table.html',
         docs=docs,
-        count=count
+        count=count,
+        user=session.get('user')
         )
 
     return jsonify(html=html)
 
-@app.route('/export.csv')
-def generate_csv():
+@app.route('/down')
+def download_registry():
     
-
-    def generate():
-        dic_cur.execute("""SELECT
+    dic_cur.execute("""SELECT
             docs.id, 
             objs_docs.obj_id, 
             docs.name, 
             dic_source_type.name AS 'source_type', 
-            dic_pi.id AS 'pi_id',
-            doc_coordinates.lat,
-            doc_coordinates.lon,
             GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi'
+            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi',
+            doc_coordinates.lat,
+            doc_coordinates.lon
             FROM docs
             LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
             LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
@@ -556,13 +577,12 @@ def generate_csv():
             LEFT JOIN doc_coordinates ON doc_coordinates.doc_id = docs.id
             GROUP BY docs.id
             """)
-        # docs = dic_cur.fetchall()
 
-        for row in dic_cur.fetchall():
-            yield ';'.join(row) + '\n'
+    docs = dic_cur.fetchall()
 
-    return Response(generate(), mimetype='text/csv')
-
+    
+    return excel.make_response(docs, 'csv')
+        
 
 @app.route('/log/<user>', methods=['GET','POST'])
 def log(user):

@@ -43,7 +43,7 @@
         var lon = docs[i].lon;
         var lat = docs[i].lat;
         var objLocation = new L.LatLng(lat, lon);
-        var docMarker = new L.Marker(objLocation).addTo(map).bindPopup("id: "+(docs[i].id).toString()+"</br> name: "+docs[i].name);
+        var docMarker = new L.Marker(objLocation).addTo(map).bindPopup('<a href="/doc/'+docs[i].id+'">№ '+(docs[i].id).toString()+'</br> Название: '+docs[i].name+'</a>');
         map.addLayer(docMarker)
         var popup = L.popup();
     }

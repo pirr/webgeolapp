@@ -3,8 +3,10 @@
 <script type="text/javascript">
 function postDataDoc() {
     var features_pis_id = new Array();
-    var doc_name = $('#doc_name:input').val()
-    var source_type_id = $('#source_type:checked').val()
+    var doc_name = $('#doc_name:input').val();
+    var doc_lon = $('#doc_lon:input').val();
+    var doc_lat = $('#doc_lat:input').val();
+    var source_type_id = $('#source_type:checked').val();
     $('#features_pis:checked').each(function(){
         features_pis_id[features_pis_id.length] = $(this).val()
     });
@@ -14,6 +16,8 @@ function postDataDoc() {
         url: '/doc_edit_post/{{doc.id}}',
         data: JSON.stringify({features_pis_id:features_pis_id,
                             name:doc_name,
+                            lon:doc_lon,
+                            lat:doc_lat,
                             source_type_id:source_type_id}),
         success: function(response) {
             if (response=='Err') 'Err';
@@ -55,7 +59,8 @@ function canselEdit() {
                 }).addTo(map);
             
                 L.marker([{{coord.lat}},{{coord.lon}}]).addTo(map)
-                    .bindPopup('{{coord.lat}}, {{coord.lon}}').openPopup();
+                    .bindPopup('<input type="text" class="form-control" value = {{coord.lat}} id="doc_lat"></br>'+
+                        '<input type="text" class="form-control" value = {{coord.lon}} id="doc_lon">', {maxWidth: 300, minWidth: 250, maxHeight: 160, autoPan: true, closeButton: true, autoPanPadding: [5, 5]}).openPopup();
 
                 var popup = L.popup();
 
@@ -68,10 +73,7 @@ function canselEdit() {
                 map.on('click', onMapClick);
                 L.control.fullscreen().addTo(map);
             </script>
-
-
     </tr>
-
     <tr><td>Вид документа регистрации:</td>
     <td>
         <select class="form-control">
@@ -85,14 +87,14 @@ function canselEdit() {
     <tr><td>Орган регистрации:</td><td></td></tr>
     <tr><td>Субъект РФ:</td><td></td></tr>
     <tr><td>Административный район:</td><td></td></tr>
-    <tr><td>Входимость в объект (группу):</td>
-        <td colspan="2">
-            <script type="text/javascript">
-                html_response('/object/{{doc.id}}', '#docs')
-            </script>
-            <div id="docs"></div>
+    <tr>
+        <td>Входимость в объект (группу):</td>
+            <td colspan="2">
+                <script type="text/javascript">
+                    html_response('/docs_in_obj/{{doc.id}}', '#docs')
+                </script>
+                <div id="docs"></div>
         </td>
-    </tr>
     </table>
     <table class="table table-bordered">
     <caption>Запасы</caption>

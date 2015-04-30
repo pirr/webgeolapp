@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 {% block script %}
+
+<!-- LEAFLET -->
+<link rel="stylesheet" href="/static/ext/leaflet/leaflet.css" />
+<script src="/static/ext/leaflet/leaflet.js"></script>
+<script src="/static/ext/leaflet/fullscreen/Leaflet.fullscreen.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/static/ext/leaflet/fullscreen/leaflet.fullscreen.css"/>
+<!-- ! -->
+
 <script type="text/javascript">
 var selected_pis;
 var selected_sources;
@@ -63,14 +71,12 @@ function DataDocs(butt){
         success: function(response) {
             if ($(butt).attr('id') == 'postDataDocs')
             $('#search_results').html(response.html);
-            // else if ($(butt).attr('id') == 'saveCsvDocs')
-            // window.open('/export.csv', '_blank');
         }
     });
 }
 
 function saveCsvDocs(){
-    window.open('/export.csv', '_blank');
+    window.open('/down', '_blank');
 }
 </script>
 <link rel="stylesheet" href="/static/ext/bootstrap/multiple_select/css/bootstrap-multiselect.css" type="text/css"/>
@@ -101,10 +107,10 @@ function saveCsvDocs(){
             </select>
             </td>
             <td align="center">
-            <button type="submit" id="postDataDocs" name="postDataDocs" class="btn btn-default" onclick="DataDocs(this)">Найти</button>
+            <button id="postDataDocs" name="postDataDocs" class="btn btn-default" onclick="DataDocs(this)">Найти</button>
             </td>
             <td align="center">
-            <button type="submit" id="saveCsvDocs" name="saveCsvDocs" class="btn btn-default" onclick="saveCsvDocs()">Рееестр в CSV</button>
+            <button id="saveCsvDocs" name="saveCsvDocs" class="btn btn-default" onclick="saveCsvDocs()">Рееестр в CSV</button>
             </td>
         </tr>
     </table>
