@@ -14,6 +14,7 @@
 <th>полезные ископаемые</th>
 <th>группа пи</th>
 </tr>
+
 {% for doc in docs %}
     <tr>
         <td><a href="/obj/{{doc.obj_id}}" target="blank">{{doc.obj_id}}</a></td>
@@ -24,4 +25,5 @@
         <td>{{doc.group_pi}}</td>
     </tr>
 {% endfor %}
+
 </table>

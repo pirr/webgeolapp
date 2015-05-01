@@ -3,49 +3,49 @@
 <link rel="stylesheet" href="/static/ext/leaflet/fullscreen/leaflet.fullscreen.css"/>
 
 <table class="table table-bordered">
-<caption>Документы в объекте</caption>
-    <col width="10">
-    <col width="40">
-    <col width="250">
-    <col width="150">
-    <col width="150">
-    <tr>
-        <th>выбор</th>
-        <th>номер объекта</th>
-        <th>номер документа</th>
-        <th>источник</th>
-        <th>название</th>
-        <th>полезное ископмое</th>
-        <th>группы пи</th>
-    </tr>
-
- {% for doc in obj %}
-    <tr>
-    <td>
-    <button class="btn btn-xs btn-danger" id="doc_id_push" onclick="pushDoc()" value="{{doc.id}}">Удалить</button>
-    </td>
-        <td><a href="/obj/{{doc.obj_id}}">{{doc.obj_id}}</a></td>
-        <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
-        <td>{{doc.source_type}}</td>
-        <td>{{doc.name}}</td>
-        <td>{{doc.pi}}</td>
-        <td>{{doc.group_pi}}</td>
-    </tr>
-{% endfor %}
+<col width="10">
+<col width="40">
+<col width="40">
+<col width="150">
+<col width="350">
+<col width="250">
+<col width="150">
+    <caption>Документы в объекте</caption>
+        <tr>
+            <th>выбор</th>
+            <th>номер объекта</th>
+            <th>номер документа</th>
+            <th>источник</th>
+            <th>название</th>
+            <th>полезное ископмое</th>
+            <th>группы пи</th>
+        </tr>
+     {% for doc in obj %}
+        <tr>
+        <td>
+        <button class="btn btn-xs btn-danger" id="doc_id_push" onclick="pushDoc()" value="{{doc.id}}">Удалить</button>
+        </td>
+            <td><a href="/obj/{{doc.obj_id}}">{{doc.obj_id}}</a></td>
+            <td><a href="/doc/{{doc.id}}" target="_blank">{{doc.id}}</a></td>
+            <td>{{doc.source_type}}</td>
+            <td>{{doc.name}}</td>
+            <td>{{doc.pi}}</td>
+            <td>{{doc.group_pi}}</td>
+        </tr>
+    {% endfor %}
 </table>
 
 <div id="map" style="width: 600px; height: 400px"></div>
 <script>
-L.Map = L.Map.extend({
-    openPopup: function(popup) {
-        //        this.closePopup();  // just comment this
-        this._popup = popup;
-
-        return this.addLayer(popup).fire('popupopen', {
-            popup: this._popup
-        });
-    }
-});
+    L.Map = L.Map.extend({
+        openPopup: function(popup) {
+            //        this.closePopup();
+            this._popup = popup;
+            return this.addLayer(popup).fire('popupopen', {
+                popup: this._popup
+            });
+        }
+    });
     var map = L.map('map').setView([{{obj[0].lat}},{{obj[0].lon}}], 10);
     L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
         maxZoom: 18,
