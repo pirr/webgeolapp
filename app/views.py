@@ -8,7 +8,7 @@ import csv
 import io
 import app.calculation_module as calc
 
-app = Flask(__name__)
+from app import app
 
 dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 cur = db.dbCon().cursor(pymysql.cursors.Cursor)
