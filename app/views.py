@@ -562,14 +562,14 @@ def docs_table():
 def generate_registry():
 
     dic_cur.execute("""SELECT
-            docs.id, 
-            objs_docs.obj_id, 
-            docs.name, 
-            dic_source_type.name AS 'source_type', 
-            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'group_pi',
-            doc_coordinates.lat,
-            doc_coordinates.lon
+            docs.id AS '№ п/п', 
+            objs_docs.obj_id AS '№ объекта', 
+            docs.name AS 'Название', 
+            dic_source_type.name AS 'Источник', 
+            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'Полезные ископаемые',
+            GROUP_CONCAT(DISTINCT dic_pi.type_pi ORDER BY dic_pi.type_pi SEPARATOR ', ') AS 'Группа ПИ',
+            doc_coordinates.lat AS 'Широта',
+            doc_coordinates.lon AS 'Долгота'
             FROM docs
             LEFT JOIN objs_docs ON docs.id = objs_docs.doc_id
             LEFT JOIN doc_pi ON docs.id = doc_pi.doc_id 
@@ -582,8 +582,8 @@ def generate_registry():
 
     docs = dic_cur.fetchall()
     sio = io.StringIO()
-    fieldnames =['id','obj_id','name','source_type',
-        'pi','group_pi','lat','lon']
+    fieldnames =['№ п/п','№ объекта','Название','Источник',
+        'Полезные ископаемые','Группа ПИ','Широта','Долгота']
     dict_writer = csv.DictWriter(sio, fieldnames=fieldnames, delimiter=';', lineterminator='\n', extrasaction='ignore')
     dict_writer.writeheader()
     dict_writer.writerows(docs)
