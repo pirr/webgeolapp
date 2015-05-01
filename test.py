@@ -1,7 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
 
 import pymysql
 import app.db_con as db
+import csv
+import StringIO
 
 app = Flask(__name__)
 
@@ -31,8 +33,17 @@ def docs_table():
 
     return render_template('test.html',
                             docs=docs)
-
-
+    
+    strIO = StringIO.StringIO()
+    csvfile = io.StringIO.StringIO()
+    fieldnames = ['id','obj_id','name','source_type','pi','group_pi','lat','lon']
+    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';', lineterminator='\n', extrasaction='ignore')
+    writer.writeheader()
+    for doc in docs:
+        writer.writerow(doc)
+    strIO.write(csvfile)
+    strIO.seek(0)
+    return send_file(strIO, attachment_filename='export.csv', as_attachment=True)
 
 if __name__ == "__main__":
     app.run(
@@ -40,11 +51,3 @@ if __name__ == "__main__":
         host="0.0.0.0"
         )
 
-    csvfile = io.StringIO.StringIO()
-    fieldnames = ['id','obj_id','name','source_type','pi','group_pi','lat','lon']
-    writer = csv.DictWriter(csvfile, fieldnames=fieldnames, delimiter=';', lineterminator='\n', extrasaction='ignore')
-    writer.writeheader()
-    for doc in docs:
-        writer.writerow(doc)
-   
-    return send_file(csvfile, attachment_filename='export.csv', as_attachment=True)

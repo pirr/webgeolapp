@@ -1,12 +1,14 @@
-from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, Response
+from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, Response, make_response
 from flask.ext import excel
 import importlib
 import pymysql
+import pyexcel as pe
 import app.db_con as db
-import csv, io
+import csv
+import io
 import app.calculation_module as calc
 
-from app import app
+app = Flask(__name__)
 
 dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 cur = db.dbCon().cursor(pymysql.cursors.Cursor)
@@ -556,9 +558,9 @@ def docs_table():
 
     return jsonify(html=html)
 
-@app.route('/down')
-def download_registry():
-    
+@app.route('/download', methods=['GET'])
+def generate_registry():
+
     dic_cur.execute("""SELECT
             docs.id, 
             objs_docs.obj_id, 
@@ -579,9 +581,17 @@ def download_registry():
             """)
 
     docs = dic_cur.fetchall()
+    sio = io.StringIO()
+    fieldnames =['id','obj_id','name','source_type',
+        'pi','group_pi','lat','lon']
+    dict_writer = csv.DictWriter(sio, fieldnames=fieldnames, delimiter=';', lineterminator='\n', extrasaction='ignore')
+    dict_writer.writeheader()
+    dict_writer.writerows(docs)
+    response = make_response((sio.getvalue()).encode("windows-1251"))
+    response.headers["Content-Disposition"] = "attachment; filename=registry.csv"
     
-    return excel.make_response(docs, 'csv')
-
+    return response
+ 
 @app.route('/log/<user>', methods=['GET','POST'])
 def log(user):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
@@ -631,3 +641,8 @@ def login():
 def logout():
     session.clear()
     return 'clear'
+
+app.run(
+        debug=True, 
+        host="0.0.0.0"
+        )
