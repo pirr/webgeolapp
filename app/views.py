@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, make_response
-from flask.ext import excel
 import importlib
 import pymysql
-import pyexcel as pe
-import app.db_con as db
 import csv
 import io
 import app.calculation_module as calc
+import app.db_con as db
 
 from app import app
 
