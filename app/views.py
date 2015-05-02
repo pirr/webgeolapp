@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, Response, make_response
+from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, make_response
 from flask.ext import excel
 import importlib
 import pymysql
@@ -559,7 +559,7 @@ def docs_table():
     return jsonify(html=html)
 
 @app.route('/download', methods=['GET'])
-def generate_registry():
+def download_registry():
 
     dic_cur.execute("""SELECT
             docs.id AS '№ п/п', 
