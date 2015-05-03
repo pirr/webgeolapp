@@ -381,11 +381,12 @@ def obj_search(obj_id):
             LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
-            WHERE docs.name LIKE %s
-                AND objs_docs.obj_id IS NULL
+            WHERE docs.name LIKE %s AND objs_docs.obj_id IS NULL 
+                OR docs.name LIKE %s AND objs_docs.obj_id <> %s
             GROUP BY docs.id
             LIMIT 250
-            """, '%'+data['searchname']+'%')
+            """, ('%'+data['searchname']+'%', 
+                '%'+data['searchname']+'%', obj_id))
 
     docs = dic_cur.fetchall()
     html = render_template(
@@ -445,12 +446,22 @@ def obj_docs(obj_id):
                 FROM objs_docs
                 WHERE objs_docs.doc_id = %s
                 """, data['doc_id_push'])
-    
+
     if 'doc_id_pull' in data:
-        dic_cur.execute("""INSERT IGNORE INTO
-                objs_docs (obj_id, doc_id)
-                VALUES (%s,%s)
-                """, (obj_id, data['doc_id_pull']))
+        dic_cur.execute("""SELECT 
+                objs_docs.obj_id
+                FROM objs_docs
+                WHERE objs_docs.doc_id = %s
+                """, data['doc_id_pull'])
+        obj_id_pull = dic_cur.fetchone()
+        
+        if obj_id_pull:
+            return 'Документ уже в группе'
+        else:
+            dic_cur.execute("""INSERT IGNORE INTO
+                    objs_docs (obj_id, doc_id)
+                    VALUES (%s,%s)
+                    """, (obj_id, data['doc_id_pull']))
     
     dic_cur.execute("""SELECT 
             docs.id, 

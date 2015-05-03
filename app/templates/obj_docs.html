@@ -10,18 +10,20 @@
 <col width="350">
 <col width="250">
 <col width="150">
-    <caption>Документы в объекте</caption>
-        <tr>
-            <th>выбор</th>
-            <th>номер объекта</th>
-            <th>номер документа</th>
-            <th>источник</th>
-            <th>название</th>
-            <th>полезное ископмое</th>
-            <th>группы пи</th>
-        </tr>
-     {% for doc in obj %}
-        <tr>
+<col width="50">
+<caption>Документы в объекте</caption>
+    <tr>
+        <th>выбор</th>
+        <th>номер объекта</th>
+        <th>номер документа</th>
+        <th>источник</th>
+        <th>название</th>
+        <th>полезное ископмое</th>
+        <th>группы пи</th>
+        <th>расстояние, м</th>
+    </tr>
+    {% for doc in obj %}
+    <tr>
         <td>
         <button class="btn btn-xs btn-danger" id="doc_id_push" onclick="pushDoc()" value="{{doc.id}}">Удалить</button>
         </td>
@@ -31,7 +33,8 @@
             <td>{{doc.name}}</td>
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
-        </tr>
+            <td></td>
+    </tr>
     {% endfor %}
 </table>
 
@@ -59,7 +62,8 @@
         var lon = obj[i].lon;
         var lat = obj[i].lat;
         var objLocation = new L.LatLng(lat, lon);
-        var docMarker = new L.Marker(objLocation).addTo(map).bindPopup('<a href="/doc/'+obj[i].id+'"target="blank">№ '+(obj[i].id).toString()+'</br> Название: '+obj[i].name+'</a>');
+        var docMarker = new L.Marker(objLocation).addTo(map).bindPopup(
+            '<a href="/doc/'+obj[i].id+'"target="blank">№ '+(obj[i].id).toString()+'</br> Название: '+obj[i].name+'</a>');
         map.addLayer(docMarker)
         var popup = L.popup();
     }

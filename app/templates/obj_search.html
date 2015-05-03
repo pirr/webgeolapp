@@ -8,7 +8,7 @@
     <col width="150">
     <caption>Результаты поиска</caption>
         <tr>
-            <th>выбор</th>
+            <th>в объект</th>
             <th>номер объекта</th>
             <th>номер документа</th>
             <th>источник</th>
@@ -18,10 +18,13 @@
         </tr>
         {% for doc in docs %}
         <tr>
+        {% if doc.obj_id %}
+        <td>в объекте</td>
+        {% else %}
         <td>
             <button class="btn btn-xs btn-success" id="doc_id_pull" onclick="pullDoc()" value="{{doc.id}}">Добавить</button>
         </td>
-            
+        {% endif %}            
         {% if doc.obj_id %}
             <td id="obj_id" value="{{doc.obj_id}}"><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
         {% else %}
