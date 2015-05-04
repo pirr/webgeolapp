@@ -27,7 +27,6 @@ function search(url){
         url: url,
         data: JSON.stringify({searchname: searchname}),
         success: function(response) {
-            console.log(response);
             $('#search_results').html(response.html)
         }
     });

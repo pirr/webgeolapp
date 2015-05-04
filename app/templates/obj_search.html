@@ -1,3 +1,18 @@
+<script type="text/javascript">
+    $(document).on('click','#doc_id_pull', function(){
+    var doc_id_pull = $(this).attr('value');
+    console.log(doc_id_pull)
+    $.ajax({
+        type: "POST",
+        url: '/obj_docs/{{obj_id}}',
+        data: JSON.stringify({doc_id_pull:doc_id_pull}),
+        success: function(response) {
+            search('/obj_search/{{obj_id}}');
+            $('#obj_docs').html(response.html);
+        }
+    });
+});    
+</script>
 <table class="table table-bordered">
     <col width="10">
     <col width="40">
@@ -8,7 +23,7 @@
     <col width="150">
     <caption>Результаты поиска</caption>
         <tr>
-            <th>в объект</th>
+            <th>выбор</th>
             <th>номер объекта</th>
             <th>номер документа</th>
             <th>источник</th>
@@ -16,15 +31,13 @@
             <th>полезное ископаемое</th>
             <th>группа пи</th>
         </tr>
+
         {% for doc in docs %}
+        <div id="search_res" value="{{doc.id}}">
         <tr>
-        {% if doc.obj_id %}
-        <td>в объекте</td>
-        {% else %}
-        <td>
-            <button class="btn btn-xs btn-success" id="doc_id_pull" onclick="pullDoc()" value="{{doc.id}}">Добавить</button>
-        </td>
-        {% endif %}            
+            <td>
+                <button class="btn btn-xs btn-success" id="doc_id_pull" value="{{doc.id}}">Добавить</button>
+            </td>
         {% if doc.obj_id %}
             <td id="obj_id" value="{{doc.obj_id}}"><a href="/obj/{{doc.obj_id}}" target="_blank">{{doc.obj_id}}</a></td>
         {% else %}
@@ -36,5 +49,6 @@
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
         </tr>
+        </div>
         {% endfor %}
 </table>

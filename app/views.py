@@ -381,8 +381,8 @@ def obj_search(obj_id):
             LEFT JOIN source ON docs.id = source.doc_id
             LEFT JOIN dic_source_type ON dic_source_type.id = source.source_type_id
             LEFT JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
-            WHERE docs.name LIKE %s AND objs_docs.obj_id IS NULL 
-                OR docs.name LIKE %s AND objs_docs.obj_id <> %s
+            WHERE (docs.name LIKE %s AND objs_docs.obj_id IS NULL) 
+                OR (docs.name LIKE %s AND objs_docs.obj_id <> %s)
             GROUP BY docs.id
             LIMIT 250
             """, ('%'+data['searchname']+'%', 
@@ -391,7 +391,8 @@ def obj_search(obj_id):
     docs = dic_cur.fetchall()
     html = render_template(
         'obj_search.html',
-        docs=docs
+        docs=docs,
+        obj_id=obj_id
         )
 
     return jsonify(html=html)
@@ -454,7 +455,7 @@ def obj_docs(obj_id):
                 WHERE objs_docs.doc_id = %s
                 """, data['doc_id_pull'])
         obj_id_pull = dic_cur.fetchone()
-        
+
         if obj_id_pull:
             return 'Документ уже в группе'
         else:
@@ -463,6 +464,24 @@ def obj_docs(obj_id):
                     VALUES (%s,%s)
                     """, (obj_id, data['doc_id_pull']))
     
+    # docs_res = None
+    # if 'docs_id_search' in data:
+    #     docs_id_search = ','.join(map(str,data['docs_id_search']))
+    #     dic_cur.execute("""SELECT
+    #         docs.id, 
+    #         docs.name,
+    #         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+    #         doc_coordinates.lat, 
+    #         doc_coordinates.lon
+    #         FROM docs
+    #         JOIN doc_pi ON docs.id = doc_pi.doc_id 
+    #         JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+    #         JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+    #         WHERE FIND_IN_SET(docs.id, %s)
+    #         GROUP BY docs.id
+    #         """, docs_id_search)
+    #     docs_res = dic_cur.fetchall()
+
     dic_cur.execute("""SELECT 
             docs.id, 
             objs_docs.obj_id, 
@@ -498,7 +517,9 @@ def obj_docs(obj_id):
     else:
         html = render_template(
             'obj_docs.html',
-            obj=obj)
+            obj=obj,
+            obj_id=obj_id
+            )
         return jsonify(html=html)
 
 @app.route('/obj_edit_post/<obj_id>', methods=['GET','POST'])
@@ -650,6 +671,16 @@ def login():
 def logout():
     session.clear()
     return 'clear'
+
+@app.route('/test', methods=['POST'])
+def test():
+    data = request.get_json()
+    if 'docs_id_search' in data:
+        t = type(data['docs_id_search'])
+        v = data['docs_id_search']
+        return render_template('test.html',
+                               t=t,
+                               v=v) 
 
 app.run(
         debug=True, 
