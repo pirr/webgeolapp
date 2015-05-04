@@ -1,7 +1,7 @@
 <script type="text/javascript">
-    $(document).on('click','#doc_id_pull', function(){
-    var doc_id_pull = $(this).attr('value');
-    console.log(doc_id_pull)
+$(document).on('click', '#doc_id_pull', function(){
+var doc_id_pull = $(this).attr('value');
+console.log(doc_id_pull)
     $.ajax({
         type: "POST",
         url: '/obj_docs/{{obj_id}}',
@@ -11,7 +11,11 @@
             $('#obj_docs').html(response.html);
         }
     });
-});    
+});
+$(document).ready(function(){
+docs_res = {{docs|tojson}};
+console.log(docs_res)
+});
 </script>
 <table class="table table-bordered">
     <col width="10">

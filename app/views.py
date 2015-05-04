@@ -463,24 +463,25 @@ def obj_docs(obj_id):
                     objs_docs (obj_id, doc_id)
                     VALUES (%s,%s)
                     """, (obj_id, data['doc_id_pull']))
-    
-    # docs_res = None
-    # if 'docs_id_search' in data:
-    #     docs_id_search = ','.join(map(str,data['docs_id_search']))
-    #     dic_cur.execute("""SELECT
-    #         docs.id, 
-    #         docs.name,
-    #         GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
-    #         doc_coordinates.lat, 
-    #         doc_coordinates.lon
-    #         FROM docs
-    #         JOIN doc_pi ON docs.id = doc_pi.doc_id 
-    #         JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
-    #         JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
-    #         WHERE FIND_IN_SET(docs.id, %s)
-    #         GROUP BY docs.id
-    #         """, docs_id_search)
-    #     docs_res = dic_cur.fetchall()
+
+    docs_res = None
+    if 'docs_res' in data:
+        docs_res = ','.join(map(str,data['docs_res']))
+
+        dic_cur.execute("""SELECT
+            docs.id, 
+            docs.name,
+            GROUP_CONCAT(dic_pi.pi ORDER BY dic_pi.pi SEPARATOR ', ') AS 'pi',
+            doc_coordinates.lat, 
+            doc_coordinates.lon
+            FROM docs
+            JOIN doc_pi ON docs.id = doc_pi.doc_id 
+            JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+            JOIN doc_coordinates ON docs.id = doc_coordinates.doc_id
+            WHERE FIND_IN_SET(docs.id, %s)
+            GROUP BY docs.id
+            """, docs_res)
+        docs_res = dic_cur.fetchall()
 
     dic_cur.execute("""SELECT 
             docs.id, 
@@ -518,8 +519,8 @@ def obj_docs(obj_id):
         html = render_template(
             'obj_docs.html',
             obj=obj,
-            obj_id=obj_id
-            )
+            obj_id=obj_id,
+            docs_res_=docs_res)
         return jsonify(html=html)
 
 @app.route('/obj_edit_post/<obj_id>', methods=['GET','POST'])

@@ -1,7 +1,7 @@
 <script type="text/javascript">
-    $(document).on('click', '#doc_id_push', function(){
-    var doc_id_push = $(this).attr('value');
-    console.log(doc_id_push)
+$(document).on('click', '#doc_id_push', function(){
+var doc_id_push = $(this).attr('value');
+console.log(doc_id_push)
     $.ajax({
         type: "POST",
         url: '/obj_docs/{{obj_id}}',
@@ -15,8 +15,8 @@
         }
     });
 });
-</script>
 
+</script>
 <table class="table table-bordered">
 <col width="10">
 <col width="40">
@@ -50,11 +50,14 @@
     {% endfor %}
 </table>
 
+<table>
+<tr>
+<td>
 <div id="map" style="width: 600px; height: 400px"></div>
 <script>
     L.Map = L.Map.extend({
         openPopup: function(popup) {
-            //        this.closePopup();
+            //this.closePopup();
             this._popup = popup;
             return this.addLayer(popup).fire('popupopen', {
                 popup: this._popup
@@ -76,6 +79,33 @@
         map.addLayer(docMarker)
         var popup = L.popup();
     }
+    var markers = new L.layerGroup();
+    function viewOnMap(){
+        for (var i = 0; i < docs_res.length; i++) {
+            var lon = docs_res[i].lon;
+            var lat = docs_res[i].lat;
+            var docs_resLocation = new L.LatLng(lat, lon);
+            var doc_resMarker = new L.Marker(docs_resLocation).addTo(map).bindPopup('<a href="/doc/'+docs_res[i].id+'"target="blank">№ '+(docs_res[i].id).toString()+'</br> Название: '+docs_res[i].name+'</a>');
+            markers.addLayer(doc_resMarker)
+            var popup = L.popup();
+            delete(docs_res[i])
+        };
+        return false;
+    };
+    map.addLayer(markers)
+    viewOnMap();
     
+    function removeMarkers(mark){
+        map.removeLayer(mark);
+        docs_res = 0;
+    }
+
     L.control.fullscreen().addTo(map);
 </script>
+</td>
+<td>
+<button onclick="viewOnMap()">Показать результаты поиска на карте</button>
+<button onclick="removeMarkers(markers)">Удалить</button>
+</td>
+</tr>
+</table>

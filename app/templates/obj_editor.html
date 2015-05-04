@@ -1,7 +1,7 @@
 {% extends "obj_base.html" %}
 {% block script %}
 <script type="text/javascript">
-var docs_id_search = new Array();
+var docs_res = new Array();
 
 $(document).ready( function() {
     var doc_id_push = $('#doc_id_push').val();
@@ -12,11 +12,8 @@ $(document).ready( function() {
         data: JSON.stringify({doc_id_push:doc_id_push,
                                 doc_id_pull:doc_id_pull}),
         success: function(response) {
-            if (response=='Empty') 
-                window.location.replace('/objs');
-            else
-                $('#obj_docs').html(response.html);
-                search('/obj_search/{{obj.obj_id}}');
+            search('/obj_search/{{obj.obj_id}}');
+            $('#obj_docs').html(response.html);
         }
     });
 });
@@ -37,6 +34,8 @@ function postDataObj() {
         }
     })
 }
+
+
 </script>
 {% endblock %}
 
