@@ -1,6 +1,6 @@
-function login(){
-    user = $('#user').val();
-    password = $('#password').val();
+function login(user_, pass_){
+    user = $(user_).val();
+    password = $(pass_).val();
     // console.log(JSON.stringify({user:user, password:password}));
     $.ajax({
         url: '/login',
@@ -20,6 +20,7 @@ function logout() {
         }
     });
 }
+
 
 function search(url){
     var searchname = $('#searchname').val();
@@ -41,7 +42,6 @@ function open_url_self(url) {
 }
 
 function html_response(url, id){
-$(document).ready( function() {
     $.ajax({
         url: url,
         success: function(response) {
@@ -49,7 +49,6 @@ $(document).ready( function() {
             $(id).html(response.html)
         }
     });
-}); 
 }
 
 $(document).ready( function() {

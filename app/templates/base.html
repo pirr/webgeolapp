@@ -45,9 +45,9 @@
                 <li><a href="/log/{{user}}">{{user}} <span class="glyphicon glyphicon-user" aria-hidden="true"></span></a></li>
                 <li><button class="btn btn-default navbar-btn" onclick="logout()">Выйти</button></li>
             {% else %}
-                <input id="user" type="text">
-                <input id="password" type="password">
-                <button class="btn btn-default navbar-btn" onclick="login()">Войти</button>
+                <input id="user_nav" type="text">
+                <input id="password_nav" type="password">
+                <button class="btn btn-default navbar-btn" onclick="login('#user_nav', '#password_nav')">Войти</button>
             {% endif %}
             </ul>
             </div>

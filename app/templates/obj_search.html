@@ -1,4 +1,6 @@
 <script type="text/javascript">
+docs_res = {{docs|tojson}};
+
 $(document).on('click', '#doc_id_pull', function(){
 var doc_id_pull = $(this).attr('value');
 console.log(doc_id_pull)
@@ -12,19 +14,16 @@ console.log(doc_id_pull)
         }
     });
 });
-$(document).ready(function(){
-    docs_res = {{docs|tojson}};
-    console.log(docs_res)
-});
+
 </script>
 <table class="table table-bordered">
-    <col width="10">
-    <col width="40">
-    <col width="40">
-    <col width="150">
-    <col width="350">
-    <col width="250">
-    <col width="150">
+<col width="10">
+<col width="40">
+<col width="40">
+<col width="150">
+<col width="350">
+<col width="250">
+<col width="150">
     <caption>Результаты поиска</caption>
         <tr>
             <th>выбор</th>
