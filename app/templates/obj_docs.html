@@ -17,7 +17,6 @@ console.log(doc_id_push)
 });
 </script>
 
-
 <table class="table table-bordered">
 <col width="10">
 <col width="40">
@@ -54,11 +53,7 @@ console.log(doc_id_push)
 <table>
 <tr>
 <td>
-<leaflet-map>
-<leaflet-scale-control imperial="false"></leaflet-scale-control>
-
 <div id="map" style="width: 600px; height: 400px"></div>
-
 <script>
     L.Map = L.Map.extend({
         openPopup: function(popup) {
@@ -118,8 +113,6 @@ console.log(doc_id_push)
     L.control.fullscreen().addTo(map);
     L.control.scale().addTo(map);
 </script>
-</leaflet-map>
-
 </td>
 <td>
 <p>
