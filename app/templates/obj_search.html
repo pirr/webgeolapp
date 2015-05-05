@@ -13,8 +13,8 @@ console.log(doc_id_pull)
     });
 });
 $(document).ready(function(){
-docs_res = {{docs|tojson}};
-console.log(docs_res)
+    docs_res = {{docs|tojson}};
+    console.log(docs_res)
 });
 </script>
 <table class="table table-bordered">
@@ -38,8 +38,10 @@ console.log(docs_res)
 
         {% for doc in docs %}
         <div id="search_res" value="{{doc.id}}">
+
+        
         <tr>
-            <td>
+            <td ><a name="{{doc.id}}"></a>
                 <button class="btn btn-xs btn-success" id="doc_id_pull" value="{{doc.id}}">Добавить</button>
             </td>
         {% if doc.obj_id %}
@@ -53,6 +55,7 @@ console.log(docs_res)
             <td>{{doc.pi}}</td>
             <td>{{doc.group_pi}}</td>
         </tr>
+        
         </div>
         {% endfor %}
 </table>

@@ -35,6 +35,11 @@ function postDataObj() {
     })
 }
 
+function obj_search_name() {
+    docs_res = 0
+    console.log(docs_res)
+    search('/obj_search/{{obj.obj_id}}')
+}
 
 </script>
 {% endblock %}
@@ -67,7 +72,7 @@ function postDataObj() {
     <table class="table table-bordered">
         <tr>
             <td><input id="searchname" type="text" 
-                    onkeyup="search('/obj_search/{{obj.obj_id}}')" placeholder="Найти по названию" value="{{obj.name}}" />
+                    onkeyup="obj_search_name()" placeholder="Найти по названию" value="{{obj.name}}" />
             </td>
         </tr>
     </table>

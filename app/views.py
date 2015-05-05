@@ -673,15 +673,15 @@ def logout():
     session.clear()
     return 'clear'
 
-@app.route('/test', methods=['POST'])
-def test():
-    data = request.get_json()
-    if 'docs_id_search' in data:
-        t = type(data['docs_id_search'])
-        v = data['docs_id_search']
-        return render_template('test.html',
-                               t=t,
-                               v=v) 
+# @app.route('/test', methods=['POST'])
+# def test():
+#     data = request.get_json()
+#     if 'docs_id_search' in data:
+#         t = type(data['docs_id_search'])
+#         v = data['docs_id_search']
+#         return render_template('test.html',
+#                                t=t,
+#                                v=v) 
 
 app.run(
         debug=True, 

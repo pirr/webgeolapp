@@ -15,8 +15,9 @@ console.log(doc_id_push)
         }
     });
 });
-
 </script>
+
+
 <table class="table table-bordered">
 <col width="10">
 <col width="40">
@@ -53,7 +54,11 @@ console.log(doc_id_push)
 <table>
 <tr>
 <td>
+<leaflet-map>
+<leaflet-scale-control imperial="false"></leaflet-scale-control>
+
 <div id="map" style="width: 600px; height: 400px"></div>
+
 <script>
     L.Map = L.Map.extend({
         openPopup: function(popup) {
@@ -79,33 +84,48 @@ console.log(doc_id_push)
         map.addLayer(docMarker)
         var popup = L.popup();
     }
+
+
     var markers = new L.layerGroup();
+    var RedIcon = L.Icon.Default.extend({
+            options: {
+                    iconUrl: '/static/ext/leaflet/images/marker-icon-red.png' 
+            }
+         });
+         var redIcon = new RedIcon();
     function viewOnMap(){
+        clearMap()
         for (var i = 0; i < docs_res.length; i++) {
             var lon = docs_res[i].lon;
             var lat = docs_res[i].lat;
             var docs_resLocation = new L.LatLng(lat, lon);
-            var doc_resMarker = new L.Marker(docs_resLocation).addTo(map).bindPopup('<a href="/doc/'+docs_res[i].id+'"target="blank">№ '+(docs_res[i].id).toString()+'</br> Название: '+docs_res[i].name+'</a>');
+            var doc_resMarker = new L.Marker(docs_resLocation, {icon: redIcon}).bindPopup('<a href="/doc/'+docs_res[i].id+'"target="blank">№ '+(docs_res[i].id).toString()+'</br> Название: '+docs_res[i].name+'</a>'+'</br> <a href="#'+docs_res[i].id+'"><em>перейти в таблице</em></a>');
             markers.addLayer(doc_resMarker)
             var popup = L.popup();
-            delete(docs_res[i])
+            
         };
+        map.addLayer(markers)
         return false;
     };
-    map.addLayer(markers)
-    viewOnMap();
     
-    function removeMarkers(mark){
-        map.removeLayer(mark);
-        docs_res = 0;
+    function clearMap(){
+        if (map.hasLayer(markers)){
+            markers.clearLayers();
+            console.log('remove from map')
+        }
     }
 
     L.control.fullscreen().addTo(map);
+    L.control.scale().addTo(map);
 </script>
+</leaflet-map>
+
 </td>
 <td>
-<button onclick="viewOnMap()">Показать результаты поиска на карте</button>
-<button onclick="removeMarkers(markers)">Удалить</button>
+<p>
+<button class="btn btn-info" style="margin-left: 3px;" onclick="viewOnMap()">Показать результаты</br> поиска на карте</button>
+</p>
+<button class="btn btn-info" style="margin-left: 3px;" onclick="clearMap()">Очистить</button>
 </td>
 </tr>
 </table>
