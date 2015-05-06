@@ -181,7 +181,10 @@ def doc_editor(doc_id):
             sources_type.remove(source)
     
     dic_pi = filters.pis()
-    for pi in pis: dic_pi.remove(pi)
+    for pi in pis:
+         
+        if pi['pi_id'] == dic_pi['pi_id']:
+            dic_pi.remove(pi)
 
     return render_template(
             'doc_editor.html',
