@@ -79,7 +79,7 @@ function canselEdit() {
     <td>
         <select class="form-control">
         <option id="source_type" value="{{source_type.id}}">{{source_type.name}}</option>
-        {% for source in dic_source_types %}
+        {% for source in sources_type %}
         <option id="source_type" value="{{source.id}}">{{source.name}}</option>
         {% endfor %}
         </select>
@@ -96,19 +96,50 @@ function canselEdit() {
                 </script>
                 <div id="docs"></div>
         </td>
+    <tr>
+        <td>Полезные ископаемые: </td>
+        <td>
+        {% for pi in pis %}
+        {}
     </table>
     <table class="table table-bordered">
+
     <caption>Запасы</caption>
     <tr>
         <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
     </tr>
+
+    <tr>
     {% for pi in pis %}
     <tr>
-        <td></td>
-        <td></td>
-        <td></td><td></td><td></td><td></td><td></td><td></td>
+        <td>
+        <select class="form-control">
+        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% for pi in dic_pi %}
+        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% endfor %}
+        </select>
+        </td>
+        <td>
+        {{pi.type_pi}}
+        </td>
+        <td></td><td></td><td>
+        </td><td></td><td></td><td></td>
+        <td><button class="btn btn-xs btn-danger" id="piDel" value="{{pi.pi_id}}">удалить</button>
+        </td>
     </tr>
     {% endfor %}
+    </tr>
+    <tr>
+        <td>
+        <select class="form-control">
+        {% for pi in dic_pi %}
+        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% endfor %}
+        </select>
+        </td>
+        <td colspan="10"><button id="piAdd" class="btn btn-success">+ Добавить полезное ископаемое</button></td>
+    </tr>
     </table>
 
     <table  class="table table-bordered">
@@ -121,23 +152,36 @@ function canselEdit() {
     <tr>
     {% for pi in pis %}
     <tr>
-        <td><select class="form-control">
+        <td>
+        <select class="form-control">
         <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
         {% for pi in dic_pi %}
         <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
         {% endfor %}
         </select>
         </td>
-
         <td>
         {{pi.type_pi}}
         </td>
         <td></td><td></td><td></td><td></td>
         <td></td><td></td><td></td><td></td>
+        <td><button class="btn btn-xs btn-danger" id="piDel" value="{{pi.pi_id}}">удалить</button>
+        </td>
     </tr>
     {% endfor %}
     </tr>
+    <tr>
+        <td>
+        <select class="form-control">
+        {% for pi in dic_pi %}
+        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% endfor %}
+        </select>
+        </td>
+        <td colspan="10"><button id="piAdd" class="btn btn-success">+ Добавить полезное ископаемое</button></td>
+    </tr>
     </table>
+    
 </div>
 
 

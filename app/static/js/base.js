@@ -21,7 +21,6 @@ function logout() {
     });
 }
 
-
 function search(url){
     var searchname = $('#searchname').val();
     $.ajax({

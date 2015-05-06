@@ -1,10 +1,15 @@
 from flask import Flask, render_template, request, session, jsonify, json, url_for, redirect, make_response
+
 import importlib
 import pymysql
 import csv
 import io
+
+###self modules###
 import app.calculation_module as calc
 import app.db_con as db
+import app.filters as filters
+
 
 from app import app
 
@@ -22,20 +27,9 @@ def main():
 
 @app.route('/docs', methods=['POST', 'GET'])
 def docs():
-    dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)    
-
-    dic_cur.execute("""SELECT 
-        dic_pi.id AS 'pi_id', 
-        dic_pi.pi, 
-        dic_pi.type_pi 
-        FROM dic_pi""")
-    dic_pi = dic_cur.fetchall()
-
-    dic_cur.execute("""SELECT * 
-        FROM dic_source_type 
-        """)
-    sources_type = dic_cur.fetchall()
-
+    dic_pi = filters.pis()
+    sources_type = filters.sources_type()
+    
     return render_template(
             'docs.html',
             dic_pi=dic_pi,
@@ -65,7 +59,6 @@ def objs():
         WHERE objs_docs.obj_id IS NOT NULL 
         GROUP BY objs_docs.obj_id
         """)
-    
     objs = dic_cur.fetchall()
 
     return render_template(
@@ -118,8 +111,6 @@ def doc(doc_id):
         """, doc_id)
     picked_group_sql = dic_cur.fetchone()
 
-   
-
     return render_template(
             'doc.html',
             doc=doc,
@@ -155,14 +146,6 @@ def doc_editor(doc_id):
         WHERE source.doc_id = %s
         """, doc_id)
     source_type = dic_cur.fetchone()
-
-    dic_cur.execute("""SELECT * 
-        FROM dic_source_type
-        """)
-    dic_source_types = dic_cur.fetchall()
-    for source in dic_source_types:
-        if source['name'] == source_type['name']:
-            dic_source_types.remove(source)
     
     dic_cur.execute("""SELECT 
         doc_coordinates.lat, 
@@ -175,26 +158,36 @@ def doc_editor(doc_id):
     dic_cur.execute("""SELECT
         dic_pi.id AS 'pi_id',
         dic_pi.pi AS 'pi', 
-        dic_pi.type_pi AS 'type_pi' 
+        dic_pi.type_pi AS 'type_pi',
+        dic_pi_units.unit,
+        doc_pi.P3,
+        doc_pi.P2,
+        doc_pi.P1,
+        doc_pi.ABC1,
+        doc_pi.C1,
+        doc_pi.C2
         FROM doc_pi
         LEFT JOIN dic_pi ON dic_pi.id = doc_pi.pi_id
+        LEFT JOIN dic_pi_units ON dic_pi_units.id = doc_pi.unit_id
         WHERE doc_pi.doc_id = %s
         """, doc_id)
     pis = dic_cur.fetchall()
 
-    dic_cur.execute("""SELECT 
-        dic_pi.id AS 'pi_id', 
-        dic_pi.pi, 
-        dic_pi.type_pi 
-        FROM dic_pi""")
-    dic_pi = dic_cur.fetchall()
+
+    
+    sources_type = filters.sources_type()
+    for source in sources_type:
+        if source['name'] == source_type['name']:
+            sources_type.remove(source)
+    
+    dic_pi = filters.pis()
     for pi in pis: dic_pi.remove(pi)
 
     return render_template(
             'doc_editor.html',
             doc=doc,
             source_type=source_type,
-            dic_source_types=dic_source_types,
+            sources_type=sources_type,
             pis=pis,
             coord=coord,
             dic_pi=dic_pi,

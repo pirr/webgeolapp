@@ -4,6 +4,8 @@
 <script type="text/javascript">
 var docs_res;
 $(document).ready( function() {
+    $.getScript("/static/js/filters.js");
+    
     //LOAD obj_docs and obj search
     var doc_id_push = $('#doc_id_push').val();
     var doc_id_pull = $('#doc_id_pull').val();
@@ -15,49 +17,6 @@ $(document).ready( function() {
         success: function(response) {
             search('/obj_search/{{obj.obj_id}}');
             $('#obj_docs').html(response.html);
-        }
-    });
-
-    //FILTERS
-    $('#sources_type').multiselect({
-        selectAllValue: 'multiselect-all',
-        includeSelectAllOption: true,
-        enableFiltering: true,
-        filterBehavior: 'text',
-        filterPlaceholder: 'Найти',
-        buttonWidth: '200px',
-        nonSelectedText: 'Выбрать источник',
-        selectAllText: 'Выбрать все',
-        allSelectedText: 'Все источники',
-        maxHeight: 300,
-        checkboxName: 'multiselect[]',
-        onChange: function(source, checked) {
-            var sources = $('#sources_type option:selected');
-            selected_sources = [];
-            $(sources).each(function(index, source){
-                selected_sources.push($(this).val());
-            });
-        }
-    });
-
-    $('#pis').multiselect({
-        selectAllValue: 'multiselect-all',
-        includeSelectAllOption: true,
-        enableFiltering: true,
-        filterBehavior: 'text',
-        filterPlaceholder: 'Найти',
-        buttonWidth: '250px',
-        nonSelectedText: 'Выбрать ПИ',
-        selectAllText: 'Выбрать все',
-        allSelectedText: 'Все ПИ',
-        maxHeight: 300,
-        checkboxName: 'multiselect[]',
-        onChange: function(pi, checked) {
-            var pis = $('#pis option:selected');
-            selected_pis = [];
-            $(pis).each(function(index, pi){
-                selected_pis.push($(this).val());
-            });
         }
     });
 });
@@ -82,8 +41,6 @@ function postDataObj() {
 }
 
 function obj_search_name() {
-    // docs_res = 0
-    // console.log(docs_res)
     search('/obj_search/{{obj.obj_id}}')
 }
 
