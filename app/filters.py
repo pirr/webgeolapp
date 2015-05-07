@@ -16,5 +16,9 @@ def sources_type():
     dic_cur.execute("""SELECT * FROM dic_source_type""")
     return dic_cur.fetchall()
 
+def dic_pi_units():
+    dic_cur.execute("""SELECT * FROM dic_pi_units""")
+    return dic_cur.fetchall()
+
 
 

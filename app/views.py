@@ -159,6 +159,7 @@ def doc_editor(doc_id):
         dic_pi.id AS 'pi_id',
         dic_pi.pi AS 'pi', 
         dic_pi.type_pi AS 'type_pi',
+        doc_pi.unit_id,
         dic_pi_units.unit,
         doc_pi.P3,
         doc_pi.P2,
@@ -172,9 +173,9 @@ def doc_editor(doc_id):
         WHERE doc_pi.doc_id = %s
         """, doc_id)
     pis = dic_cur.fetchall()
-
-
     
+    dic_pi_units = filters.dic_pi_units()
+
     sources_type = filters.sources_type()
     for source in sources_type:
         if source['name'] == source_type['name']:
@@ -182,9 +183,9 @@ def doc_editor(doc_id):
     
     dic_pi = filters.pis()
     for pi in pis:
-         
-        if pi['pi_id'] == dic_pi['pi_id']:
-            dic_pi.remove(pi)
+        for pi_ in dic_pi:
+            if pi['pi_id'] == pi_['pi_id']:
+                dic_pi.remove(pi_)
 
     return render_template(
             'doc_editor.html',
@@ -192,8 +193,9 @@ def doc_editor(doc_id):
             source_type=source_type,
             sources_type=sources_type,
             pis=pis,
-            coord=coord,
             dic_pi=dic_pi,
+            dic_pi_units=dic_pi_units,
+            coord=coord,
             user=session.get('user'),
             title='ред.док-{}'.format(doc['id'])
             )
@@ -210,7 +212,7 @@ def doc_edit_post(doc_id):
             WHERE doc_pi.doc_id = %s
             """, doc_id)
 
-        for pi_id in data['features_pis_id']:
+        for pi_id in data['pis_id']:
             dic_cur.execute("""INSERT INTO 
                 doc_pi 
                 (doc_pi.doc_id, doc_pi.pi_id)

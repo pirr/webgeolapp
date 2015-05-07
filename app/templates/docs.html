@@ -7,10 +7,12 @@
 <script src="/static/ext/leaflet/fullscreen/Leaflet.fullscreen.js" type="text/javascript"></script>
 <link rel="stylesheet" href="/static/ext/leaflet/fullscreen/leaflet.fullscreen.css"/>
 <!-- ! -->
-
+<!-- MultipleSelect -->
+<link rel="stylesheet" href="/static/ext/bootstrap/multiple_select/css/bootstrap-multiselect.css" type="text/css"/>
+<script src="/static/ext/bootstrap/multiple_select/js/bootstrap-multiselect.js" type="text/javascript"></script>
+<script src="/static/ext/bootstrap/multifilter-master/multifilter.js" type="text/javascript"></script>
+<!-- ! -->
 <script type="text/javascript">
-var selected_pis;
-var selected_sources;
 
 $(document).ready(function(){
     $.getScript("/static/js/filters.js");
@@ -18,8 +20,6 @@ $(document).ready(function(){
 
 function DataDocs(butt){
     searchname = $('#searchname').val();
-    selected_pis = selected_pis;
-    selected_sources = selected_sources;
     $.ajax({
         url: '/docs_table',
         type: 'POST',
@@ -37,9 +37,7 @@ function saveCsvDocs(){
     window.open('/download', '_blank');
 }
 </script>
-<link rel="stylesheet" href="/static/ext/bootstrap/multiple_select/css/bootstrap-multiselect.css" type="text/css"/>
-<script src="/static/ext/bootstrap/multiple_select/js/bootstrap-multiselect.js" type="text/javascript"></script>
-<script src="/static/ext/bootstrap/multifilter-master/multifilter.js" type="text/javascript"></script>
+
 {% endblock %}
 {% block body %}
 <h2>Документы</h2>

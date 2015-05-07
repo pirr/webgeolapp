@@ -1,5 +1,7 @@
+var selected_pis;
+var selected_sources;
+
 $('#sources_type').multiselect({
-    selectAllValue: 'multiselect-all',
     includeSelectAllOption: true,
     enableFiltering: true,
     filterBehavior: 'text',
@@ -19,13 +21,20 @@ $('#sources_type').multiselect({
     }
 });
 
+
+
 $('#pis').multiselect({
-    selectAllValue: 'multiselect-all',
+    numberDisplayed: 0,
     includeSelectAllOption: true,
     enableFiltering: true,
     filterBehavior: 'text',
     filterPlaceholder: 'Найти',
-    buttonWidth: '250px',
+    buttonWidth: '150px',
+    buttonText: function(options, select) {
+                if (options.length >= 0) {
+                    return 'ПИ';
+                }
+            },
     nonSelectedText: 'Выбрать ПИ',
     selectAllText: 'Выбрать все',
     allSelectedText: 'Все ПИ',

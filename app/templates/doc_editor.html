@@ -1,20 +1,25 @@
 {% extends "doc_base.html" %}
 {% block script %}
+<!-- MultipleSelect -->
+<link rel="stylesheet" href="/static/ext/bootstrap/multiple_select/css/bootstrap-multiselect.css" type="text/css"/>
+<script src="/static/ext/bootstrap/multiple_select/js/bootstrap-multiselect.js" type="text/javascript"></script>
+<script src="/static/ext/bootstrap/multifilter-master/multifilter.js" type="text/javascript"></script>
+<!-- ! -->
 <script type="text/javascript">
+$(document).ready(function(){
+    $.getScript("/static/js/filters.js");
+});
+
 function postDataDoc() {
-    var features_pis_id = new Array();
     var doc_name = $('#doc_name:input').val();
     var doc_lon = $('#doc_lon:input').val();
     var doc_lat = $('#doc_lat:input').val();
     var source_type_id = $('#source_type:checked').val();
-    $('#features_pis:checked').each(function(){
-        features_pis_id[features_pis_id.length] = $(this).val()
-    });
-    console.log(features_pis_id, doc_name, source_type_id);
+    console.log(selected_pis, doc_name, source_type_id);
     $.ajax({
         type: 'POST',
         url: '/doc_edit_post/{{doc.id}}',
-        data: JSON.stringify({features_pis_id:features_pis_id,
+        data: JSON.stringify({pis_id:selected_pis,
                             name:doc_name,
                             lon:doc_lon,
                             lat:doc_lat,
@@ -26,7 +31,7 @@ function postDataDoc() {
     });
 }
 function canselEdit() {
-    location.reload();
+    location.reload('forcedReload');
 }
 </script>
 {% endblock %}
@@ -34,14 +39,16 @@ function canselEdit() {
 {% block leftnav %}
 <li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
 {% endblock %}
+
 {% block nav %}
 <button class="btn btn-default navbar-btn" type="button" onclick="postDataDoc()">Сохранить изменения</button>
 <button class="btn btn-default navbar-btn" type="button" onclick="canselEdit()"
 >Отменить изменения</button>
 {% endblock %}
 
-<div class="container">
+
 {% block body %}
+<div class="container">
     <table class="table table-bordered">
     <caption>Данные документа</caption>
     <tr>
@@ -96,96 +103,80 @@ function canselEdit() {
                 </script>
                 <div id="docs"></div>
         </td>
-    <tr>
-        <td>Полезные ископаемые: </td>
-        <td>
+    </tr>
+    </table>
+    <div class="table-responsive">
+        <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>
+                    <select id="pis" multiple="multiple" name="select[]">
+                    {% for pi in pis %}
+                    <option value="{{pi.pi_id}}" selected="true">{{pi.pi}}</option>
+                    {% endfor %}
+                    {% for pi in dic_pi %}
+                    <option id="dic_pi" value="{{pi.pi_id}}">{{pi.pi}}</option>
+                    {% endfor %}
+                    </select>
+                </th>
+                 <th>
+                    Группа ПИ в госпрограмме
+                 </th>
+               
+                <th class="col-md-3">Ед. изм.</th>
+                <th>АBC1</th>
+                <th>C2</th>
+                <th>Документ утверждения запасов</th>
+                <th>Номер</th>
+                <th>Дата</th>
+                <th>Организация</th>
+                <th>P1</th>
+                <th>P2</th>
+                <th>P3</th>
+                <th>Без категории</th>
+                <th>Документ апробации</th>
+                <th>Номер</th>
+                <th>Дата</th>
+                <th>Организация</th>
+
+            </tr>
+        </thead>
+        
         {% for pi in pis %}
-        {pi}, 
-        </td>
-    </table>
-    <table class="table table-bordered">
-
-    <caption>Запасы</caption>
-    <tr>
-        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td><td>Номер</td><td>Дата</td><td>Организация</td>
-    </tr>
-
-    <tr>
-    {% for pi in pis %}
-    <tr>
-        <td>
-        <select class="form-control">
-        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
-        {% for pi in dic_pi %}
-        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        <tr>
+            <td>
+            {{pi.pi}}
+            </td>
+            <td>
+            {{pi.type_pi}}
+            </td>
+            <td>
+                <select class="form-control">
+                <option id="source_type" value="{{pi.unit_id}}">{{pi.unit}}</option>
+                {% for pi_unit in dic_pi_units %}
+                <option id="source_type" value="{{pi_unit.id}}">{{pi_unit.unit}}</option>
+                {% endfor %}
+                </select>
+            </td>
+            <td>{{pi.ABC1}}</td>
+            <td>{{pi.C2}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>{{pi.P1}}</td>
+            <td>{{pi.P2}}</td>
+            <td>{{pi.P3}}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
         {% endfor %}
-        </select>
-        </td>
-        <td>
-        {{pi.type_pi}}
-        </td>
-        <td></td><td></td><td>
-        </td><td></td><td></td><td></td>
-        <td><button class="btn btn-xs btn-danger" id="piDel" value="{{pi.pi_id}}">удалить</button>
-        </td>
-    </tr>
-    {% endfor %}
-    </tr>
-    <tr>
-        <td>
-        <select class="form-control">
-        {% for pi in dic_pi %}
-        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
-        {% endfor %}
-        </select>
-        </td>
-        <td colspan="10"><button id="piAdd" class="btn btn-success">+ Добавить полезное ископаемое</button></td>
-    </tr>
-    </table>
-
-    <table  class="table table-bordered">
-    <caption>Прогнозные ресурсы</caption>
-    <tr>
-        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>P1</td><td>P2</td><td>P3</td>
-        <td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
-    </tr>
-    
-    <tr>
-    {% for pi in pis %}
-    <tr>
-        <td>
-        <select class="form-control">
-        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
-        {% for pi in dic_pi %}
-        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
-        {% endfor %}
-        </select>
-        </td>
-        <td>
-        {{pi.type_pi}}
-        </td>
-        <td></td><td></td><td></td><td></td>
-        <td></td><td></td><td></td><td></td>
-        <td><button class="btn btn-xs btn-danger" id="piDel" value="{{pi.pi_id}}">удалить</button>
-        </td>
-    </tr>
-    {% endfor %}
-    </tr>
-    <tr>
-        <td>
-        <select class="form-control">
-        {% for pi in dic_pi %}
-        <option id="features_pis" value="{{pi.pi_id}}">{{pi.pi}}</option>
-        {% endfor %}
-        </select>
-        </td>
-        <td colspan="10"><button id="piAdd" class="btn btn-success">+ Добавить полезное ископаемое</button></td>
-    </tr>
-    </table>
-    
+        </table>
+    </div>
 </div>
-
-
 {% endblock %}
 
 
