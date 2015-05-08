@@ -671,15 +671,15 @@ def logout():
     session.clear()
     return 'clear'
 
-# @app.route('/test', methods=['POST'])
+# @app.route('/test', methods=['GET','POST'])
 # def test():
-#     data = request.get_json()
-#     if 'docs_id_search' in data:
-#         t = type(data['docs_id_search'])
-#         v = data['docs_id_search']
-#         return render_template('test.html',
-#                                t=t,
-#                                v=v) 
+#     tab_data = [{'a':2,'b':3,'c':5}, {'a':6,'b':7,'c':8}]
+#     return render_template('test.html', tab_data=tab_data)
+
+# @app.route('/test_data', methods=['GET','POST'])
+# def data_test():
+#     tab_data = [{'a':2,'b':3,'c':5}, {'a':6,'b':7,'c':8}]
+#     return jsonify(tab_data=tab_data)
 
 app.run(
         debug=True, 

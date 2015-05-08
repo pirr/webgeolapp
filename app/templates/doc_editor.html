@@ -1,13 +1,23 @@
 {% extends "doc_base.html" %}
 {% block script %}
-<!-- MultipleSelect -->
+<!--  -->
 <link rel="stylesheet" href="/static/ext/bootstrap/multiple_select/css/bootstrap-multiselect.css" type="text/css"/>
 <script src="/static/ext/bootstrap/multiple_select/js/bootstrap-multiselect.js" type="text/javascript"></script>
-<script src="/static/ext/bootstrap/multifilter-master/multifilter.js" type="text/javascript"></script>
+<link rel="stylesheet" href="/static/ext/bootstrap/bootstrap-table/src/bootstrap-table.css" type="text/css"/>
+<script src="/static/ext/bootstrap/bootstrap-table/src/bootstrap-table.js" type="text/javascript"></script>
+<script src="/static/ext/bootstrap/bootstrap-table/src/bootstrap-table-ru-RU.js" type="text/javascript"></script>
+<script src="/static/ext/bootstrap/bootstrap-table/src/extensions/export/bootstrap-table-export.js" type="text/javascript"></script> 
+<script src="/static/ext/bootstrap/bootstrap-table/src/extensions/filter/bootstrap-table-filter.js"></script>
 <!-- ! -->
 <script type="text/javascript">
 $(document).ready(function(){
     $.getScript("/static/js/filters.js");
+});
+
+$(function () {
+    $('#get-data').click(function () {
+        console.log(JSON.stringify($('#pis_table').bootstrapTable('getData')));
+    });
 });
 
 function postDataDoc() {
@@ -105,78 +115,69 @@ function canselEdit() {
         </td>
     </tr>
     </table>
-    <div class="table-responsive">
-        <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>
-                    <select id="pis" multiple="multiple" name="select[]">
-                    {% for pi in pis %}
-                    <option value="{{pi.pi_id}}" selected="true">{{pi.pi}}</option>
-                    {% endfor %}
-                    {% for pi in dic_pi %}
-                    <option id="dic_pi" value="{{pi.pi_id}}">{{pi.pi}}</option>
-                    {% endfor %}
-                    </select>
-                </th>
-                 <th>
-                    Группа ПИ в госпрограмме
-                 </th>
-               
-                <th class="col-md-3">Ед. изм.</th>
-                <th>АBC1</th>
-                <th>C2</th>
-                <th>Документ утверждения запасов</th>
-                <th>Номер</th>
-                <th>Дата</th>
-                <th>Организация</th>
-                <th>P1</th>
-                <th>P2</th>
-                <th>P3</th>
-                <th>Без категории</th>
-                <th>Документ апробации</th>
-                <th>Номер</th>
-                <th>Дата</th>
-                <th>Организация</th>
 
-            </tr>
-        </thead>
-        
+   
+<div id="filter-bar">
+    <button class="btn btn-default" id="get-data">
+        Get Data
+    </button> 
+    <select id="pis" multiple="multiple" name="select[]">
         {% for pi in pis %}
-        <tr>
-            <td>
-            {{pi.pi}}
-            </td>
-            <td>
-            {{pi.type_pi}}
-            </td>
-            <td>
-                <select class="form-control">
-                <option id="source_type" value="{{pi.unit_id}}">{{pi.unit}}</option>
-                {% for pi_unit in dic_pi_units %}
-                <option id="source_type" value="{{pi_unit.id}}">{{pi_unit.unit}}</option>
-                {% endfor %}
-                </select>
-            </td>
-            <td>{{pi.ABC1}}</td>
-            <td>{{pi.C2}}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td>{{pi.P1}}</td>
-            <td>{{pi.P2}}</td>
-            <td>{{pi.P3}}</td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+        <option value="{{pi.pi_id}}" selected="true">{{pi.pi}}</option>
         {% endfor %}
-        </table>
-    </div>
+        {% for pi in dic_pi %}
+        <option id="dic_pi" value="{{pi.pi_id}}">{{pi.pi}}</option>
+        {% endfor %}
+    </select>
 </div>
+
+<table id="pis_table" data-toggle="table" data-height="299" data-toolbar="#filter-bar" data-show-toggle="true" data-show-columns="true" data-show-filter="true" data-search="true" data-side-pagination="server" data-pagination="true">
+    <thead>
+    <tr>
+        <th data-field="pi">ПИ</th>
+        <th data-field="type_pi">Группа ПИ в госпрограмме</th>
+        <th data-field="unit">Ед. изм.</th>
+        <th data-field="ABC1">АBC1</th>
+        <th data-field="C2">C2</th>
+        <th data-field="docs_approval">Документ утверждения запасов</th>
+        <th data-field="docs_approval_n">Номер</th>
+        <th data-field="docs_approval_date">Дата</th>
+        <th data-field="docs_approval_organ">Организация</th>
+        <th data-field="P1">P1</th>
+        <th data-field="P2">P2</th>
+        <th data-field="P3">P3</th>
+        <th data-field="pi_none_categ">Без категории</th>
+        <th data-field="docs_testing">Документ апробации</th>
+        <th data-field="docs_testing_n">Номер</th>
+        <th data-field="docs_testing_date">Дата</th>
+        <th data-field="docs_testing_organ">Организация</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for pi in pis %}
+    <tr>
+        <td>{{pi.pi}}</td>
+        <td>{{pi.type_pi}}</td>
+        <td>{{pi.unit}}</td>
+        <td><input type="text" class="form-control" value="{{pi.ABC1}}" id="ABC1"></td>
+        <td>{{pi.C2}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>{{pi.P1}}</td>
+        <td>{{pi.P2}}</td>
+        <td>{{pi.P3}}</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
 {% endblock %}
 
 

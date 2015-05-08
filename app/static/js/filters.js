@@ -29,7 +29,7 @@ $('#pis').multiselect({
     enableFiltering: true,
     filterBehavior: 'text',
     filterPlaceholder: 'Найти',
-    buttonWidth: '150px',
+    buttonWidth: '50px',
     buttonText: function(options, select) {
                 if (options.length >= 0) {
                     return 'ПИ';
