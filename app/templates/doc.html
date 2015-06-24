@@ -48,9 +48,9 @@
     </td>
     </tr>
     <tr><td>Вид документа регистрации:</td><td>{{doc.source_type}}</td></tr>
-    <tr><td>Орган регистрации:</td><td></td></tr>
-    <tr><td>Субъект РФ:</td><td></td></tr>
-    <tr><td>Административный район:</td><td></td></tr>
+    <tr><td>Орган регистрации:</td><td>ТГФ</td></tr>
+    <tr><td>Субъект РФ:</td><td>Иркутская область</td></tr>
+    <tr><td>Административный район:</td><td>Бодайбинский</td></tr>
     <tr>
         <td>Входимость в объект (группу):</td>
             <td colspan="2">
@@ -65,13 +65,13 @@
     <table class="table table-bordered">
     <caption>Запасы</caption>
     <tr>
-        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td>
+        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>ед.изм</td>
         <td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td>
         <td>Номер</td><td>Дата</td><td>Организация</td>
     </tr>
     {% for pi in pis %}
     <tr>
-        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td></td><td></td>
+        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td>кг</td><td>560</td><td></td>
         <td></td><td></td><td></td><td></td>
     </tr>
     {% endfor %}
@@ -80,16 +80,29 @@
     <table class="table table-bordered">
     <caption>Прогнозные ресурсы</caption>
     <tr>
-        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td>
+        <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>ед.изм</td>
         <td>P1</td><td>P2</td><td>P3</td>
         <td>Без категории</td><td>Документ апробации</td><td>Номер</td><td>Дата</td><td>Организация</td>
     </tr>
     {% for pi in pis %}
     <tr>
-        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td></td><td></td>
-        <td></td><td></td><td></td><td></td><td></td><td></td>
+        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td>кг</td><td>1200</td><td></td>
+        <td>2500</td><td></td><td>протокол</td><td>802</td><td>2008</td><td>ТКЗ</td>
     </tr>
     {% endfor %}
+    </table>
+
+    <table class="table table-bordered">
+    <caption>Источники информации об объекте</caption>
+    <tr>
+        <td>вид</td><td>номер</td><td>год</td><td>стадия ГРР</td><td>авторы/организации</td>
+    </tr>
+    <tr>
+        <td>протокол</td><td>802</td><td>2008</td><td></td><td>ТКЗ</td>
+    </tr>
+    <tr>
+        <td>отчет</td><td>15643</td><td>2003</td><td>поисково-оценочные работы</td><td>Иванов И.И.</td>
+    </tr>
     </table>
 
 {% endblock %}
