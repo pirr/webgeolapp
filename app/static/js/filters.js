@@ -24,17 +24,17 @@ $('#sources_type').multiselect({
 
 
 $('#pis').multiselect({
-    numberDisplayed: 0,
+    // numberDisplayed: 0,
     includeSelectAllOption: true,
     enableFiltering: true,
     filterBehavior: 'text',
     filterPlaceholder: 'Найти',
-    buttonWidth: '50px',
-    buttonText: function(options, select) {
-                if (options.length >= 0) {
-                    return 'ПИ';
-                }
-            },
+    buttonWidth: '200px',
+    // buttonText: function(options, select) {
+    //             if (options.length >= 0) {
+    //                 return options;
+    //             }
+    //         },
     nonSelectedText: 'Выбрать ПИ',
     selectAllText: 'Выбрать все',
     allSelectedText: 'Все ПИ',

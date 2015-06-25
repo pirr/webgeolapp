@@ -1,7 +1,7 @@
 {% extends "doc_base.html" %}
 
 {% block leftnav %}
-<li><a>Документ №<b>{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
+<li><a>Документ №<b style="color:red;">{{doc.id}}</b> Название: <b>{{doc.name}}</b></a></li>
 {% endblock %}
 {% block nav %}
 {% if user %}
@@ -15,7 +15,7 @@
 <!-- ! -->
 <div id="content">
  <table class="table table-bordered">
-    <caption>Данные документа</caption>
+    <caption style="text-transform:uppercase;"><b>Данные документа</b></caption>
     <tr>
         <td>Название по документу:</td><td>{{doc.name}}</td>
     <!-- map -->
@@ -63,7 +63,7 @@
     </table>
     
     <table class="table table-bordered">
-    <caption>Запасы</caption>
+    <caption style="text-transform:uppercase;"><b>Запасы</b></caption>
     <tr>
         <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>ед.изм</td>
         <td>АBC1</td><td>C2</td><td>Документ утверждения запасов</td>
@@ -71,14 +71,14 @@
     </tr>
     {% for pi in pis %}
     <tr>
-        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td>кг</td><td>560</td><td></td>
+        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td></td><td></td><td></td>
         <td></td><td></td><td></td><td></td>
     </tr>
     {% endfor %}
     </table>
 
     <table class="table table-bordered">
-    <caption>Прогнозные ресурсы</caption>
+    <caption style="text-transform:uppercase;"><b>Прогнозные ресурсы</b></caption>
     <tr>
         <td>Полезное ископаемое</td><td>Группа ПИ в госпрограмме</td><td>ед.изм</td>
         <td>P1</td><td>P2</td><td>P3</td>
@@ -86,22 +86,22 @@
     </tr>
     {% for pi in pis %}
     <tr>
-        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td>кг</td><td>1200</td><td></td>
-        <td>2500</td><td></td><td>протокол</td><td>802</td><td>2008</td><td>ТКЗ</td>
+        <td>{{pi.pi}}</td><td>{{pi.group_pi}}</td><td>кг</td><td></td><td>11800</td>
+        <td></td><td>3200</td><td></td><td></td><td></td><td></td>
     </tr>
     {% endfor %}
     </table>
 
     <table class="table table-bordered">
-    <caption>Источники информации об объекте</caption>
+    <caption style="text-transform:uppercase" ><b>Источники информации об объекте</b></caption>
     <tr>
         <td>вид</td><td>номер</td><td>год</td><td>стадия ГРР</td><td>авторы/организации</td>
     </tr>
     <tr>
-        <td>протокол</td><td>802</td><td>2008</td><td></td><td>ТКЗ</td>
+        <td>отчет</td><td>5452</td><td>1969</td><td>поиски</td><td>Подгорбунский Г.В.</td>
     </tr>
     <tr>
-        <td>отчет</td><td>15643</td><td>2003</td><td>поисково-оценочные работы</td><td>Иванов И.И.</td>
+        <td>отчет</td><td>10938</td><td>1971</td><td>поисково-оценочные работы</td><td>Коткин В.В.</td>
     </tr>
     </table>
 

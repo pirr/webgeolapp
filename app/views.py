@@ -243,7 +243,7 @@ def doc_edit_post(doc_id):
     else:
         return 'Err'
 
-@app.route('/docs_in_obj/<doc_id>', methods=['POST'])
+@app.route('/docs_in_obj/<doc_id>', methods=['GET','POST'])
 def docs_in_obj(doc_id):
     dic_cur = db.dbCon().cursor(pymysql.cursors.DictCursor)
 
@@ -253,7 +253,7 @@ def docs_in_obj(doc_id):
         """, doc_id)
     picked_group_sql = dic_cur.fetchone()
 
-    docs = None
+    # docs = None
     if picked_group_sql:
         obj_id = picked_group_sql['obj_id']
         dic_cur.execute("""SELECT 
@@ -277,7 +277,7 @@ def docs_in_obj(doc_id):
             GROUP BY docs.id
             """, obj_id)
         
-        docs = dic_cur.fetchall()
+    docs = dic_cur.fetchall()
 
     html = render_template('docs_in_obj.html',
                             docs=docs)
